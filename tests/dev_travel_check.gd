@@ -90,4 +90,3 @@ func run() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(g.save_path));DirAccess.remove_absolute(ProjectSettings.globalize_path(g.settings_path))
 	print("DEV_TRAVEL galaxy/system F3, eight climates, orbit, isolated input, campaign preservation, saves and reset failures=",failures)
 	quit(0 if failures==0 else 1)
-
