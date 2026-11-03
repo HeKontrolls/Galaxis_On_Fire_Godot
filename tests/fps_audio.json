@@ -1,0 +1,177 @@
+{
+	"0_Clear": {
+		"fps": 233.976189413085,
+		"mean_frame_ms": 4.27393916666666,
+		"p95_ms": 7.956,
+		"sections": {
+			"actors_water": {
+				"max_ms": 2.095,
+				"mean_ms": 0.177265
+			},
+			"background": {
+				"max_ms": 10.302,
+				"mean_ms": 0.314071666666667
+			},
+			"foliage_items": {
+				"max_ms": 10.456,
+				"mean_ms": 0.388271666666667
+			},
+			"hud": {
+				"max_ms": 4.388,
+				"mean_ms": 0.841265833333333
+			},
+			"terrain": {
+				"max_ms": 2.592,
+				"mean_ms": 0.231673333333333
+			},
+			"water_sim": {
+				"max_ms": 0.374,
+				"mean_ms": 0.0186208333333333
+			},
+			"weather_lighting": {
+				"max_ms": 14.04,
+				"mean_ms": 0.15572
+			}
+		}
+	},
+	"0_Fog": {
+		"fps": 216.319425917086,
+		"mean_frame_ms": 4.62279333333333,
+		"p95_ms": 8.574,
+		"sections": {
+			"actors_water": {
+				"max_ms": 2.306,
+				"mean_ms": 0.175555
+			},
+			"background": {
+				"max_ms": 8.932,
+				"mean_ms": 0.362043333333333
+			},
+			"foliage_items": {
+				"max_ms": 10.248,
+				"mean_ms": 0.388048333333333
+			},
+			"hud": {
+				"max_ms": 4.539,
+				"mean_ms": 0.902253333333333
+			},
+			"terrain": {
+				"max_ms": 5.303,
+				"mean_ms": 0.33927
+			},
+			"water_sim": {
+				"max_ms": 0.382,
+				"mean_ms": 0.021145
+			},
+			"weather_lighting": {
+				"max_ms": 10.348,
+				"mean_ms": 0.146994166666667
+			}
+		}
+	},
+	"0_Snow": {
+		"fps": 162.080202146428,
+		"mean_frame_ms": 6.16978500000001,
+		"p95_ms": 10.612,
+		"sections": {
+			"actors_water": {
+				"max_ms": 4.129,
+				"mean_ms": 0.33597
+			},
+			"background": {
+				"max_ms": 8.828,
+				"mean_ms": 0.373979166666667
+			},
+			"foliage_items": {
+				"max_ms": 9.576,
+				"mean_ms": 0.399173333333333
+			},
+			"hud": {
+				"max_ms": 4.595,
+				"mean_ms": 0.940216666666667
+			},
+			"terrain": {
+				"max_ms": 4.885,
+				"mean_ms": 0.2714125
+			},
+			"water_sim": {
+				"max_ms": 1.89,
+				"mean_ms": 0.0365741666666667
+			},
+			"weather_lighting": {
+				"max_ms": 11.288,
+				"mean_ms": 0.690775
+			}
+		}
+	},
+	"2_Rain": {
+		"fps": 179.521557098178,
+		"mean_frame_ms": 5.57036166666667,
+		"p95_ms": 9.375,
+		"sections": {
+			"actors_water": {
+				"max_ms": 6.013,
+				"mean_ms": 1.48195916666667
+			},
+			"background": {
+				"max_ms": 7.88,
+				"mean_ms": 0.36576
+			},
+			"foliage_items": {
+				"max_ms": 3.197,
+				"mean_ms": 0.0808983333333333
+			},
+			"hud": {
+				"max_ms": 4.219,
+				"mean_ms": 0.9168425
+			},
+			"terrain": {
+				"max_ms": 2.968,
+				"mean_ms": 0.09784
+			},
+			"water_sim": {
+				"max_ms": 6.403,
+				"mean_ms": 0.199249166666667
+			},
+			"weather_lighting": {
+				"max_ms": 22.288,
+				"mean_ms": 0.3757075
+			}
+		}
+	},
+	"4_Clear": {
+		"fps": 356.723600744244,
+		"mean_frame_ms": 2.80329083333334,
+		"p95_ms": 5.689,
+		"sections": {
+			"actors_water": {
+				"max_ms": 1.053,
+				"mean_ms": 0.110073333333333
+			},
+			"background": {
+				"max_ms": 9.745,
+				"mean_ms": 0.283039166666667
+			},
+			"foliage_items": {
+				"max_ms": 0.578,
+				"mean_ms": 0.0236525
+			},
+			"hud": {
+				"max_ms": 4.121,
+				"mean_ms": 0.826395
+			},
+			"terrain": {
+				"max_ms": 1.363,
+				"mean_ms": 0.0484533333333333
+			},
+			"water_sim": {
+				"max_ms": 0.331,
+				"mean_ms": 0.0158941666666667
+			},
+			"weather_lighting": {
+				"max_ms": 12.651,
+				"mean_ms": 0.12809
+			}
+		}
+	}
+}

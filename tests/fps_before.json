@@ -1,0 +1,107 @@
+{
+	"0_Clear": {
+		"fps": 22.9776185230242,
+		"mean_frame_ms": 43.5206111111111,
+		"p95_ms": 71.384,
+		"sections": {
+			"actors_water": {
+				"max_ms": 2.978,
+				"mean_ms": 1.84648888888889
+			},
+			"background": {
+				"max_ms": 1.691,
+				"mean_ms": 0.953088888888889
+			},
+			"foliage_items": {
+				"max_ms": 1.585,
+				"mean_ms": 1.02225555555556
+			},
+			"hud": {
+				"max_ms": 1.919,
+				"mean_ms": 0.984211111111111
+			},
+			"terrain": {
+				"max_ms": 21.376,
+				"mean_ms": 18.0469666666667
+			},
+			"water_sim": {
+				"max_ms": 7.611,
+				"mean_ms": 2.5778
+			},
+			"weather_lighting": {
+				"max_ms": 44.254,
+				"mean_ms": 15.9387
+			}
+		}
+	},
+	"0_Fog": {
+		"fps": 24.6248270789921,
+		"mean_frame_ms": 40.6094222222222,
+		"p95_ms": 67.297,
+		"sections": {
+			"actors_water": {
+				"max_ms": 3.134,
+				"mean_ms": 1.87002222222222
+			},
+			"background": {
+				"max_ms": 1.425,
+				"mean_ms": 0.935533333333333
+			},
+			"foliage_items": {
+				"max_ms": 1.718,
+				"mean_ms": 1.03632222222222
+			},
+			"hud": {
+				"max_ms": 2.417,
+				"mean_ms": 1.05405555555556
+			},
+			"terrain": {
+				"max_ms": 20.9,
+				"mean_ms": 18.3893666666667
+			},
+			"water_sim": {
+				"max_ms": 0.722,
+				"mean_ms": 0.0214
+			},
+			"weather_lighting": {
+				"max_ms": 42.96,
+				"mean_ms": 15.2173888888889
+			}
+		}
+	},
+	"2_Rain": {
+		"fps": 6.28037301787066,
+		"mean_frame_ms": 159.226211111111,
+		"p95_ms": 168.085,
+		"sections": {
+			"actors_water": {
+				"max_ms": 3.372,
+				"mean_ms": 1.84918888888889
+			},
+			"background": {
+				"max_ms": 15.456,
+				"mean_ms": 10.1730444444444
+			},
+			"foliage_items": {
+				"max_ms": 1.872,
+				"mean_ms": 1.07728888888889
+			},
+			"hud": {
+				"max_ms": 1.654,
+				"mean_ms": 1.03571111111111
+			},
+			"terrain": {
+				"max_ms": 22.874,
+				"mean_ms": 15.3141111111111
+			},
+			"water_sim": {
+				"max_ms": 84.712,
+				"mean_ms": 74.6222222222222
+			},
+			"weather_lighting": {
+				"max_ms": 59.038,
+				"mean_ms": 52.1913333333333
+			}
+		}
+	}
+}

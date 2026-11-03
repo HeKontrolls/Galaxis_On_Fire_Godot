@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://b4djcovm0gjkh"]
+
+[ext_resource type="Script" uid="uid://b05wkcfur6l2n" path="res://scripts/game.gd" id="1_game"]
+
+[node name="GalaxisOnFire" type="Node2D" unique_id=528873473]
+texture_filter = 1
+script = ExtResource("1_game")

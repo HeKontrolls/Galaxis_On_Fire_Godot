@@ -1,0 +1,28 @@
+# Godot-generated caches and imports
+.godot/
+*.import
+
+# Local editor tooling installed independently of the game
+/addons/ziva_agent/
+
+# Build outputs, temporary files, credentials and local environments
+/build/
+/builds/
+/dist/
+*.tmp
+*.TMP
+*.bak
+*.log
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+export_credentials.cfg
+.DS_Store
+Thumbs.db
+
+# Disposable test outputs; documented review images remain tracked
+tests/*_smoke.png
+tests/audio_showcase.wav

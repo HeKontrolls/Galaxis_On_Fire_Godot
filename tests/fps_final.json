@@ -1,0 +1,107 @@
+{
+	"0_Clear": {
+		"fps": 321.840066942734,
+		"mean_frame_ms": 3.10713333333333,
+		"p95_ms": 5.214,
+		"sections": {
+			"actors_water": {
+				"max_ms": 0.37,
+				"mean_ms": 0.206522222222222
+			},
+			"background": {
+				"max_ms": 3.907,
+				"mean_ms": 0.261166666666667
+			},
+			"foliage_items": {
+				"max_ms": 0.209,
+				"mean_ms": 0.0620666666666667
+			},
+			"hud": {
+				"max_ms": 1.499,
+				"mean_ms": 0.737244444444444
+			},
+			"terrain": {
+				"max_ms": 0.281,
+				"mean_ms": 0.0816555555555556
+			},
+			"water_sim": {
+				"max_ms": 0.026,
+				"mean_ms": 0.00557777777777778
+			},
+			"weather_lighting": {
+				"max_ms": 9.899,
+				"mean_ms": 0.185422222222222
+			}
+		}
+	},
+	"0_Fog": {
+		"fps": 306.922116807737,
+		"mean_frame_ms": 3.25815555555556,
+		"p95_ms": 4.286,
+		"sections": {
+			"actors_water": {
+				"max_ms": 0.364,
+				"mean_ms": 0.2094
+			},
+			"background": {
+				"max_ms": 0.441,
+				"mean_ms": 0.248688888888889
+			},
+			"foliage_items": {
+				"max_ms": 0.154,
+				"mean_ms": 0.0614666666666667
+			},
+			"hud": {
+				"max_ms": 1.931,
+				"mean_ms": 0.777077777777778
+			},
+			"terrain": {
+				"max_ms": 0.59,
+				"mean_ms": 0.103622222222222
+			},
+			"water_sim": {
+				"max_ms": 0.037,
+				"mean_ms": 0.00593333333333333
+			},
+			"weather_lighting": {
+				"max_ms": 9.761,
+				"mean_ms": 0.205222222222222
+			}
+		}
+	},
+	"2_Rain": {
+		"fps": 262.888088540708,
+		"mean_frame_ms": 3.8039,
+		"p95_ms": 5.023,
+		"sections": {
+			"actors_water": {
+				"max_ms": 0.304,
+				"mean_ms": 0.236233333333333
+			},
+			"background": {
+				"max_ms": 1.691,
+				"mean_ms": 0.307688888888889
+			},
+			"foliage_items": {
+				"max_ms": 0.134,
+				"mean_ms": 0.0718666666666667
+			},
+			"hud": {
+				"max_ms": 1.069,
+				"mean_ms": 0.766611111111111
+			},
+			"terrain": {
+				"max_ms": 0.151,
+				"mean_ms": 0.0805111111111111
+			},
+			"water_sim": {
+				"max_ms": 3.733,
+				"mean_ms": 0.114855555555556
+			},
+			"weather_lighting": {
+				"max_ms": 9.901,
+				"mean_ms": 0.175433333333333
+			}
+		}
+	}
+}

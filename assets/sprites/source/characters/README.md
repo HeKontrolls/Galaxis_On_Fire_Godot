@@ -1,0 +1,16 @@
+# Captain wardrobe — native Aseprite sources
+
+All model, hair, clothing, eye, skin and articulated arm pixels were drawn in Aseprite 1.3.18.6 with its Lua API. All palette variants are painted and exported there; Godot selects precolored layers and never recolors the wardrobe at runtime.
+
+- `avatar_male.aseprite` and `avatar_female.aseprite`: 32 × 40 RGBA, 38 frames, 30 named component layers. Eight hair styles, four shirt styles, four pants styles and four shoe styles work with either model. Alternative styles are hidden by default; turn on only the desired layers. Rear hair sits behind the body.
+- Each model has six timeline tags: `idle_east` (4), `walk_east` (6), `jump_east` (9), plus the baked west-facing equivalents. Feet remain on source row 39. Keep the native canvas, tag names, frame order and pixel pivots.
+- `avatar_solid_arms.aseprite`: the current swinging arm, 8 × 20 RGBA with two editable paint layers and eight model/shirt tags. Each flattened frame is one continuous shoulder-to-fist sprite. Shoulder `(4,1)` and grip `(4,17)` rotate together, with matching skin and sleeve colors. The runtime draws one arm sprite, without an elbow joint or a separate hand overlay. `avatar_arms.aseprite` retains the earlier three-part source for reference.
+- The native palette and sprite user data contain six skin tones, twelve hair colors, eight eye colors and twelve clothing colors. Every ramp contains shadow, base and highlight colors. Shirt/hair/skin masters use palette index 0; pants use clothing index 1; shoes use clothing index 11; eyes use eye index 1. Indices are zero-based in metadata. Preserve these source ramps when painting if the matching color variants should follow an edit.
+
+Save changes in Aseprite, then run `tools/export_aseprite_art.ps1`. Its Aseprite batch export includes the wardrobe and continuous arms. Runtime files live under `assets/sprites/characters/`: 700 body component atlases (320 × 160, ten columns, 38 occupied cells), 72 current arm atlases under `solid_arms/` (8 × 160), the earlier arm exports under `arms/`, and `avatar.json`. Only the chosen seven body sheets and one continuous arm sheet are needed for a look; the runtime cache retains at most 64 sheets.
+
+`tools/design_avatar_aseprite.lua` is the native construction script. Running it recreates these documents and overwrites manual source edits; use the export helper for ordinary editing.
+
+`tools/design_solid_arm_aseprite.lua` constructs the continuous arm source inside Aseprite; it overwrites that document if rerun. `tools/verify_solid_arm_aseprite.lua` verifies all eight source frames are single connected shapes from shoulder to fist and checks all 72 precolored exports against the native artwork. `tests/solid_arm_preview.png` shows all model/sleeve combinations mid-swing.
+
+`tools/verify_aseprite_art.lua` includes a read-only exhaustive source comparison: all 772 wardrobe atlases, 34,213,888 RGBA pixels, every animation mirror and all three source documents. `tests/character_creation_check.gd` checks visible style/color differences, ground pivots, UI controls, draft cancellation, seeded creation, custom arms, save/load and legacy-save compatibility. `tests/character_creation_preview.gd` renders creation screens, a wardrobe board and actual planet gameplay.

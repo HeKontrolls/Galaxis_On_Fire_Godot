@@ -1,0 +1,1813 @@
+﻿{
+    "PreservedSaves":  [
+                           {
+                               "Original":  "D:\\galaxy_game\\Galaxis_On_Fire\\dist\\GalaxisOnFire\\_internal\\saves\\autosave.json",
+                               "Preserved":  "D:\\galaxy_game\\Galaxis_On_Fire\\saves\\recovered_build_saves\\GalaxisOnFire\\_internal\\saves\\autosave.json",
+                               "SHA256":  "82DA7F782C20DFBBE0AB683D90D13A594F22C551670FC2BBB23B0569863C2C4D"
+                           },
+                           {
+                               "Original":  "D:\\galaxy_game\\Galaxis_On_Fire\\dist\\GalaxisOnFire\\_internal\\saves\\settings.json",
+                               "Preserved":  "D:\\galaxy_game\\Galaxis_On_Fire\\saves\\recovered_build_saves\\GalaxisOnFire\\_internal\\saves\\settings.json",
+                               "SHA256":  "FE98B1451E05C5EF421F4B4EB02B6945E35389082CDF38826B1FA8A743503E60"
+                           },
+                           {
+                               "Original":  "D:\\galaxy_game\\Galaxis_On_Fire\\dist\\Galaxis_On_Fire_0.3.8-tool-swing\\saves\\autosave.json",
+                               "Preserved":  "D:\\galaxy_game\\Galaxis_On_Fire\\saves\\recovered_build_saves\\GalaxisOnFire\\_internal\\saves\\autosave.json",
+                               "SHA256":  "82DA7F782C20DFBBE0AB683D90D13A594F22C551670FC2BBB23B0569863C2C4D"
+                           },
+                           {
+                               "Original":  "D:\\galaxy_game\\Galaxis_On_Fire\\dist\\Galaxis_On_Fire_0.3.8-tool-swing\\saves\\settings.json",
+                               "Preserved":  "D:\\galaxy_game\\Galaxis_On_Fire\\saves\\recovered_build_saves\\Galaxis_On_Fire_0.3.8-tool-swing\\saves\\settings.json",
+                               "SHA256":  "9ED0A37D2975CC40136060FB3B2AA5A68CB801C8DA524E0FC79AB53464AD4AF4"
+                           },
+                           {
+                               "Original":  "D:\\galaxy_game\\Galaxis_On_Fire\\dist\\Galaxis_On_Fire_0.3.8-tool-swing\\_internal\\saves\\autosave.json",
+                               "Preserved":  "D:\\galaxy_game\\Galaxis_On_Fire\\saves\\recovered_build_saves\\GalaxisOnFire\\_internal\\saves\\autosave.json",
+                               "SHA256":  "82DA7F782C20DFBBE0AB683D90D13A594F22C551670FC2BBB23B0569863C2C4D"
+                           },
+                           {
+                               "Original":  "D:\\galaxy_game\\Galaxis_On_Fire\\dist\\Galaxis_On_Fire_0.3.8-tool-swing\\_internal\\saves\\settings.json",
+                               "Preserved":  "D:\\galaxy_game\\Galaxis_On_Fire\\saves\\recovered_build_saves\\GalaxisOnFire\\_internal\\saves\\settings.json",
+                               "SHA256":  "FE98B1451E05C5EF421F4B4EB02B6945E35389082CDF38826B1FA8A743503E60"
+                           }
+                       ],
+    "Failed":  [
+
+               ],
+    "SkippedArchives":  [
+                            "Kept non-identical archive: D:\\galaxy_game\\Galaxis_On_Fire\\Terraria-Source-Code-master.zip"
+                        ],
+    "Deleted":  [
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\build",
+                        "Reason":  "Rebuildable PyInstaller intermediate files",
+                        "Bytes":  57514286,
+                        "Files":  58
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\dist\\GalaxisOnFire",
+                        "Reason":  "Old extracted/compiled Python build; packaged release ZIP retained",
+                        "Bytes":  153522986,
+                        "Files":  452
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\dist\\Galaxis_On_Fire_0.3.8-tool-swing",
+                        "Reason":  "Old extracted/compiled Python build; packaged release ZIP retained",
+                        "Bytes":  181999226,
+                        "Files":  475
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\dist\\GalaxisControl.exe",
+                        "Reason":  "Old extracted/compiled Python build; packaged release ZIP retained",
+                        "Bytes":  11092811,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\dist\\GalaxisLobby.exe",
+                        "Reason":  "Old extracted/compiled Python build; packaged release ZIP retained",
+                        "Bytes":  7883423,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\dist\\GalaxisServer.exe",
+                        "Reason":  "Old extracted/compiled Python build; packaged release ZIP retained",
+                        "Bytes":  7832811,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\__pycache__",
+                        "Reason":  "Regenerable Python bytecode cache",
+                        "Bytes":  940241,
+                        "Files":  27
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\systems\\__pycache__",
+                        "Reason":  "Regenerable Python bytecode cache",
+                        "Bytes":  1354549,
+                        "Files":  47
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\Terraria-Generation\\Code+\\__pycache__",
+                        "Reason":  "Regenerable Python bytecode cache",
+                        "Bytes":  88558,
+                        "Files":  3
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\tmp_video_frames",
+                        "Reason":  "Temporary extracted video frame samples",
+                        "Bytes":  123099,
+                        "Files":  7
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\debug\\perf_log.txt",
+                        "Reason":  "Generated performance log",
+                        "Bytes":  112,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\aseprite_art_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  308,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\aseprite_art_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  504,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\aseprite_parse_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  532,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\aseprite_sources_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  228,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\audio_aseprite_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1312,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\audio_audio_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1312,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\audio_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1306,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\audio_parse_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1016,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\audio_settings_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  498,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\cave_current.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  648,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\chopping_biomes_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  2694,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\chopping_biomes_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  506,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\chopping_parse.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1276,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\drop_items_transparent_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  462,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\farming_food_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  510,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fluid_obsidian_audio_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1042,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fluid_obsidian_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1042,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fluid_obsidian_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  516,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fluid_obsidian_tools_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1042,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fog_before.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  408,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fog_cave_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  648,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fog_smoothing_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1016,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fog_smooth_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  410,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\food_farming_aseprite_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  326,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\food_farming_audio_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  326,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\food_farming_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  326,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\food_farming_fluids_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  326,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\food_farming_tools_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  326,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\food_parse_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  470,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\forest_density_after.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  260,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\forest_density_before.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  252,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fps_audio.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  5094,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fps_before.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  15176,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fps_final.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  3318,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fps_fog_smoothed.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  3300,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fps_lava_snow_forest.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  5122,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fps_optimized.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  3246,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fps_smooth_fluids.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  5158,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fps_sustained.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  3196,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fps_trees.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  3234,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fps_wind_watering.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  3246,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\grass_current.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  204,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\grass_foliage_audio_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  204,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\grass_foliage_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  204,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\grass_foliage_fluids_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  204,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\grass_foliage_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  512,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\ground_cover_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  546,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\ground_cover_fps_profile.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  5052,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\ground_cover_parse.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  410,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\ground_cover_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  504,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\ground_life_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1468,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\ground_life_fps_profile.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  5260,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\ground_life_parse.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  410,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\ground_life_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  522,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\ground_life_sources_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  86,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\lava_snow_forest_gust_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1102,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\lava_snow_forest_gust_fluids_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1146,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\lava_snow_forest_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  526,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\lava_water_refactor_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1016,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\obsidian_parse_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  326,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\parse_current.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  5092,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\player_mouse_parse.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  93184,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\player_mouse_pose_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  410,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\player_mouse_pose_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  482,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\player_revision_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  504,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_farming_ore_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  470,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_farming_ore_fluids_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  470,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_farming_ore_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  510,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_farm_current.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  470,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_farm_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  510,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_flooding_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  468,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_flooding_fluids_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  468,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_flood_existing_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  470,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\smooth_fluids_preview_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  526,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\stone_pickaxe_input_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1014,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\surface_effects_profile.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  734,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_aseprite_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1658,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_audio_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1658,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1654,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_input_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1014,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_parse.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  8012,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  532,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\trees_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  204,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\trees_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  512,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\trees_structure_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  264,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\trees_structure_fluids_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  264,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\trees_structure_tools_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  264,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_cave_fog_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  648,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_current.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1016,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_lighting_input_aseprite_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1014,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_lighting_input_audio_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1016,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_lighting_input_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1016,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_lighting_input_fluids_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1014,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_lighting_input_tools_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  1014,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\weather_lava_parse_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  326,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\zones_watering_wind_aseprite_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  634,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\zones_watering_wind_check.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  634,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\zones_watering_wind_fluids_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  634,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\zones_watering_wind_preview.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  502,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\zones_watering_wind_tools_regression.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  634,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\zone_water_wind_parse.log",
+                        "Reason":  "Generated test/preview log",
+                        "Bytes":  326,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\audio_showcase.wav",
+                        "Reason":  "Regenerable offline sound showcase, not gameplay audio",
+                        "Bytes":  1915740,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\aseprite_captain_sheet.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  13890,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\aseprite_captain_sheet.png-54d920c1f93098b44f3512a55bd1b0b3.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  4900,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\aseprite_captain_sheet.png-54d920c1f93098b44f3512a55bd1b0b3.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\aseprite_captain_sheet.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  976,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\aseprite_elder_sheet.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  10140,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\aseprite_elder_sheet.png-6e979f74de576b022f35bc31d9361a18.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  3964,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\aseprite_elder_sheet.png-6e979f74de576b022f35bc31d9361a18.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\aseprite_elder_sheet.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  969,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\aseprite_gameplay_swing.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  83441,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\aseprite_gameplay_swing.png-2064c15093c39f860b3633e037d89b86.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  53384,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\aseprite_gameplay_swing.png-2064c15093c39f860b3633e037d89b86.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\aseprite_gameplay_swing.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  979,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\cave_dark_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  29050,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\cave_dark_preview.png-87fda792a2868590098f89b79c093468.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  11650,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\cave_dark_preview.png-87fda792a2868590098f89b79c093468.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\cave_dark_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  960,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\cave_fog_exclusion_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  217156,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\cave_fog_exclusion_preview.png-4a6707606b567e8370dcef01ee975130.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  163972,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\cave_fog_exclusion_preview.png-4a6707606b567e8370dcef01ee975130.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\cave_fog_exclusion_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  988,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\cave_torches_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  217721,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\cave_torches_preview.png-8cd06da1d94239d477959232f12eb90c.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  164446,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\cave_torches_preview.png-8cd06da1d94239d477959232f12eb90c.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\cave_torches_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  969,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\dense_forest_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  176481,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\dense_forest_preview.png-fa811df196de037e966237350ec0b264.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  125072,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\dense_forest_preview.png-fa811df196de037e966237350ec0b264.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\dense_forest_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  970,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\drop_items_transparent_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  6096,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\drop_items_transparent_preview.png-dcab4d221c6c796a1405ea36495b2db7.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  728,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\drop_items_transparent_preview.png-dcab4d221c6c796a1405ea36495b2db7.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\drop_items_transparent_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  1000,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\farming_food_backpack_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  101767,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\farming_food_backpack_preview.png-d888c62d55957043ae7e23f92fcdeb4d.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  64614,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\farming_food_backpack_preview.png-d888c62d55957043ae7e23f92fcdeb4d.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\farming_food_backpack_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  997,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\farming_food_cooking_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  113220,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\farming_food_cooking_preview.png-5e30246eccfdb26ce2545507c948d21e.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  69636,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\farming_food_cooking_preview.png-5e30246eccfdb26ce2545507c948d21e.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\farming_food_cooking_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  994,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\farming_food_eating_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  92305,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\farming_food_eating_preview.png-a5cc9fdf323dfc0a2214113b649c7fd9.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  62722,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\farming_food_eating_preview.png-a5cc9fdf323dfc0a2214113b649c7fd9.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\farming_food_eating_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  991,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fog_blocky_before.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  312361,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\fog_blocky_before.png-c8e057efc53a9ce9b0f370c44bfe914b.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  227406,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\fog_blocky_before.png-c8e057efc53a9ce9b0f370c44bfe914b.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fog_blocky_before.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  961,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fog_smooth_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  315343,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\fog_smooth_preview.png-30b293fdecf126637ab8e6f531cf4eb9.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  232382,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\fog_smooth_preview.png-30b293fdecf126637ab8e6f531cf4eb9.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\fog_smooth_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  964,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\foliage_dusk_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  98357,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\foliage_dusk_preview.png-cc36456f6bbfb920b54b4fb4c9bba477.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  66660,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\foliage_dusk_preview.png-cc36456f6bbfb920b54b4fb4c9bba477.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\foliage_dusk_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  970,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\forest_snow_accumulation_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  219754,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\forest_snow_accumulation_preview.png-54efe0fb854a41f3bba3d4f553cf58a0.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  159572,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\forest_snow_accumulation_preview.png-54efe0fb854a41f3bba3d4f553cf58a0.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\forest_snow_accumulation_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  1006,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\forest_snow_dried_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  177996,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\forest_snow_dried_preview.png-8da52f1121a59629ba3878272b5490a3.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  126064,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\forest_snow_dried_preview.png-8da52f1121a59629ba3878272b5490a3.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\forest_snow_dried_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  985,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\forest_snow_melting_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  178915,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\forest_snow_melting_preview.png-8be2b649b00f313633203de2ce2d913e.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  125856,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\forest_snow_melting_preview.png-8be2b649b00f313633203de2ce2d913e.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\forest_snow_melting_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  991,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\grass_after_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  102782,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\grass_after_preview.png-ebc8ede00795d8d63634dc1323e130da.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  72660,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\grass_after_preview.png-ebc8ede00795d8d63634dc1323e130da.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\grass_after_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  966,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\grass_before_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  102674,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\grass_before_preview.png-a49e2a8f08ccf4142e7c975754260ac0.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  72718,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\grass_before_preview.png-a49e2a8f08ccf4142e7c975754260ac0.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\grass_before_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  970,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\habitable_zone_M_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  74662,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\habitable_zone_M_preview.png-663cfba9f53b126491cecac4b2b9391e.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  31900,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\habitable_zone_M_preview.png-663cfba9f53b126491cecac4b2b9391e.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\habitable_zone_M_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  982,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\habitable_zone_O_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  71993,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\habitable_zone_O_preview.png-92dcf652a8b62665f13eeab6af1723d3.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  30686,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\habitable_zone_O_preview.png-92dcf652a8b62665f13eeab6af1723d3.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\habitable_zone_O_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  982,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\lava_contact_damage_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  127791,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\lava_contact_damage_preview.png-88b2a7c5b7b046c9a8b98ff68727f141.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  82562,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\lava_contact_damage_preview.png-88b2a7c5b7b046c9a8b98ff68727f141.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\lava_contact_damage_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  991,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\lava_lines_before.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  124060,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\lava_lines_before.png-251d501246f4c4cb466b22c3a87aeca0.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  80106,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\lava_lines_before.png-251d501246f4c4cb466b22c3a87aeca0.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\lava_lines_before.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  960,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\lava_slow_flow_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  124713,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\lava_slow_flow_preview.png-754c83f510ac6d2c1f5cf5c3631cc996.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  81072,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\lava_slow_flow_preview.png-754c83f510ac6d2c1f5cf5c3631cc996.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\lava_slow_flow_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  975,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_farming_ore_backpack.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  146173,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\rain_farming_ore_backpack.png-7cc8a0eb2dad8d48e787f7c60435e765.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  93154,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\rain_farming_ore_backpack.png-7cc8a0eb2dad8d48e787f7c60435e765.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_farming_ore_backpack.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  985,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_farming_ore_dry.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  90835,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\rain_farming_ore_dry.png-15dec9bc8e210608895d2a5cf857fd33.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  63022,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\rain_farming_ore_dry.png-15dec9bc8e210608895d2a5cf857fd33.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_farming_ore_dry.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  970,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_farming_ore_surface.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  153021,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\rain_farming_ore_surface.png-0f784861ea71bcf203bde70774722c85.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  107020,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\rain_farming_ore_surface.png-0f784861ea71bcf203bde70774722c85.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_farming_ore_surface.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  982,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_lava_cooling.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  171619,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\rain_lava_cooling.png-c6b99f67890db7b72b73cac1a14d482b.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  115248,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\rain_lava_cooling.png-c6b99f67890db7b72b73cac1a14d482b.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_lava_cooling.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  961,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_lava_obsidian.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  173584,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\rain_lava_obsidian.png-1f1a6ad26dd0a487463998a7388b54ef.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  116500,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\rain_lava_obsidian.png-1f1a6ad26dd0a487463998a7388b54ef.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\rain_lava_obsidian.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  964,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\smooth_water_lava_cascades.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  120782,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\smooth_water_lava_cascades.png-21f58130e6cf58d05d57d214f1e22b55.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  70736,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\smooth_water_lava_cascades.png-21f58130e6cf58d05d57d214f1e22b55.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\smooth_water_lava_cascades.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  987,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_backpack.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  155698,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\tool_progression_backpack.png-092dfe47003c47de8412dde1b004b7e3.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  108096,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\tool_progression_backpack.png-092dfe47003c47de8412dde1b004b7e3.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_backpack.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  985,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_copper_crafting.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  161510,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\tool_progression_copper_crafting.png-1a947b16aa223feb5eb7ffeb23a55c44.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  103996,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\tool_progression_copper_crafting.png-1a947b16aa223feb5eb7ffeb23a55c44.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_copper_crafting.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  1006,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_iron_crafting.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  148947,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\tool_progression_iron_crafting.png-df8b9a6e0bded267b61a009ed4ad343b.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  96606,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\tool_progression_iron_crafting.png-df8b9a6e0bded267b61a009ed4ad343b.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_iron_crafting.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  1000,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_stone_crafting.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  158096,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\tool_progression_stone_crafting.png-c656fa24b9ae4c48b7853305bbfb8478.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  104112,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\tool_progression_stone_crafting.png-c656fa24b9ae4c48b7853305bbfb8478.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_stone_crafting.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  1003,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_swings.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  36055,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\tool_progression_swings.png-85a7bba8d7e34e34c24ff07820fa96f8.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  47220,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\tool_progression_swings.png-85a7bba8d7e34e34c24ff07820fa96f8.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tool_progression_swings.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  979,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\trees_falling_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  107375,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\trees_falling_preview.png-a01d84bcb6b223812031e6c570ab42ac.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  75192,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\trees_falling_preview.png-a01d84bcb6b223812031e6c570ab42ac.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\trees_falling_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  973,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\trees_pixel_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  102782,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\trees_pixel_preview.png-a64b0bc211714591b28c6bce5c26f2d5.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  72660,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\trees_pixel_preview.png-a64b0bc211714591b28c6bce5c26f2d5.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\trees_pixel_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  967,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tree_item_frames_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  140159,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\tree_item_frames_preview.png-3b55f68b3a60703713c34f462f8ffca5.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  92278,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\tree_item_frames_preview.png-3b55f68b3a60703713c34f462f8ffca5.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\tree_item_frames_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  982,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\volumetric_fog_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  307952,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\volumetric_fog_preview.png-671152c16030ab99b8583ffe3fb2cc48.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  221454,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\volumetric_fog_preview.png-671152c16030ab99b8583ffe3fb2cc48.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\volumetric_fog_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  976,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\waterfall_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  136975,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\waterfall_preview.png-6f28373ca5eb326e27b5ea2ae80cff2f.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  92216,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\waterfall_preview.png-6f28373ca5eb326e27b5ea2ae80cff2f.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\waterfall_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  961,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\watering_wind_left_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  92749,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\watering_wind_left_preview.png-1d53367814502aceb2ececfb94328032.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  66688,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\watering_wind_left_preview.png-1d53367814502aceb2ececfb94328032.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\watering_wind_left_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  987,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\watering_wind_right_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  92708,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\watering_wind_right_preview.png-83badc09f47b1214fb2a97a61fae5a5f.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  66856,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\watering_wind_right_preview.png-83badc09f47b1214fb2a97a61fae5a5f.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\watering_wind_right_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  990,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_lava_before_contact.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  59421,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\water_lava_before_contact.png-b9ef945582eda6c468bc80d7e7ba8edf.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  33916,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\water_lava_before_contact.png-b9ef945582eda6c468bc80d7e7ba8edf.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_lava_before_contact.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  985,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_lava_obsidian.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  59008,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\water_lava_obsidian.png-574ee46a568bc2ebb72c5847ef0bd3a7.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  34286,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\water_lava_obsidian.png-574ee46a568bc2ebb72c5847ef0bd3a7.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_lava_obsidian.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  967,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_settled_preview.png",
+                        "Reason":  "Unlinked generated preview; capture script retained",
+                        "Bytes":  136837,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\water_settled_preview.png-742af3768ff06cf066d13bd6eb6a33f2.ctex",
+                        "Reason":  "Import cache belonging to removed preview only",
+                        "Bytes":  91432,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\.godot\\imported\\water_settled_preview.png-742af3768ff06cf066d13bd6eb6a33f2.md5",
+                        "Reason":  "Hash cache belonging to removed preview only",
+                        "Bytes":  91,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire_Godot\\tests\\water_settled_preview.png.import",
+                        "Reason":  "Import metadata belonging to removed preview only",
+                        "Bytes":  973,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\assets\\video\\galaxis_on_fire_industrial.zip",
+                        "Reason":  "ZIP duplicate: every extracted file verified byte-identical by SHA-256",
+                        "Bytes":  39481068,
+                        "Files":  1
+                    },
+                    {
+                        "Path":  "D:\\galaxy_game\\Galaxis_On_Fire\\PC _ Computer - Terraria - Miscellaneous - General Sprites (1.4.0.1).zip",
+                        "Reason":  "ZIP duplicate: every extracted file verified byte-identical by SHA-256",
+                        "Bytes":  37638354,
+                        "Files":  1
+                    }
+                ],
+    "BytesRemoved":  511491698
+}

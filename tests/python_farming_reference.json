@@ -1,0 +1,179 @@
+[
+  {
+    "name": "hoe grass",
+    "tile": 1,
+    "above": 0,
+    "below": 2,
+    "tool": "Hoe",
+    "selected": "Dirt",
+    "handled": true,
+    "edits": [
+      [
+        3,
+        3,
+        12
+      ]
+    ],
+    "consume": "",
+    "drops": {}
+  },
+  {
+    "name": "hoe dirt",
+    "tile": 2,
+    "above": 0,
+    "below": 2,
+    "tool": "Hoe",
+    "selected": "Dirt",
+    "handled": true,
+    "edits": [
+      [
+        3,
+        3,
+        12
+      ]
+    ],
+    "consume": "",
+    "drops": {}
+  },
+  {
+    "name": "covered dirt",
+    "tile": 2,
+    "above": 3,
+    "below": 2,
+    "tool": "Hoe",
+    "selected": "Dirt",
+    "handled": true,
+    "edits": [],
+    "consume": "",
+    "drops": {}
+  },
+  {
+    "name": "water dry soil",
+    "tile": 12,
+    "above": 0,
+    "below": 2,
+    "tool": "Watering Can",
+    "selected": "Dirt",
+    "handled": true,
+    "edits": [
+      [
+        3,
+        3,
+        13
+      ]
+    ],
+    "consume": "",
+    "drops": {}
+  },
+  {
+    "name": "water wet soil",
+    "tile": 13,
+    "above": 0,
+    "below": 2,
+    "tool": "Watering Can",
+    "selected": "Dirt",
+    "handled": false,
+    "edits": [],
+    "consume": "",
+    "drops": {}
+  },
+  {
+    "name": "plant dry soil",
+    "tile": 12,
+    "above": 0,
+    "below": 2,
+    "tool": "Pickaxe",
+    "selected": "Crop Seeds",
+    "handled": true,
+    "edits": [
+      [
+        3,
+        2,
+        14
+      ]
+    ],
+    "consume": "Crop Seeds",
+    "drops": {}
+  },
+  {
+    "name": "plant wet soil",
+    "tile": 13,
+    "above": 0,
+    "below": 2,
+    "tool": "Pickaxe",
+    "selected": "Crop Seeds",
+    "handled": true,
+    "edits": [
+      [
+        3,
+        2,
+        14
+      ]
+    ],
+    "consume": "Crop Seeds",
+    "drops": {}
+  },
+  {
+    "name": "plant air above soil",
+    "tile": 0,
+    "above": 0,
+    "below": 12,
+    "tool": "Hand",
+    "selected": "Crop Seeds",
+    "handled": true,
+    "edits": [
+      [
+        3,
+        3,
+        14
+      ]
+    ],
+    "consume": "Crop Seeds",
+    "drops": {}
+  },
+  {
+    "name": "blocked planting",
+    "tile": 12,
+    "above": 3,
+    "below": 2,
+    "tool": "Hand",
+    "selected": "Crop Seeds",
+    "handled": true,
+    "edits": [],
+    "consume": "",
+    "drops": {}
+  },
+  {
+    "name": "require selected seeds",
+    "tile": 12,
+    "above": 0,
+    "below": 2,
+    "tool": "Hand",
+    "selected": "Dirt",
+    "handled": false,
+    "edits": [],
+    "consume": "",
+    "drops": {}
+  },
+  {
+    "name": "harvest with hoe",
+    "tile": 16,
+    "above": 0,
+    "below": 13,
+    "tool": "Hoe",
+    "selected": "Crop Seeds",
+    "handled": true,
+    "edits": [
+      [
+        3,
+        3,
+        0
+      ]
+    ],
+    "consume": "",
+    "drops": {
+      "Corn": 3,
+      "Crop Seeds": 3
+    }
+  }
+]

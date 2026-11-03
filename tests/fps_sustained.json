@@ -1,0 +1,107 @@
+{
+	"0_Clear": {
+		"fps": 324.533429106754,
+		"mean_frame_ms": 3.08134666666667,
+		"p95_ms": 4.888,
+		"sections": {
+			"actors_water": {
+				"max_ms": 0.422,
+				"mean_ms": 0.212596666666667
+			},
+			"background": {
+				"max_ms": 4.896,
+				"mean_ms": 0.2784475
+			},
+			"foliage_items": {
+				"max_ms": 14.255,
+				"mean_ms": 0.0638383333333333
+			},
+			"hud": {
+				"max_ms": 1.789,
+				"mean_ms": 0.7593675
+			},
+			"terrain": {
+				"max_ms": 0.339,
+				"mean_ms": 0.0703316666666667
+			},
+			"water_sim": {
+				"max_ms": 0.031,
+				"mean_ms": 0.00618666666666667
+			},
+			"weather_lighting": {
+				"max_ms": 10.879,
+				"mean_ms": 0.154009166666667
+			}
+		}
+	},
+	"0_Fog": {
+		"fps": 285.019110531361,
+		"mean_frame_ms": 3.50853666666667,
+		"p95_ms": 5.469,
+		"sections": {
+			"actors_water": {
+				"max_ms": 0.567,
+				"mean_ms": 0.221758333333333
+			},
+			"background": {
+				"max_ms": 4.325,
+				"mean_ms": 0.297254166666667
+			},
+			"foliage_items": {
+				"max_ms": 0.185,
+				"mean_ms": 0.05762
+			},
+			"hud": {
+				"max_ms": 2.337,
+				"mean_ms": 0.843780833333333
+			},
+			"terrain": {
+				"max_ms": 1.051,
+				"mean_ms": 0.1075025
+			},
+			"water_sim": {
+				"max_ms": 0.076,
+				"mean_ms": 0.00717
+			},
+			"weather_lighting": {
+				"max_ms": 10.693,
+				"mean_ms": 0.159013333333333
+			}
+		}
+	},
+	"2_Rain": {
+		"fps": 180.564815771976,
+		"mean_frame_ms": 5.5381775,
+		"p95_ms": 9.239,
+		"sections": {
+			"actors_water": {
+				"max_ms": 2.041,
+				"mean_ms": 0.733139166666667
+			},
+			"background": {
+				"max_ms": 6.234,
+				"mean_ms": 0.347738333333333
+			},
+			"foliage_items": {
+				"max_ms": 0.259,
+				"mean_ms": 0.0534575
+			},
+			"hud": {
+				"max_ms": 2.103,
+				"mean_ms": 0.8399125
+			},
+			"terrain": {
+				"max_ms": 0.337,
+				"mean_ms": 0.0752458333333333
+			},
+			"water_sim": {
+				"max_ms": 4.791,
+				"mean_ms": 0.231055
+			},
+			"weather_lighting": {
+				"max_ms": 28.725,
+				"mean_ms": 0.5504175
+			}
+		}
+	}
+}

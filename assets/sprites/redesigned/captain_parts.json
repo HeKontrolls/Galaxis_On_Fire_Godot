@@ -1,0 +1,1 @@
+{"animations": [{"count": 1, "durations": [0.10000000000000001], "first": 1, "last": 1, "name": "upper_arm"}, {"count": 1, "durations": [0.10000000000000001], "first": 2, "last": 2, "name": "forearm"}, {"count": 1, "durations": [0.10000000000000001], "first": 3, "last": 3, "name": "hand"}], "author": "Aseprite", "canvas": [8, 12], "joint_from": [4, 1], "joint_to": [4, 11]}
