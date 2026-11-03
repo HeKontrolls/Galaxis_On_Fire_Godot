@@ -67,3 +67,5 @@ dofile(root .. "/tools/export_housing_aseprite.lua")
 dofile(root .. "/tools/export_door_aseprite.lua")
 
 dofile(root .. "/tools/export_farming_aseprite.lua")
+
+dofile(root .. "/tools/export_weapons_aseprite.lua")

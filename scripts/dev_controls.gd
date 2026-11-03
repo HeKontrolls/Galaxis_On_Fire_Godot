@@ -11,7 +11,7 @@ const WEATHER_VALUES := ["Clear", "Cloudy", "Rain", "Fog", "Snow", "Storm"]
 const SEASONS := ["Bloomrise", "Highsun", "Leafturn", "Frostfall"]
 const STARTER_MATERIALS := {"Wood": 64, "Planks": 64, "Coal Ore": 64, "Copper Ore": 64,
 	"Iron Ore": 64, "Gold Ore": 64, "Crystal": 64, "Chest": 2, "Furnace": 1, "Workbench": 1}
-const STARTER_TOOLS := {"Pickaxe": 1, "Sword": 1, "Axe": 1, "Hammer": 1, "Torch": 64}
+const STARTER_TOOLS := {"Pickaxe": 1, "Sword": 1, "Axe": 1, "Hammer": 1, "Torch": 64, "Wood Bow": 1, "Stone Arrow": 64}
 const FARMING_KIT := {"Hoe": 1, "Watering Can": 1, "Crop Seeds": 32, "Carrot Seeds": 16, "Seed Potato": 16, "Tomato Seeds": 16, "Wheat Seeds": 16}
 const POWER_KIT := {"Biomass Generator": 1, "Wood Power Pole": 6, "Power Switch": 1,
 	"Electric Lamp": 4, "Wire": 20, "Raw Biomass": 20}
@@ -40,7 +40,7 @@ func _init(game) -> void:
 			if not item_catalog.has(str(item)):
 				item_catalog.append(str(item))
 		item_catalog.sort()
-	for item in ["Corn", "Roasted Corn", "Obsidian", "Diamond", "Ancient Debris", "Netherite Scrap", "Netherite Ingot", "Glacial Ice", "Gravel"] + Tools.BASE_TOOLS + Tools.variants() + g.GroundLife.ITEMS + g.Furnishings.ITEMS + g.CropCatalog.ITEMS:
+	for item in ["Corn", "Roasted Corn", "Obsidian", "Diamond", "Ancient Debris", "Netherite Scrap", "Netherite Ingot", "Glacial Ice", "Gravel"] + Tools.BASE_TOOLS + Tools.variants() + g.GroundLife.ITEMS + g.Furnishings.ITEMS + g.CropCatalog.ITEMS + g.Ranged.ITEMS:
 		if not item_catalog.has(item):
 			item_catalog.append(item)
 	item_catalog.sort()
@@ -332,7 +332,7 @@ func click(point: Vector2) -> void:
 				message("Free Flight %s." % ("enabled" if g.dev_free_flight else "disabled"), 3.0)
 			elif _rect(Rect2(10, 138, 210, 34)).has_point(point):
 				grant(STARTER_TOOLS)
-				message("Granted starter tools (5/5 stacks).")
+				message("Granted starter tools (%d stacks)." % STARTER_TOOLS.size())
 			elif _rect(Rect2(230, 138, 250, 34)).has_point(point):
 				grant(STARTER_MATERIALS)
 				message("Granted starter materials (10/10 stacks).")

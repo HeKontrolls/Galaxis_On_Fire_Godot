@@ -60,3 +60,5 @@ dofile(root .. "/tools/verify_housing_aseprite.lua")
 dofile(root .. "/tools/verify_door_aseprite.lua")
 
 dofile(root .. "/tools/verify_farming_aseprite.lua")
+
+dofile(root .. "/tools/verify_weapons_aseprite.lua")

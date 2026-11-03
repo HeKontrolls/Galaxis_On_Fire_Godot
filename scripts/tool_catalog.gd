@@ -1,5 +1,6 @@
 extends RefCounted
 
+const Ranged = preload("res://scripts/ranged_weapons.gd")
 const Art = preload("res://scripts/sprite_art.gd")
 
 const FAMILIES := ["Pickaxe", "Sword", "Axe", "Shovel"]
@@ -38,7 +39,7 @@ static func max_durability(item: String) -> int:
 
 
 static func can_harvest(item: String, tile_id: int) -> bool:
-	return family(item) != "Sword" and (not REQUIRED_LEVEL.has(tile_id) or mining_level(item) >= int(REQUIRED_LEVEL[tile_id]))
+	return not Ranged.has_weapon(item) and family(item) != "Sword" and (not REQUIRED_LEVEL.has(tile_id) or mining_level(item) >= int(REQUIRED_LEVEL[tile_id]))
 
 
 static func requirement(tile_id: int) -> String:
@@ -73,7 +74,7 @@ static func progression(base: String) -> Array[String]:
 
 
 static func has_item(item: String) -> bool:
-	return family(item) in BASE_TOOLS
+	return family(item) in BASE_TOOLS or Ranged.has_weapon(item)
 
 
 static func variants() -> Array[String]:
@@ -102,7 +103,7 @@ static func block_hardness(tile_id: int) -> float:
 
 static func mining_damage(item: String, tile_id: int) -> float:
 	var base := family(item)
-	if base == "Sword": return 0.0
+	if Ranged.has_weapon(item) or base == "Sword": return 0.0
 	if tile_id in SOIL:
 		if base == "Shovel": return float(profile(item).speed) * 4.0
 		if base == "Pickaxe": return 2.0 + float(profile(item).bonus) * 0.3
@@ -122,6 +123,7 @@ static func mining_hits(item: String, tile_id: int) -> int:
 
 
 static func damage(item: String) -> int:
+	if Ranged.has_weapon(item): return int(Ranged.WEAPONS[item].damage)
 	var level := tier(item) - 1
 	match family(item):
 		"Sword": return [18, 26, 36][level]
@@ -132,6 +134,7 @@ static func damage(item: String) -> int:
 
 
 static func attack_interval(item: String) -> float:
+	if Ranged.has_weapon(item): return float(Ranged.WEAPONS[item].cooldown)
 	if family(item) == "Shovel":
 		return 0.65
 	if family(item) == "Sword":
@@ -148,6 +151,7 @@ static func action_duration(item: String, attacking: bool) -> float:
 
 
 static func summary(item: String) -> String:
+	if Ranged.has_item(item): return Ranged.summary(item)
 	if item in ["Hammer", "Mattock"]:
 		return "Cave walls | Power %d | Level %d" % [8 if item == "Hammer" else 16, 1 if item == "Hammer" else 2]
 	if family(item) not in FAMILIES:
@@ -192,4 +196,5 @@ static func make_textures() -> Dictionary:
 				continue
 			var advanced := item in ["Gold Pickaxe", "Diamond Pickaxe", "Netherite Pickaxe"]
 			result[item] = Art.texture("res://assets/sprites/expansion/tools/" + filename + "_00.png" if advanced else Art.ROOT + "tools/" + filename + ".png")
+	for item: String in Ranged.WEAPONS: result[item] = Ranged.icon(item)
 	return result

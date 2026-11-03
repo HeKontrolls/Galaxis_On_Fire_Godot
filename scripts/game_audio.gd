@@ -127,6 +127,10 @@ func swing(tool: String, at: Vector2) -> void:
 	_play("swing_metal" if metallic else "swing_light", at, 0.42, 1.0 + 0.04 * (Tools.tier(tool) - 1))
 
 
+func bow_shot(at: Vector2, crossbow: bool) -> void:
+	_play("swing_light", at, 0.45, 0.8 if crossbow else 1.25)
+
+
 func impact(tile_id: int, at: Vector2) -> void:
 	var material := "dirt"
 	if tile_id in [3, 6, 10, 17, 20, 21, 22, 23, 24, 35, 37]:

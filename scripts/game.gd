@@ -38,6 +38,8 @@ const SurfaceEffects = preload("res://scripts/surface_effects.gd")
 const FluidRenderer = preload("res://scripts/fluid_renderer.gd")
 const FluidReactions = preload("res://scripts/fluid_reactions.gd")
 const Materials = preload("res://scripts/materials.gd")
+const Ranged = preload("res://scripts/ranged_weapons.gd")
+var ranged := Ranged.new()
 const Tools = preload("res://scripts/tool_catalog.gd")
 const GameAudio = preload("res://scripts/game_audio.gd")
 const SpriteArt = preload("res://scripts/sprite_art.gd")
@@ -53,14 +55,14 @@ const StationWindows = preload("res://scripts/station_windows.gd")
 const Expedition = preload("res://scripts/expedition.gd")
 const WeatherBlend = preload("res://scripts/weather_blend.gd")
 const OceanPreparation = preload("res://scripts/ocean_preparation.gd")
-const ITEM_CATALOG = ["Dirt", "Stone", "Wood", "Sand", "Snow", "Grass", "Planks", "Cobblestone", "Workbench", "Furnace", "Torch", "Chest", "Leaves", "Crop Seeds", "Corn", "Roasted Corn", "Obsidian", "Gravel"] + GroundLife.ITEMS + Furnishings.ITEMS + CropCatalog.NEW_ITEMS
+const ITEM_CATALOG = ["Dirt", "Stone", "Wood", "Sand", "Snow", "Grass", "Planks", "Cobblestone", "Workbench", "Furnace", "Torch", "Chest", "Leaves", "Crop Seeds", "Corn", "Roasted Corn", "Obsidian", "Gravel"] + GroundLife.ITEMS + Furnishings.ITEMS + CropCatalog.NEW_ITEMS + Ranged.ITEMS
 const SCREEN := Vector2(1280, 720)
 const SAVE_PATH := "user://galaxis_save.json"
 const SETTINGS_PATH := "user://galaxis_settings.json"
 const MAIN_MENU_ITEMS := ["New Game", "Load Game", "Settings", "How to Play", "Host Game", "Join Game", "Quit"]
 const SETTINGS_TABS := ["Gameplay", "Video", "Audio", "Controls"]
 const RECIPE_TABS := ["Basic", "Workbench", "Furnace"]
-const RECIPE_GROUPS := [[0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], [9, 10, 11, 14, 25, 26, 50, 51, 52, 53]]
+const RECIPE_GROUPS := [[0, 1, 2, 3, 4, 5, 58], [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 54, 55, 56, 57, 58, 59, 60, 61], [9, 10, 11, 14, 25, 26, 50, 51, 52, 53]]
 const RECIPE_PAGE_SIZE := 6
 const HOTBAR_X := 400.0
 const HOTBAR_Y := 650.0
@@ -143,6 +145,14 @@ const RECIPES := [
 	{"name": "Tomato Soup (+35 HP)", "out": "Tomato Soup", "count": 1, "needs": {"Tomato": 2, "Wood": 1}, "station": "Furnace"},
 	{"name": "Bread (+30 HP)", "out": "Bread", "count": 1, "needs": {"Wheat": 3, "Wood": 1}, "station": "Furnace"},
 	{"name": "Vegetable Stew (+50 HP)", "out": "Vegetable Stew", "count": 1, "needs": {"Carrot": 1, "Potato": 1, "Tomato": 1, "Wood": 1}, "station": "Furnace"},
+	{"name": "Wood Bow", "out": "Wood Bow", "count": 1, "needs": {"Planks": 6, "Stick": 4, "Alien Fiber": 2}, "station": "Workbench"},
+	{"name": "Copper Bow", "out": "Copper Bow", "count": 1, "needs": {"Wood Bow": 1, "Copper Ingot": 3, "Alien Fiber": 2}, "station": "Workbench"},
+	{"name": "Iron Bow", "out": "Iron Bow", "count": 1, "needs": {"Copper Bow": 1, "Iron Ingot": 4, "Alien Fiber": 3}, "station": "Workbench"},
+	{"name": "Iron Crossbow", "out": "Iron Crossbow", "count": 1, "needs": {"Iron Ingot": 6, "Planks": 8, "Alien Fiber": 3}, "station": "Workbench"},
+	{"name": "Stone Arrows x16", "out": "Stone Arrow", "count": 16, "needs": {"Stick": 4, "Stone": 2}},
+	{"name": "Copper Arrows x16", "out": "Copper Arrow", "count": 16, "needs": {"Stick": 4, "Copper Ingot": 1}, "station": "Workbench"},
+	{"name": "Iron Arrows x16", "out": "Iron Arrow", "count": 16, "needs": {"Stick": 4, "Iron Ingot": 1}, "station": "Workbench"},
+	{"name": "Crystal Arrows x8", "out": "Crystal Arrow", "count": 8, "needs": {"Iron Arrow": 8, "Crystal": 1}, "station": "Workbench"},
 ]
 
 var scene_name := "menu"
@@ -315,6 +325,7 @@ func _ready() -> void:
 	for variant in range(10):
 		cloud_textures.append(_make_cloud_texture(variant))
 	cloud_texture = cloud_textures[0]
+	ranged.bind(self)
 	tool_textures = Tools.make_textures()
 	ground_life.load_art()
 	station_frames = sprite_art.stations()
@@ -421,6 +432,8 @@ func _start_new_game() -> void:
 	tool_action_timer = 0.0
 	dev_mode = false
 	dev_travel_unlocked = false
+	ranged.reset()
+	ranged.selected_ammo = "Stone Arrow"
 	dev_invulnerable = false
 	dev_free_flight = false
 	inventory_trash.clear()
@@ -1187,6 +1200,7 @@ func _update_population(delta: float) -> void:
 
 
 func _attack(target: Variant = null) -> void:
+	if Ranged.has_weapon(equipped_tool): return
 	if attack_cooldown > 0.0:
 		return
 	attack_cooldown = Tools.attack_interval(equipped_tool)
@@ -1280,7 +1294,7 @@ func _farm_space_clear(tile: Vector2i) -> bool:
 
 
 func _farm_interaction(tile: Vector2i, tool: String, selected: String) -> bool:
-	if Tools.family(equipped_tool) == "Sword": return false
+	if Ranged.has_weapon(equipped_tool) or Tools.family(equipped_tool) == "Sword": return false
 	var target := farming.plant_target(tile)
 	if target.x >= 0:
 		tile = target + Vector2i.DOWN if tool == "Watering Can" else target
@@ -1430,6 +1444,7 @@ func _process(delta: float) -> void:
 	water_ripples.update(self, delta)
 	hanging_vines.update(self, delta)
 	_update_held_actions(delta)
+	ranged.update(delta)
 	if sound != null:
 		sound.update(delta)
 	queue_redraw()
@@ -1566,6 +1581,7 @@ func _input(event: InputEvent) -> void:
 		if not event.pressed:
 			if event.button_index == MOUSE_BUTTON_LEFT:
 				primary_held = false
+				ranged.release()
 			elif event.button_index == MOUSE_BUTTON_RIGHT:
 				secondary_held = false
 	if dev_mode and scene_name in ["planet", "galaxy", "system"] and dev_controls.handle_input(event):
@@ -1828,6 +1844,7 @@ func _notification(what: int) -> void:
 
 
 func _stop_held_actions() -> void:
+	ranged.cancel()
 	primary_held = false
 	secondary_held = false
 	primary_repeat = 0.0
@@ -1846,6 +1863,9 @@ func _world_input_blocked(point: Vector2) -> bool:
 
 
 func _primary_action(point: Vector2) -> void:
+	if Ranged.has_weapon(equipped_tool):
+		ranged.begin(point + camera_pos)
+		return
 	if Tools.family(equipped_tool) == "Sword":
 		_attack(point + camera_pos)
 		return
@@ -1875,6 +1895,7 @@ func _update_mouse_aim() -> void:
 
 
 func _primary_interval() -> float:
+	if Ranged.has_weapon(equipped_tool): return maxf(0.05, attack_cooldown)
 	if tool_action_kind == "attack" and attack_cooldown > 0.0:
 		return attack_cooldown
 	return mining_cooldown if mining_cooldown > 0.0 else Tools.mining_interval(equipped_tool)
@@ -1895,6 +1916,7 @@ func _update_held_actions(delta: float) -> void:
 
 
 func _reset_world_environment() -> void:
+	ranged.reset()
 	weather_blend.reset(_climate_weather(weather), int(world.get("climate", 0)))
 	mining_feedback_timer = 0.0
 	mouse_aim_valid = false
@@ -1993,6 +2015,7 @@ func _inventory_items() -> Array[String]:
 
 
 func _inventory_category(item: String) -> int:
+	if Ranged.has_item(item): return 1
 	if Tools.has_item(item):
 		return 1 if Tools.family(item) == "Sword" else 0
 	if ores.has_item(item):
@@ -2028,6 +2051,7 @@ func _refresh_hotbar() -> void:
 	var item: String = place_items[selected_slot]
 	var tool := item if tool_textures.has(item) and int(inventory.get(item, 0)) > 0 else "Hand"
 	if equipped_tool != tool:
+		ranged.cancel()
 		_stop_held_actions()
 		tool_action_timer = 0.0
 		equipped_tool = tool
@@ -2637,6 +2661,9 @@ func _wear_pickaxe(item: String, cost: int = 1) -> void:
 
 
 func _mine(point: Vector2) -> void:
+	if Ranged.has_weapon(equipped_tool):
+		_show_notice("Ranged weapons cannot mine. Hold left-click to aim and shoot")
+		return
 	if Tools.family(equipped_tool) == "Sword":
 		_show_notice("Swords are for combat. Equip a digging tool")
 		return
@@ -2741,6 +2768,15 @@ func _mine(point: Vector2) -> void:
 
 
 func _place(point: Vector2) -> void:
+	if Ranged.has_weapon(equipped_tool):
+		_stop_held_actions()
+		ranged.cycle_ammo()
+		return
+	if Ranged.AMMO.has(place_items[selected_slot]):
+		_stop_held_actions()
+		ranged.selected_ammo = place_items[selected_slot]
+		_show_notice("Ammunition selected: " + ranged.selected_ammo)
+		return
 	var selected: String = place_items[selected_slot]
 	if food.edible(selected):
 		_stop_held_actions()
@@ -3016,7 +3052,7 @@ func _save_game() -> void:
 		"selected_slot": selected_slot, "hotbar_page": hotbar_page,
 		"hotbar_slots": place_items,
 		"tool_wear": tool_wear.uses,
-		"equipped_tool": equipped_tool,
+		"equipped_tool": equipped_tool, "arrow_ammo": ranged.selected_ammo,
 		"time_of_day": time_of_day, "day_count": day_count, "weather": weather,
 		"weather_cycle": weather_cycle, "weather_timer": weather_timer,
 		"weather_blend": weather_blend.snapshot(),
@@ -3076,7 +3112,10 @@ func _load_game() -> void:
 	use_pickaxe = Tools.family(equipped_tool) == "Pickaxe"
 	use_hoe = equipped_tool == "Hoe"
 	mining_cooldown = clampf(float(parsed.get("mining_cooldown", 0.0)), 0.0, Tools.MINING_SWING)
-	attack_cooldown = clampf(float(parsed.get("attack_cooldown", 0.0)), 0.0, 0.60)
+	attack_cooldown = clampf(float(parsed.get("attack_cooldown", 0.0)), 0.0, 1.10)
+	ranged.reset()
+	ranged.selected_ammo = str(parsed.get("arrow_ammo", "Stone Arrow"))
+	if not Ranged.AMMO.has(ranged.selected_ammo): ranged.selected_ammo = "Stone Arrow"
 	dev_mode = false
 	dev_travel_unlocked = bool(parsed.get("dev_travel_unlocked", false))
 	dev_invulnerable = false
@@ -3760,6 +3799,7 @@ func _draw_player_arm(screen_pos: Vector2, hand: Vector2) -> void:
 
 
 func _held_tool_pose(screen_pos: Vector2) -> Transform2D:
+	if Ranged.has_weapon(equipped_tool): return ranged.pose(screen_pos)
 	var active := tool_action_timer > 0.0
 	var progress := clampf(1.0 - tool_action_timer / tool_action_duration, 0.0, 1.0) if active else 1.0
 	return PlayerPose.tool(screen_pos, mouse_aim_direction if mouse_aim_valid else Vector2(facing, 0), facing,
@@ -3778,6 +3818,9 @@ func _draw_swing_trail(screen_pos: Vector2, progress: float) -> void:
 
 
 func _draw_held_tool(screen_pos: Vector2) -> void:
+	if Ranged.has_weapon(equipped_tool):
+		ranged.draw_held(screen_pos)
+		return
 	var selected: String = place_items[selected_slot]
 	if eat_visual > 0.0 or (tool_action_timer <= 0.0 and food.edible(selected) and int(inventory.get(selected, 0)) > 0):
 		var eating := eat_visual > 0.0
@@ -3945,7 +3988,7 @@ func _draw_drops() -> void:
 			if int(drop["count"]) > 1:
 				_text(str(drop["count"]), p + Vector2(7, 4), 11, Color("fff1bd"))
 			continue
-		if item in ["Obsidian", "Gravel"] or Furnishings.has_item(item):
+		if item in ["Obsidian", "Gravel"] or Furnishings.has_item(item) or Ranged.has_item(item):
 			_draw_item_icon(item, Rect2(p - Vector2(8, 8), Vector2(16, 16)))
 			if int(drop["count"]) > 1:
 				_text(str(drop["count"]), p + Vector2(7, 4), 11, Color("fff1bd"))
@@ -4112,6 +4155,7 @@ func _draw_planet() -> void:
 			var sprite: Texture2D = frames[sprite_art.frame_index("robot_guide", "%s_%s" % [action, direction], animation_clock)] if not frames.is_empty() else explorer_sprite
 			if sprite != null:
 				draw_texture(sprite, npc_pos + Vector2(-16, -11))
+	ranged.draw()
 	_draw_player_sprite(player_screen)
 	sand_gravity.draw(self)
 	_draw_food_feedback(player_screen)
@@ -4163,6 +4207,9 @@ func _draw_planet() -> void:
 
 
 func _draw_item_icon(item: String, rect: Rect2) -> void:
+	if Ranged.AMMO.has(item):
+		draw_texture_rect(ranged.texture(item), rect, false)
+		return
 	if Furnishings.has_item(item):
 		furnishings.draw_icon(self, item, rect)
 		return
@@ -4323,7 +4370,9 @@ func _draw_gameplay_hud(sun: float) -> void:
 	if held != "Hand":
 		_draw_item_icon(held, Rect2(28, 44, 16, 20))
 	_text(Tools.display_name(held), Vector2(53, 61), 13, Color("b7c9d5"))
-	if Tools.family(held) in Tools.FAMILIES:
+	if Ranged.has_weapon(held):
+		_text("%d DMG" % Ranged.WEAPONS[held].damage, Vector2(203, 61), 10, Color("e4c68b"))
+	elif Tools.family(held) in Tools.FAMILIES:
 		var stat := "%d DMG" % Tools.damage(held) if Tools.family(held) == "Sword" else "%.0f PWR" % Tools.mining_damage(held, 2 if Tools.family(held) == "Shovel" else 3)
 		if Tools.family(held) == "Axe":
 			stat = "%d hits" % Tools.mining_hits(held, 7)
@@ -4365,6 +4414,9 @@ func _draw_gameplay_hud(sun: float) -> void:
 	elif Tools.max_durability(selected_item) > 0:
 		var specialty := "Soil %.0fx" % float(Tools.profile(selected_item)["speed"]) if Tools.family(selected_item) == "Shovel" else "Level %d" % Tools.mining_level(selected_item)
 		caption = "%s | %s | Durability %d / %d" % [Tools.display_name(selected_item), specialty, tool_wear.remaining(selected_item, inventory), Tools.max_durability(selected_item)]
+	if Ranged.has_weapon(selected_item):
+		var ammo := ranged.ammo()
+		caption = "%s | %s x%d | %s | Right-click: ammo" % [selected_item, ammo if not ammo.is_empty() else "No arrows", inventory.get(ammo, 0), "Click to fire" if selected_item == "Iron Crossbow" else "Hold left, release to fire"]
 	if food.edible(selected_item):
 		caption += "  |  +%d HP  |  " % FoodCatalog.FOODS[selected_item]
 		if crafting_open or paused or dev_mode or dialogue_open:
