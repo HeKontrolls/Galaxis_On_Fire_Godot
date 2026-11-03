@@ -1,6 +1,8 @@
 extends Node2D
 
 const WG = preload("res://scripts/world_gen.gd")
+const Furnishings = preload("res://scripts/furnishings.gd")
+var furnishings := Furnishings.new()
 const BackgroundOres = preload("res://scripts/background_ores.gd")
 var background_ores := BackgroundOres.new()
 const SandGravity = preload("res://scripts/sand_gravity.gd")
@@ -50,14 +52,14 @@ const StationWindows = preload("res://scripts/station_windows.gd")
 const Expedition = preload("res://scripts/expedition.gd")
 const WeatherBlend = preload("res://scripts/weather_blend.gd")
 const OceanPreparation = preload("res://scripts/ocean_preparation.gd")
-const ITEM_CATALOG = ["Dirt", "Stone", "Wood", "Sand", "Snow", "Grass", "Planks", "Cobblestone", "Workbench", "Furnace", "Torch", "Chest", "Leaves", "Crop Seeds", "Corn", "Roasted Corn", "Obsidian", "Gravel"] + GroundLife.ITEMS
+const ITEM_CATALOG = ["Dirt", "Stone", "Wood", "Sand", "Snow", "Grass", "Planks", "Cobblestone", "Workbench", "Furnace", "Torch", "Chest", "Leaves", "Crop Seeds", "Corn", "Roasted Corn", "Obsidian", "Gravel"] + GroundLife.ITEMS + Furnishings.ITEMS
 const SCREEN := Vector2(1280, 720)
 const SAVE_PATH := "user://galaxis_save.json"
 const SETTINGS_PATH := "user://galaxis_settings.json"
 const MAIN_MENU_ITEMS := ["New Game", "Load Game", "Settings", "How to Play", "Host Game", "Join Game", "Quit"]
 const SETTINGS_TABS := ["Gameplay", "Video", "Audio", "Controls"]
 const RECIPE_TABS := ["Basic", "Workbench", "Furnace"]
-const RECIPE_GROUPS := [[0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38], [9, 10, 11, 14, 25, 26]]
+const RECIPE_GROUPS := [[0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43], [9, 10, 11, 14, 25, 26]]
 const RECIPE_PAGE_SIZE := 6
 const HOTBAR_X := 400.0
 const HOTBAR_Y := 650.0
@@ -125,6 +127,11 @@ const RECIPES := [
 	{"name": "Drive Coil", "out": "Drive Coil", "count": 1, "needs": {"Copper Ingot": 4, "Iron Ingot": 4, "Crystal": 2}, "station": "Workbench"},
 	{"name": "Mattock", "out": "Mattock", "count": 1, "needs": {"Iron Ingot": 4, "Stick": 2}, "station": "Workbench"},
 	{"name": "Hammer", "out": "Hammer", "count": 1, "needs": {"Cobblestone": 4, "Iron Ingot": 2, "Stick": 2}, "station": "Workbench"},
+	{"name": "Wooden Chair", "out": "Wooden Chair", "count": 1, "needs": {"Planks": 4, "Stick": 2}, "station": "Workbench"},
+	{"name": "Wooden Table", "out": "Wooden Table", "count": 1, "needs": {"Planks": 8, "Stick": 4}, "station": "Workbench"},
+	{"name": "Wooden Ladder x4", "out": "Wooden Ladder", "count": 4, "needs": {"Planks": 2, "Stick": 4}, "station": "Workbench"},
+	{"name": "Fireplace", "out": "Fireplace", "count": 1, "needs": {"Cobblestone": 12, "Wood": 4, "Torch": 1}, "station": "Workbench"},
+	{"name": "Wooden Wall x4", "out": "Wooden Wall", "count": 4, "needs": {"Planks": 1}, "station": "Workbench"},
 ]
 
 var scene_name := "menu"
@@ -1363,6 +1370,7 @@ func _process(delta: float) -> void:
 	_update_mouse_aim()
 	surface_effects.update(self, delta)
 	ground_life.update(self, delta)
+	furnishings.update(self, delta)
 	water_ripples.update(self, delta)
 	hanging_vines.update(self, delta)
 	_update_held_actions(delta)
@@ -1402,6 +1410,7 @@ func _move_axis(distance: float, horizontal: bool) -> bool:
 
 func _update_player(delta: float) -> void:
 	if dev_free_flight:
+		furnishings.climbing = false
 		var flight := Vector2(
 			float(Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT)) - float(Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT)),
 			float(Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)) - float(Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP) or Input.is_key_pressed(KEY_SPACE)))
@@ -1419,6 +1428,10 @@ func _update_player(delta: float) -> void:
 	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
 		movement += 1.0
 	var rising := Input.is_key_pressed(KEY_SPACE) or Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP)
+	var climbing_up := Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP)
+	var climbing_down := Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)
+	if furnishings.climb(self, delta, movement, climbing_up, climbing_down, Input.is_key_pressed(KEY_SPACE)):
+		return
 	_update_player_motion(delta, movement, rising)
 
 
@@ -1607,7 +1620,9 @@ func _key_pressed(key: Key) -> void:
 			elif crafting_open:
 				crafting_open = false
 			elif not inventory_open and not dialogue_open:
-				if not interactions.interact() and not expedition.interact():
+				if furnishings.aimed(self):
+					furnishings.interact(self)
+				elif not interactions.interact() and not furnishings.interact(self) and not expedition.interact():
 					_attack()
 			queue_redraw()
 			return
@@ -1836,6 +1851,7 @@ func _reset_world_environment() -> void:
 	environment.reset(world)
 	underground.reset(self)
 	background_ores.reset(self)
+	furnishings.reset(self)
 	biome_backgrounds.reset(world)
 	ground_life.reset(self)
 	hanging_vines.reset(self)
@@ -1919,7 +1935,7 @@ func _inventory_category(item: String) -> int:
 		return 1 if Tools.family(item) == "Sword" else 0
 	if ores.has_item(item):
 		return 2
-	if TILE_FOR_ITEM.has(item) or item in ["Workbench", "Furnace", "Torch", "Stick"]:
+	if TILE_FOR_ITEM.has(item) or Furnishings.has_item(item) or item in ["Workbench", "Furnace", "Torch", "Stick"]:
 		return 3
 	if GroundLife.has_item(item) or item == "Crop Seeds":
 		return 4
@@ -2305,6 +2321,7 @@ func _edit_tile(tile: Vector2i, tile_id: int, upload: bool = true) -> void:
 	sand_gravity.terrain_changed(tile)
 	hanging_vines.terrain_changed(self, tile)
 	underground.changed(self, tile)
+	furnishings.terrain_changed(self, tile)
 	farming.track(tile, tile_id)
 	environment.refresh_column(tile.x)
 	if WG.is_solid(old_id) != WG.is_solid(tile_id):
@@ -2576,6 +2593,8 @@ func _mine(point: Vector2) -> void:
 		return
 	var grid: PackedByteArray = world["tiles"]
 	var old_id: int = WG.tile_at(grid, tile.x, tile.y)
+	if furnishings.harvest(self, tile):
+		return
 	if equipped_tool in ["Hammer", "Mattock"] and background_ores.harvest(self, tile):
 		return
 	if equipped_tool not in ["Watering Can", "Hoe"] and mining_cooldown <= 0.0 and underground.harvest(self, point + camera_pos):
@@ -2676,6 +2695,13 @@ func _place(point: Vector2) -> void:
 	if inventory.get(item, 0) <= 0:
 		_show_notice("No " + item + " in inventory")
 		return
+	if Furnishings.has_item(item):
+		if furnishings.place(self, item, tile):
+			inventory[item] -= 1
+		return
+	if not furnishings.at(tile).is_empty():
+		_show_notice("Remove the furnishing first")
+		return
 	if item == "Torch":
 		if WG.tile_at(grid, tile.x, tile.y) != 0:
 			return
@@ -2720,6 +2746,9 @@ func _place_station(tile: Vector2i, item: String) -> void:
 		return
 	var grid: PackedByteArray = world["tiles"]
 	for dx in range(2):
+		if not furnishings.at(tile + Vector2i(dx,0)).is_empty() or not furnishings.at(tile + Vector2i(dx,-1)).is_empty():
+			_show_notice("Remove the furnishing first")
+			return
 		if WG.tile_at(grid, tile.x + dx, tile.y) != 0 or not WG.is_solid(WG.tile_at(grid, tile.x + dx, tile.y + 1)):
 			_show_notice("Place the station on two solid blocks")
 			return
@@ -2854,6 +2883,7 @@ func _save_game() -> void:
 			"underworld_forts": entry.get("underworld_forts", []),
 			"cave_life": entry.get("cave_life", []), "cave_life_version": entry.get("cave_life_version", 0),
 			"background_ores": entry.get("background_ores", []), "background_ore_version": entry.get("background_ore_version", 0),
+			"furniture": entry.get("furniture", {}), "wood_background": entry.get("wood_background", {}),
 			"underground_pools": entry.get("underground_pools", []),
 			"surface": Array(entry["surface"]),
 			"spawn": [entry["spawn"].x, entry["spawn"].y],
@@ -3029,6 +3059,7 @@ func _load_game() -> void:
 			"underworld_forts": saved.get("underworld_forts", []),
 			"cave_life": saved.get("cave_life", []), "cave_life_version": int(saved.get("cave_life_version", 0)),
 			"background_ores": saved.get("background_ores", []), "background_ore_version": int(saved.get("background_ore_version", 0)),
+			"furniture": saved.get("furniture", {}), "wood_background": saved.get("wood_background", {}),
 			"underground_pools": saved.get("underground_pools", []),
 			"spawn": Vector2(float(spawn_data[0]), float(spawn_data[1])),
 			"player_pos": Vector2(float(pos_data[0]), float(pos_data[1])),
@@ -3843,7 +3874,7 @@ func _draw_drops() -> void:
 			if int(drop["count"]) > 1:
 				_text(str(drop["count"]), p + Vector2(7, 4), 11, Color("fff1bd"))
 			continue
-		if item in ["Obsidian", "Gravel"]:
+		if item in ["Obsidian", "Gravel"] or Furnishings.has_item(item):
 			_draw_item_icon(item, Rect2(p - Vector2(8, 8), Vector2(16, 16)))
 			if int(drop["count"]) > 1:
 				_text(str(drop["count"]), p + Vector2(7, 4), 11, Color("fff1bd"))
@@ -3975,6 +4006,7 @@ func _draw_planet() -> void:
 		stamp = _profile_end("terrain", stamp)
 		_draw_foliage(x0, y0, x1, y1)
 		ground_life.draw_life(self)
+		furnishings.draw(self)
 		_draw_torches(x0, y0, x1, y1)
 		_draw_drops()
 		stamp = _profile_end("foliage_items", stamp)
@@ -4058,6 +4090,9 @@ func _draw_planet() -> void:
 
 
 func _draw_item_icon(item: String, rect: Rect2) -> void:
+	if Furnishings.has_item(item):
+		furnishings.draw_icon(self, item, rect)
+		return
 	if item in ["Hull Plate", "Drive Coil"]:
 		var icon := expedition.texture("hull_plate" if item == "Hull Plate" else "drive_coil")
 		draw_texture_rect(icon, rect, false)
@@ -4225,6 +4260,7 @@ func _draw_gameplay_hud(sun: float) -> void:
 	expedition.draw_hud()
 	_draw_farm_hint()
 	interactions.draw_hint()
+	furnishings.draw_hint(self)
 	_rounded_box(Rect2(388, 638, 504, 78), Color(0.035, 0.057, 0.085, 0.93), Color("536b7e"), 12.0, 1.0)
 	for i in range(9):
 		var slot := hotbar_page * 9 + i
@@ -4427,6 +4463,7 @@ func _draw_inventory() -> void:
 	if hovered != "":
 		var description := ores.description(hovered) if ores.has_item(hovered) else (food.description(hovered) if food.has_icon(hovered) else Tools.display_name(hovered))
 		var stats := Tools.summary(hovered)
+		if Furnishings.has_item(hovered):stats=Furnishings.description(hovered)
 		if Tools.max_durability(hovered) > 0:
 			stats = "Level %d | %.0fx | Durability %d/%d | +%d damage" % [Tools.mining_level(hovered), float(Tools.profile(hovered)["speed"]), tool_wear.remaining(hovered, inventory), Tools.max_durability(hovered), int(Tools.profile(hovered)["bonus"])]
 			if Tools.family(hovered) == "Shovel":

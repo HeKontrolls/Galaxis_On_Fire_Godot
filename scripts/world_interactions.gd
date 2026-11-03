@@ -189,6 +189,7 @@ func click(point: Vector2, button: int) -> bool:
 func draw_hint() -> void:
 	if g.inventory_open or g.crafting_open or g.stations.is_open() or g.paused or g.dev_mode or g.dialogue_open:
 		return
+	if g.furnishings.aimed(g):return
 	var selected := target()
 	if selected.is_empty():
 		return

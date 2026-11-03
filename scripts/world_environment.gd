@@ -184,6 +184,9 @@ func prepare(camera: Vector2, player: Vector2, sun: float, night_dark: float, cl
 				_seed(warmth, tile, 1.0, warm_pending)
 		for entry: Dictionary in world.get("cave_lights", []):
 			_seed(light, Vector2i(int(entry["x"]), int(entry["y"])), 0.65 if int(entry["kind"]) == 4 else 1.0, pending)
+		for hearth: Vector2i in world.get("furniture_lights", []):
+			_seed(light, hearth, 1.15, pending)
+			_seed(warmth, hearth, 1.0, warm_pending)
 		_crystal_glow(grid)
 		_propagate(light, pending, grid)
 		_propagate(warmth, warm_pending, grid)

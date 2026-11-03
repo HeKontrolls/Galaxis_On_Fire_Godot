@@ -39,6 +39,7 @@ func reset(game) -> void:
 	if sheet == null: sheet = Art.texture("res://assets/sprites/underground/background_ores.png")
 
 func exposed(game, cell: Vector2i) -> bool:
+	if game.furnishings.wall_at(cell): return false
 	return WG.tile_at(game.world.tiles, cell.x, cell.y) in [0, 4, 11] and not game.world.get("torches", {}).has("%d,%d" % [cell.x,cell.y])
 
 func harvest(game, cell: Vector2i) -> bool:

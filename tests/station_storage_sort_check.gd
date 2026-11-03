@@ -168,7 +168,9 @@ func furnace_checks(game) -> void:
 	game.inventory["Pickaxe"] = 1
 	game._equip_inventory_item("Pickaxe")
 	game.mining_cooldown = 0
-	game._mine(Vector2(602 * 16 + 8, 79 * 16 + 8) - game.camera_pos)
+	for hit in range(game.Tools.mining_hits("Pickaxe", 35)):
+		game.mining_cooldown = 0
+		game._mine(Vector2(602 * 16 + 8, 79 * 16 + 8) - game.camera_pos)
 	var dropped := {}
 	for drop: Dictionary in game.world["drops"]:
 		dropped[drop["item"]] = int(dropped.get(drop["item"], 0)) + int(drop["count"])

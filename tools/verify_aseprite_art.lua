@@ -56,3 +56,4 @@ if app.fs.isFile(root .. "/assets/sprites/source/characters/avatar_solid_arms.as
 end
 dofile(root .. "/tools/verify_gravel_aseprite.lua")
 dofile(root .. "/tools/verify_background_ores_aseprite.lua")
+dofile(root .. "/tools/verify_housing_aseprite.lua")

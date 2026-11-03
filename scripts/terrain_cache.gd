@@ -71,7 +71,9 @@ func _build(key: Vector2i) -> Dictionary:
 			var target := Vector2i(ox, oy) * WG.TILE
 			var id: int = grid[y * WG.WIDTH + x]
 			var cave_biome: int = g.Underground.biome(g.world, x, y) if y > surface[x] + 24 else -1
-			if y >= surface[x] + 4:
+			if g.furnishings.wall_at(tile):
+				back.blit_rect(g.furnishings.wall_image(tile), Rect2i(0, 0, 16, 16), target)
+			elif y >= surface[x] + 4:
 				var material := "dirt" if y - surface[x] < 24 else "stone"
 				var variation := posmod(x * 83 + y * 47, 3)
 				var cell: Image = g.underground.cell_image(atlas[material], Vector2i(18 + variation * 18, 18), cave_biome, true) if cave_biome >= 0 else _back_cell(material, variation)
