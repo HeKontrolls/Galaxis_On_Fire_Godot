@@ -8,13 +8,14 @@ class Review:
 	func _ready() -> void:
 		for item:String in Furnishings.ITEMS:held.append(furniture.texture(item))
 	func _draw() -> void:
-		draw_rect(Rect2(0,0,1040,330),Color("17242e"))
+		draw_rect(Rect2(0,0,1244,330),Color("17242e"))
 		var font:=ThemeDB.fallback_font
 		draw_string(font,Vector2(24,35),"GALAXIS ON FIRE / ASEPRITE HOUSE SET",HORIZONTAL_ALIGNMENT_LEFT,-1,24,Color("ead4a8"))
-		draw_string(font,Vector2(24,63),"Layered native sources - matching 16-pixel blocks - passable furnishings",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("9db5bf"))
-		for index in range(5):
+		draw_string(font,Vector2(24,63),"Layered native sources - matching 16-pixel blocks - craftable house pieces",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("9db5bf"))
+		for index in range(6):
 			var item:String=Furnishings.ITEMS[index]
 			var pixels:=Vector2(16,16) if item=="Wooden Wall" else Vector2(furniture.size(item)*16)
+			if item=="Wooden Door":pixels=Vector2(32,48)
 			var at:=Vector2(20+index*204,90)
 			draw_rect(Rect2(at,Vector2(192,198)),Color("26353c"))
 			var scale:=minf(3,150/pixels.x)
@@ -23,7 +24,7 @@ class Review:
 			draw_string(font,at+Vector2(18,181),item,HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("e5d5b5"))
 func _initialize() -> void:call_deferred("run")
 func run() -> void:
-	var viewport:=SubViewport.new();viewport.size=Vector2i(1040,330);viewport.render_target_update_mode=SubViewport.UPDATE_ALWAYS;root.add_child(viewport)
+	var viewport:=SubViewport.new();viewport.size=Vector2i(1244,330);viewport.render_target_update_mode=SubViewport.UPDATE_ALWAYS;root.add_child(viewport)
 	var review:=Review.new();review.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST;viewport.add_child(review)
 	await process_frame;await RenderingServer.frame_post_draw
 	viewport.get_texture().get_image().save_png("res://tests/housing_art_review.png");viewport.free()
@@ -54,14 +55,17 @@ func run() -> void:
 	for y in range(99,89,-1):g.furnishings.place(g,"Wooden Ladder",Vector2i(605,y))
 	g.facing=1;g.furnishings.place(g,"Wooden Chair",Vector2i(594,93));g.furnishings.place(g,"Wooden Table",Vector2i(595,93))
 	g._edit_tile(Vector2i(608,99),34);g._edit_tile(Vector2i(609,99),36)
-	g.scene_name="planet";g.player_pos=Vector2(609*16,1600-28);g.camera_pos=Vector2(565*16,66*16);g.animation_clock=2.24
+	g.furnishings.place(g,"Wooden Door",Vector2i(617,99))
+	g.scene_name="planet";g.player_pos=Vector2(615*16,1600-28);g.camera_pos=Vector2(565*16,66*16);g.animation_clock=2.24
 	g.weather="Clear";g.weather_blend.reset("Clear",0);g.time_of_day=0.70;g.notice_timer=0
-	g.inventory={"Wooden Chair":4,"Wooden Table":2,"Wooden Ladder":12,"Fireplace":1,"Wooden Wall":32,"Hammer":1}
+	g.inventory={"Wooden Chair":4,"Wooden Table":2,"Wooden Ladder":12,"Fireplace":1,"Wooden Wall":32,"Wooden Door":1,"Hammer":1}
 	g.hotbar.clear();g.place_items=g.hotbar.slots
 	for item:String in Furnishings.ITEMS:g.hotbar.add(item,g.inventory)
-	g._select_hotbar_slot(4)
-	g.mouse_aim_screen=Vector2(612*16+8,98*16+8)-g.camera_pos;g.mouse_aim_valid=true;g._set_mouse_world_target(g.mouse_aim_screen+g.camera_pos)
+	g._select_hotbar_slot(5)
+	g.mouse_aim_screen=Vector2(617*16+8,98*16+8)-g.camera_pos;g.mouse_aim_valid=true;g._set_mouse_world_target(g.mouse_aim_screen+g.camera_pos)
 	g.terrain_cache.reset(g);g.environment.invalidate();g.queue_redraw();await process_frame;await RenderingServer.frame_post_draw
 	root.get_texture().get_image().save_png("res://tests/housing_gameplay.png")
-	print("HOUSING_PREVIEW furniture=",g.world.furniture.size()," walls=",g.world.wood_background.size())
+	g._key_pressed(KEY_F);g.animation_clock+=0.25;g.queue_redraw();await process_frame;await RenderingServer.frame_post_draw
+	root.get_texture().get_image().save_png("res://tests/doors_open.png")
+	print("HOUSING_PREVIEW furniture=",g.world.furniture.size()," walls=",g.world.wood_background.size()," door_open=",g.world.furniture["617,99"].open)
 	g.free();quit()

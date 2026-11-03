@@ -29,11 +29,11 @@ const PALETTE := [
 	Color("101827"), Color("101827"), Color("ab783d"),
 	Color("101827"), Color("101827"), Color("aa754a"), Color("80532f"),
 	Color("797b80"), Color("80532f"), Color("797b80"), Color("101827"), Color("101827"),
-	Color("101827"), Color("53634c"), Color("765134"), Color("5b554d"), Color("eed680"), Color("92909a"),
+	Color("101827"), Color("53634c"), Color("765134"), Color("5b554d"), Color("eed680"), Color("92909a"), Color("815c3a"),
 ]
 # Natural vegetation lives in the scenery layer; placed wood remains terrain.
 const FLORA := [7, 8, 14, 15, 16]
-const SOLIDS := [1, 2, 3, 5, 6, 9, 10, 12, 13, 17, 20, 21, 22, 23, 24, 25, 26, 27, 33, 45]
+const SOLIDS := [1, 2, 3, 5, 6, 9, 10, 12, 13, 17, 20, 21, 22, 23, 24, 25, 26, 27, 33, 45, 46]
 
 
 static func tile_at(data: PackedByteArray, x: int, y: int) -> int:
@@ -598,7 +598,7 @@ static func enrich_ice_spires(data: Dictionary) -> int:
 static func terrain_underlay_color(tile_id: int) -> Color:
 	# Detailed terrain and props draw their own silhouettes; a full-cell fallback
 	# behind them would fill transparent corners with bright palette colors.
-	if tile_id in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 33, 34, 35, 36, 37, 45]:
+	if tile_id in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 33, 34, 35, 36, 37, 45, 46]:
 		return Color.TRANSPARENT
 	return color_for(tile_id)
 
