@@ -12,7 +12,7 @@ const SEASONS := ["Bloomrise", "Highsun", "Leafturn", "Frostfall"]
 const STARTER_MATERIALS := {"Wood": 64, "Planks": 64, "Coal Ore": 64, "Copper Ore": 64,
 	"Iron Ore": 64, "Gold Ore": 64, "Crystal": 64, "Chest": 2, "Furnace": 1, "Workbench": 1}
 const STARTER_TOOLS := {"Pickaxe": 1, "Sword": 1, "Axe": 1, "Hammer": 1, "Torch": 64}
-const FARMING_KIT := {"Hoe": 1, "Watering Can": 1, "Crop Seeds": 32}
+const FARMING_KIT := {"Hoe": 1, "Watering Can": 1, "Crop Seeds": 32, "Carrot Seeds": 16, "Seed Potato": 16, "Tomato Seeds": 16, "Wheat Seeds": 16}
 const POWER_KIT := {"Biomass Generator": 1, "Wood Power Pole": 6, "Power Switch": 1,
 	"Electric Lamp": 4, "Wire": 20, "Raw Biomass": 20}
 const YELLOW := Color("ffdc50")
@@ -40,7 +40,7 @@ func _init(game) -> void:
 			if not item_catalog.has(str(item)):
 				item_catalog.append(str(item))
 		item_catalog.sort()
-	for item in ["Corn", "Roasted Corn", "Obsidian", "Diamond", "Ancient Debris", "Netherite Scrap", "Netherite Ingot", "Glacial Ice", "Gravel"] + Tools.BASE_TOOLS + Tools.variants() + g.GroundLife.ITEMS + g.Furnishings.ITEMS:
+	for item in ["Corn", "Roasted Corn", "Obsidian", "Diamond", "Ancient Debris", "Netherite Scrap", "Netherite Ingot", "Glacial Ice", "Gravel"] + Tools.BASE_TOOLS + Tools.variants() + g.GroundLife.ITEMS + g.Furnishings.ITEMS + g.CropCatalog.ITEMS:
 		if not item_catalog.has(item):
 			item_catalog.append(item)
 	item_catalog.sort()
@@ -371,7 +371,7 @@ func draw() -> void:
 				_text(matches[i], Vector2(16, 243 + i * 19), Color.WHITE if i == 0 else Color("becddc"))
 		"farming":
 			_text("Farming test setup", Vector2(10, 82), YELLOW)
-			_text("Grants a Hoe, Watering Can, and Crop Seeds.", Vector2(10, 110))
+			_text("Grants farming tools and all five seed types.", Vector2(10, 110))
 			var rect := Rect2(10, 100, 330, 36)
 			_button(rect, "Grant Farming Test Kit", Color("2a5c36") if _rect(rect).has_point(mouse) else Color("1c3a26"), Color.WHITE, 6.0, false, Vector2(10, 8))
 		"power":

@@ -23,6 +23,7 @@ var planet_monsters := PlanetMonsters.new()
 const DevControls = preload("res://scripts/dev_controls.gd")
 const FoliageRenderer = preload("res://scripts/foliage.gd")
 const FoodCatalog = preload("res://scripts/food.gd")
+const CropCatalog = preload("res://scripts/crop_catalog.gd")
 const Farming = preload("res://scripts/farming.gd")
 const Precipitation = preload("res://scripts/precipitation.gd")
 const WaterSimulation = preload("res://scripts/water_sim.gd")
@@ -52,14 +53,14 @@ const StationWindows = preload("res://scripts/station_windows.gd")
 const Expedition = preload("res://scripts/expedition.gd")
 const WeatherBlend = preload("res://scripts/weather_blend.gd")
 const OceanPreparation = preload("res://scripts/ocean_preparation.gd")
-const ITEM_CATALOG = ["Dirt", "Stone", "Wood", "Sand", "Snow", "Grass", "Planks", "Cobblestone", "Workbench", "Furnace", "Torch", "Chest", "Leaves", "Crop Seeds", "Corn", "Roasted Corn", "Obsidian", "Gravel"] + GroundLife.ITEMS + Furnishings.ITEMS
+const ITEM_CATALOG = ["Dirt", "Stone", "Wood", "Sand", "Snow", "Grass", "Planks", "Cobblestone", "Workbench", "Furnace", "Torch", "Chest", "Leaves", "Crop Seeds", "Corn", "Roasted Corn", "Obsidian", "Gravel"] + GroundLife.ITEMS + Furnishings.ITEMS + CropCatalog.NEW_ITEMS
 const SCREEN := Vector2(1280, 720)
 const SAVE_PATH := "user://galaxis_save.json"
 const SETTINGS_PATH := "user://galaxis_settings.json"
 const MAIN_MENU_ITEMS := ["New Game", "Load Game", "Settings", "How to Play", "Host Game", "Join Game", "Quit"]
 const SETTINGS_TABS := ["Gameplay", "Video", "Audio", "Controls"]
 const RECIPE_TABS := ["Basic", "Workbench", "Furnace"]
-const RECIPE_GROUPS := [[0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44], [9, 10, 11, 14, 25, 26]]
+const RECIPE_GROUPS := [[0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], [9, 10, 11, 14, 25, 26, 50, 51, 52, 53]]
 const RECIPE_PAGE_SIZE := 6
 const HOTBAR_X := 400.0
 const HOTBAR_Y := 650.0
@@ -133,6 +134,15 @@ const RECIPES := [
 	{"name": "Fireplace", "out": "Fireplace", "count": 1, "needs": {"Cobblestone": 12, "Wood": 4, "Torch": 1}, "station": "Workbench"},
 	{"name": "Wooden Wall x4", "out": "Wooden Wall", "count": 4, "needs": {"Planks": 1}, "station": "Workbench"},
 	{"name": "Wooden Door", "out": "Wooden Door", "count": 1, "needs": {"Planks": 6, "Stick": 2}, "station": "Workbench"},
+	{"name": "Crop Seeds x3", "out": "Crop Seeds", "count": 3, "needs": {"Corn": 1}, "station": "Workbench"},
+	{"name": "Carrot Seeds x3", "out": "Carrot Seeds", "count": 3, "needs": {"Carrot": 1}, "station": "Workbench"},
+	{"name": "Seed Potatoes x2", "out": "Seed Potato", "count": 2, "needs": {"Potato": 1}, "station": "Workbench"},
+	{"name": "Tomato Seeds x3", "out": "Tomato Seeds", "count": 3, "needs": {"Tomato": 1}, "station": "Workbench"},
+	{"name": "Wheat Seeds x3", "out": "Wheat Seeds", "count": 3, "needs": {"Wheat": 1}, "station": "Workbench"},
+	{"name": "Baked Potato (+25 HP)", "out": "Baked Potato", "count": 1, "needs": {"Potato": 1, "Wood": 1}, "station": "Furnace"},
+	{"name": "Tomato Soup (+35 HP)", "out": "Tomato Soup", "count": 1, "needs": {"Tomato": 2, "Wood": 1}, "station": "Furnace"},
+	{"name": "Bread (+30 HP)", "out": "Bread", "count": 1, "needs": {"Wheat": 3, "Wood": 1}, "station": "Furnace"},
+	{"name": "Vegetable Stew (+50 HP)", "out": "Vegetable Stew", "count": 1, "needs": {"Carrot": 1, "Potato": 1, "Tomato": 1, "Wood": 1}, "station": "Furnace"},
 ]
 
 var scene_name := "menu"
@@ -179,6 +189,8 @@ var wind_drift := 0.0
 var lava_hurt_timer := 0.0
 var lava_flash := 0.0
 var farming := Farming.new()
+var farms := {}
+var crop_sheet: Texture2D
 var food := FoodCatalog.new()
 var food_cooldown := 0.0
 var eat_visual := 0.0
@@ -379,6 +391,7 @@ func _start_new_game() -> void:
 	else:
 		galaxy_seed = _seed_from_text(seed_text)
 	worlds.clear()
+	farms.clear()
 	expedition.start()
 	stations.close(false)
 	inventory_order.clear()
@@ -1212,8 +1225,24 @@ func _talk_to_explorer() -> void:
 
 func _update_crops(delta: float) -> void:
 	expedition.update(delta)
-	var edits := farming.advance(int((player_pos.x + 8.0) / WG.TILE), delta, _is_raining(), environment.roof, water_sim.amounts, _rain_strength())
-	_apply_farm_edits(edits)
+	var sun := clampf(sin(time_of_day * TAU), 0.0, 1.0)
+	_apply_farm_edits(farming.advance(0, delta, _is_raining(), environment.roof, water_sim.amounts, _rain_strength(), sun))
+	# Visited farms keep growing during active planetary play, even across travel.
+	for key: String in worlds:
+		var data: Dictionary = worlds[key]
+		if is_same(data, world): continue
+		if data.get("crops", {}).is_empty() and data.get("farm_moisture", {}).is_empty(): continue
+		if not farms.has(key):
+			var other := Farming.new()
+			other.bind_world(data)
+			farms[key] = other
+		var other = farms[key]
+		var changes: Array = other.advance(0, delta, false, PackedInt32Array(), data.get("water", PackedByteArray()), 0, sun)
+		var grid: PackedByteArray = data.tiles
+		for edit: Vector3i in changes:
+			WG.set_tile(grid, edit.x, edit.y, edit.z)
+			other.track(Vector2i(edit.x, edit.y), edit.z)
+		data.tiles = grid
 
 
 func _apply_farm_edits(edits: Array) -> void:
@@ -1223,57 +1252,67 @@ func _apply_farm_edits(edits: Array) -> void:
 		world_texture.update(world_image)
 
 
+func _farm_space_clear(tile: Vector2i) -> bool:
+	for dy in range(3):
+		var at := tile + Vector2i(0, -dy)
+		if WG.tile_at(world.tiles, at.x, at.y) != 0 or not furnishings.at(at).is_empty(): return false
+	for entry: Dictionary in ground_life.entries:
+		if not bool(entry.get("alive", false)) or GroundLife.animal(str(entry.species)): continue
+		var base := Vector2(float(entry.x), float(entry.y))
+		if absf(base.x - (tile.x * 16 + 8)) < 12 and absf(base.y - (tile.y + 1) * 16) < 8: return false
+	return true
+
+
 func _farm_interaction(tile: Vector2i, tool: String, selected: String) -> bool:
-	if Tools.family(equipped_tool) == "Sword":
-		return false
-	if tool == "Watering Can" and WG.tile_at(world["tiles"], tile.x, tile.y) in [14, 15]:
-		tile += Vector2i.DOWN
+	if Tools.family(equipped_tool) == "Sword": return false
+	var target := farming.plant_target(tile)
+	if target.x >= 0:
+		tile = target + Vector2i.DOWN if tool == "Watering Can" else target
+	if not _in_dig_reach(tile): return false
 	var result := farming.interaction(tile, tool, selected)
-	if expedition.home() and int(result.get("drops", {}).get("Corn", 0)) > 0:
-		expedition.data["harvested"] = true
-	if not result["handled"]:
-		if tool == "Watering Can" and WG.tile_at(world["tiles"], tile.x, tile.y) == 13:
-			_start_watering(tile)
-			return true
-		return false
-	var consume := str(result["consume"])
+	if not result.handled: return false
+	var consume := str(result.consume)
 	if not consume.is_empty():
 		if int(inventory.get(consume, 0)) <= 0:
-			_show_notice("No crop seeds in inventory")
+			_show_notice("No " + consume + " in inventory")
+			return true
+		var edit: Vector3i = result.edits[0]
+		if not _farm_space_clear(Vector2i(edit.x, edit.y)):
+			_show_notice("Clear the plants or furniture before planting")
 			return true
 		inventory[consume] -= 1
-	_apply_farm_edits(result["edits"])
-	if tool == "Watering Can":
-		for edit in result["edits"]:
-			if edit.z == 13:
-				_start_watering(Vector2i(edit.x, edit.y))
-	for item in result["drops"]:
-		_drop_item(item, result["drops"][item], tile)
-	if not result["drops"].is_empty():
-		_show_notice("Harvested Corn x%d and Crop Seeds x%d" % [result["drops"]["Corn"], result["drops"]["Crop Seeds"]])
+	farming.commit(result)
+	_apply_farm_edits(result.edits)
+	if result.has("watered"): _start_watering(tile)
+	if expedition.home() and int(result.drops.get("Corn", 0)) > 0: expedition.data.harvested = true
+	var yields: PackedStringArray = []
+	for item: String in result.drops:
+		_drop_item(item, result.drops[item], tile)
+		yields.append("%s x%d" % [item, result.drops[item]])
+	if not yields.is_empty():
+		_show_notice("Harvested " + " and ".join(yields))
 	elif not consume.is_empty():
-		_show_notice("Corn planted. Water the soil with the watering can")
-	elif not result["edits"].is_empty():
-		_show_notice("Soil watered" if tool == "Watering Can" else "Soil tilled. Select Crop Seeds to plant")
+		_show_notice(str(CropCatalog.SEEDS[consume]) + " planted. Water or irrigate the soil")
+	elif result.has("watered"):
+		_show_notice("Soil watered")
+	elif not result.edits.is_empty():
+		_show_notice("Soil tilled. Select seeds to plant")
+	elif CropCatalog.SEEDS.has(selected):
+		_show_notice("Plant seeds in clear tilled soil")
 	return true
 
 
 func _hoe(point: Vector2) -> void:
-	var tile := _mouse_to_tile(point)
-	if _in_reach(tile):
-		_farm_interaction(tile, "Hoe", "")
+	_farm_interaction(_mouse_to_tile(point), "Hoe", "")
 
 
 func _water_soil(point: Vector2) -> void:
 	var tile := _mouse_to_tile(point)
-	if _in_reach(tile):
-		if not _farm_interaction(tile, "Watering Can", ""):
-			_start_watering(tile)
+	if _in_dig_reach(tile):
+		if not _farm_interaction(tile, "Watering Can", ""): _start_watering(tile)
 
 
 func _plant(tile: Vector2i) -> bool:
-	if not _in_reach(tile):
-		return false
 	return _farm_interaction(tile, "Hand", place_items[selected_slot])
 
 
@@ -1858,7 +1897,9 @@ func _reset_world_environment() -> void:
 	hanging_vines.reset(self)
 	terrain_cache.reset(self)
 	sand_gravity.reset(self)
+	farming = Farming.new()
 	farming.bind_world(world)
+	farms[_world_key()] = farming
 	precipitation.reset(int(world["seed"]))
 	surface_effects.reset(int(world["seed"]))
 	fluid_reactions.reset(self)
@@ -1938,9 +1979,9 @@ func _inventory_category(item: String) -> int:
 		return 2
 	if TILE_FOR_ITEM.has(item) or Furnishings.has_item(item) or item in ["Workbench", "Furnace", "Torch", "Stick"]:
 		return 3
-	if GroundLife.has_item(item) or item == "Crop Seeds":
+	if GroundLife.has_item(item) or CropCatalog.SEEDS.has(item):
 		return 4
-	if food.edible(item):
+	if food.has_icon(item):
 		return 5
 	return 6
 
@@ -2300,6 +2341,7 @@ func _edit_tile(tile: Vector2i, tile_id: int, upload: bool = true) -> void:
 		return
 	var grid: PackedByteArray = world["tiles"]
 	var old_id := WG.tile_at(grid, tile.x, tile.y)
+	var unsupported := farming.unsupported(tile, tile_id) if old_id in [12, 13] else {}
 	if old_id != tile_id:
 		var damage: Dictionary = world.get("mining_damage", {})
 		var origin := _tree_base(tile) if old_id == 7 else tile
@@ -2324,6 +2366,9 @@ func _edit_tile(tile: Vector2i, tile_id: int, upload: bool = true) -> void:
 	underground.changed(self, tile)
 	furnishings.terrain_changed(self, tile)
 	farming.track(tile, tile_id)
+	if not unsupported.is_empty():
+		_edit_tile(unsupported.tile, 0, upload)
+		_drop_item(unsupported.seed, 1, unsupported.tile)
 	environment.refresh_column(tile.x)
 	if WG.is_solid(old_id) != WG.is_solid(tile_id):
 		environment.invalidate()
@@ -2579,6 +2624,10 @@ func _mine(point: Vector2) -> void:
 		_begin_tool_action("hoe" if use_hoe else "mine", point + camera_pos)
 	var tile := _mouse_to_tile(point)
 	if tile.x < 1 or tile.y < 1 or tile.x >= WG.WIDTH - 1 or tile.y >= WG.HEIGHT - 1 or not _in_dig_reach(tile):
+		return
+	var crop_target := farming.plant_target(tile)
+	if crop_target.x >= 0:
+		_farm_interaction(crop_target, equipped_tool, "")
 		return
 	var torch_key := "%d,%d" % [tile.x, tile.y]
 	if world.get("torches", {}).has(torch_key):
@@ -2931,6 +2980,8 @@ func _save_game() -> void:
 			"cave_entrances": entry.get("cave_entrances", []),
 			"farm_rng_state": str(entry.get("farm_rng_state", "")),
 			"farm_budget": entry.get("farm_budget", 0.0),
+			"farm_plants": entry.get("farm_plants", {}),
+			"farm_moisture": entry.get("farm_moisture", {}),
 		}
 	var data := {
 		"schema": 2, "galaxy_seed": galaxy_seed, "star_index": star_index,
@@ -3040,6 +3091,7 @@ func _load_game() -> void:
 	weather_timer = clampf(float(parsed.get("weather_timer", 0.0)), 0.0, 79.999)
 	cloud_cover = _cloud_target()
 	worlds.clear()
+	farms.clear()
 	for key in parsed.get("worlds", {}):
 		var saved: Dictionary = parsed["worlds"][key]
 		var raw := Marshalls.base64_to_raw(saved.get("tiles", ""))
@@ -3102,6 +3154,8 @@ func _load_game() -> void:
 			"cave_entrances": saved.get("cave_entrances", []),
 			"farm_rng_state": str(saved.get("farm_rng_state", "")),
 			"farm_budget": float(saved.get("farm_budget", 0.0)),
+			"farm_plants": saved.get("farm_plants", {}),
+			"farm_moisture": saved.get("farm_moisture", {}),
 		}
 		if not saved.get("npc", {}).is_empty():
 			worlds[key]["npc"] = saved["npc"]
@@ -3547,22 +3601,13 @@ func _draw_terrain_details(x0: int, y0: int, x1: int, y1: int) -> void:
 
 
 func _draw_crop(at: Vector2, stage: int) -> void:
-	var height := 13 if stage == 14 else (25 if stage == 15 else 38)
-	var root := at + Vector2(8, 15)
-	draw_line(root, root - Vector2(0, height), Color(0.212, 0.518, 0.188), 3.0)
-	draw_line(root - Vector2(0, int(height / 2)), root + Vector2(-9, -int(height / 2) - 5), Color(0.282, 0.651, 0.227), 4.0)
-	if stage >= 15:
-		draw_line(root + Vector2(0, -height + 10), root + Vector2(10, -height + 5), Color(0.282, 0.651, 0.227), 4.0)
-	if stage == 16:
-		var center := root + Vector2(5.5, -height + 18)
-		var cob := PackedVector2Array()
-		for point in range(16):
-			var angle := float(point) / 16 * TAU
-			cob.append(center + Vector2(cos(angle) * 3.5, sin(angle) * 8))
-		draw_colored_polygon(cob, Color("f6cd42"))
-		draw_line(center - Vector2(0, 6), center + Vector2(0, 5), Color("ffe770"), 2.0)
-		draw_line(root + Vector2(3, -height + 24), root + Vector2(-2, -height + 17), Color("429436"), 3.0)
-		draw_line(root + Vector2(8, -height + 24), root + Vector2(12, -height + 18), Color("429436"), 3.0)
+	if crop_sheet == null: crop_sheet = SpriteArt.texture("res://assets/sprites/farming/crops.png")
+	var tile := Vector2i(floor((at + camera_pos) / WG.TILE))
+	var row := int(CropCatalog.CROPS[farming.crop_at(tile)].row)
+	var bend := clampf(_wind_speed() / 4500.0, -0.06, 0.06) * (0.65 + sin(animation_clock * 2.1 + tile.x * 1.7) * 0.35)
+	draw_set_transform(at + Vector2(8, 16), bend)
+	draw_texture_rect_region(crop_sheet, Rect2(Vector2(-16, -48), Vector2(32, 48)), Rect2((stage - 14) * 32, row * 48, 32, 48))
+	draw_set_transform(Vector2.ZERO)
 
 
 func _tree_source(grid: PackedByteArray, x: int, y: int, tile_id: int) -> Rect2:
@@ -4328,19 +4373,11 @@ func _farm_hint_text(tile: Vector2i) -> PackedStringArray:
 		return ["Lava - cooling %d%%" % roundi(lava_sim.cooling_fraction(tile.y * WG.WIDTH + tile.x) * 100), "Water makes obsidian; rain cools gradually"]
 	if id == 17:
 		return ["Obsidian - volcanic glass", "Requires Diamond Pickaxe or better"]
-	if id in [14, 15, 16]:
-		var soil := WG.tile_at(grid, tile.x, tile.y + 1)
-		if id == 16:
-			return ["Corn · Ready to harvest", "Click for corn and fresh seeds"]
-		return ["Corn · %s (%d/3)" % ["Sprout" if id == 14 else "Growing", id - 13],
-			"Watered soil · Faster growth" if soil == 13 else "Dry soil · Water for faster growth"]
-	if id in [12, 13]:
-		return ["Tilled soil · " + ("Watered" if id == 13 else "Dry"),
-			"Right-click to plant selected seeds" if place_items[selected_slot] == "Crop Seeds" else "Select Crop Seeds to plant"]
+	var target := farming.plant_target(tile)
+	var lines := farming.hint(target if target.x >= 0 else tile, place_items[selected_slot])
+	if not lines.is_empty(): return lines
 	if id in [1, 2] and equipped_tool == "Hoe":
 		return ["Grass" if id == 1 else "Dirt", "Click with the hoe to till soil"]
-	if id == 0 and place_items[selected_slot] == "Crop Seeds" and WG.tile_at(grid, tile.x, tile.y + 1) in [12, 13]:
-		return ["Plant corn", "Right-click · Uses one Crop Seed"]
 	return []
 
 
@@ -4354,8 +4391,8 @@ func _draw_farm_hint() -> void:
 	var lines := _farm_hint_text(tile)
 	if lines.is_empty():
 		return
-	var at := Vector2(clampf(mouse.x + 18, 8, SCREEN.x - 288), clampf(mouse.y - 58, 165, SCREEN.y - 140))
-	_rounded_box(Rect2(at, Vector2(280, 51)), Color(0.04, 0.07, 0.09, 0.94), Color("668576"), 7.0, 1.0)
+	var at := Vector2(clampf(mouse.x + 18, 8, SCREEN.x - 348), clampf(mouse.y - 58, 165, SCREEN.y - 140))
+	_rounded_box(Rect2(at, Vector2(340, 51)), Color(0.04, 0.07, 0.09, 0.94), Color("668576"), 7.0, 1.0)
 	_text(lines[0], at + Vector2(10, 20), 14, Color("e6dfb7"))
 	_text(lines[1], at + Vector2(10, 40), 12, Color("b8cda6"))
 

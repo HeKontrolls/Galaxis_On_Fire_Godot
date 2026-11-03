@@ -58,3 +58,5 @@ dofile(root .. "/tools/verify_gravel_aseprite.lua")
 dofile(root .. "/tools/verify_background_ores_aseprite.lua")
 dofile(root .. "/tools/verify_housing_aseprite.lua")
 dofile(root .. "/tools/verify_door_aseprite.lua")
+
+dofile(root .. "/tools/verify_farming_aseprite.lua")

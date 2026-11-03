@@ -31,12 +31,8 @@ func invalidate(tile: Vector2i) -> void:
 
 func _soil(id: int) -> Image:
 	if not tinted.has(id):
-		var image: Image = atlas["dirt"].get_region(Rect2i(18, 18, 16, 16))
-		var tint := Color(0.72, 0.62, 0.54) if id == 12 else Color(0.50, 0.53, 0.55)
-		for y in range(16):
-			for x in range(16):
-				image.set_pixel(x, y, image.get_pixel(x, y) * tint)
-		tinted[id] = image
+		var sheet: Image = g.SpriteArt.texture("res://assets/sprites/farming/soil.png").get_image()
+		tinted[id] = sheet.get_region(Rect2i((id - 12) * 16, 0, 16, 16))
 	return tinted[id]
 
 

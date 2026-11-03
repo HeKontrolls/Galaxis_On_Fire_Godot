@@ -65,3 +65,5 @@ dofile(root .. "/tools/export_gravel_aseprite.lua")
 dofile(root .. "/tools/export_background_ores_aseprite.lua")
 dofile(root .. "/tools/export_housing_aseprite.lua")
 dofile(root .. "/tools/export_door_aseprite.lua")
+
+dofile(root .. "/tools/export_farming_aseprite.lua")

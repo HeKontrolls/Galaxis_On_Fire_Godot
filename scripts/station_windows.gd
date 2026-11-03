@@ -315,7 +315,7 @@ func draw() -> void:
 	g._text(kind.capitalize() + "  [F / Esc to close]", at + Vector2(52, 27), 18, Color("ede0c6"))
 	g._rounded_box(Rect2(at + Vector2(682, 6), Vector2(28, 28)), Color("78333d"), Color("c5a6a3"), 6, 1)
 	g._text("X", at + Vector2(691, 27), 17)
-	g._text("Ingredients stored here" if kind == "workbench" else "Ore / materials", at + Vector2(24, 74), 14, Color("bed0d7"))
+	g._text("Ingredients stored here" if kind == "workbench" else "Ore / food ingredients", at + Vector2(24, 74), 14, Color("bed0d7"))
 	for index in range(9 if kind == "workbench" else 6):
 		_draw_slot("input", index)
 	g._text("Output", at + Vector2(256 if kind == "workbench" else 442, 74), 14, Color("c8d8c5"))
@@ -359,11 +359,11 @@ func draw() -> void:
 		if not machine["jobs"].is_empty():
 			var job: Dictionary = machine["jobs"][0]
 			var progress := float(job["elapsed"]) / float(job["duration"])
-			status = ("Heating: " if heat < 0.999 else "Smelting: ") + str(job["out"])
+			status = ("Heating: " if heat < 0.999 else ("Cooking: " if g.food.edible(str(job["out"])) else "Smelting: ")) + str(job["out"])
 			g.draw_rect(Rect2(at + Vector2(232, 245), Vector2(156, 7)), Color("34434b"))
 			g.draw_rect(Rect2(at + Vector2(232, 245), Vector2(156 * progress, 7)), Color("a6c79b"))
 			g._text("%d%%" % roundi(progress * 100), at + Vector2(232, 275), 14)
 		g._text(status, at + Vector2(24, 319), 17, Color("e4d5b6"))
-		g._text("Coal smelts ore and alloys. Wood cooks Corn.", at + Vector2(24, 352), 14, Color("bdcbd2"))
+		g._text("Coal smelts ore and alloys. Wood cooks meals.", at + Vector2(24, 352), 14, Color("bdcbd2"))
 		g._text("Each furnace stores and processes its own materials.", at + Vector2(24, 380), 13, Color("90a9b7"))
 	g._text("Drag between slots and backpack. Click to take a stack; right-click takes one.", at + Vector2(24, 423), 12, Color("91aab7"))

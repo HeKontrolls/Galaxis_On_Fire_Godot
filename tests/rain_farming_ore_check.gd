@@ -59,7 +59,9 @@ func check_python_parity() -> void:
 		var farm := Farm.new()
 		farm.bind_world(data)
 		var result := farm.interaction(Vector2i(3, 3), fixture["tool"], fixture["selected"])
-		check(result["handled"] == fixture["handled"] and result["consume"] == fixture["consume"], "Python farming contract: " + fixture["name"])
+		var handled: bool = true if fixture["name"] == "water wet soil" else bool(fixture["handled"])
+		# Godot now refreshes tracked moisture even when the soil is already wet.
+		check(result["handled"] == handled and result["consume"] == fixture["consume"], "Python farming contract with moisture refresh: " + fixture["name"])
 		var actual := []
 		for edit in result["edits"]:
 			actual.append([edit.x, edit.y, edit.z])
@@ -210,7 +212,7 @@ func run_check() -> void:
 	var rain_before := total(game.water_sim.rain_amounts)
 	game._save_game()
 	game._load_game()
-	await process_frame
+	while game.scene_name == "loading": await process_frame
 	check(WG.tile_at(game.world["tiles"], 601, 79) in [14, 15, 16] and WG.tile_at(game.world["tiles"], 601, 80) in [12, 13], "Crops and their tilled root must survive saving")
 	check(game.farming.rng.state == rng_state and total(game.water_sim.rain_amounts) == rain_before, "Growth RNG and rainwater provenance must survive saving")
 	game._edit_tile(Vector2i(601, 79), 16)

@@ -593,6 +593,9 @@ func _harvest(game, entry: Dictionary) -> void:
 	entry["alive"] = false
 	var index := SPECIES.find(str(entry["species"]))
 	game._drop_item(ITEMS[index], 1, Vector2i(floor(position(entry) / WG.TILE)))
+	var forage: Dictionary = game.CropCatalog.FORAGE
+	if not bool(entry.get("cultivated", false)) and forage.has(str(entry.species)):
+		game._drop_item(str(forage[str(entry.species)]), 1, Vector2i(floor(position(entry) / WG.TILE)))
 	if state.has(int(entry["id"])):
 		buckets[int(state[int(entry["id"])]["chunk"])].erase(entry)
 		state.erase(int(entry["id"]))
@@ -616,7 +619,7 @@ func place(game, item: String, tile: Vector2i) -> bool:
 		if bool(entry.get("alive", false)) and Vector2(float(entry["x"]), float(entry["y"])).distance_to(at) < 12:
 			return false
 	var entry := {"id": next_id, "species": SPECIES[index], "x": at.x, "y": at.y, "home_x": at.x,
-		"phase": fposmod(next_id * 2.39996, TAU), "direction": game.facing, "alive": true}
+		"phase": fposmod(next_id * 2.39996, TAU), "direction": game.facing, "alive": true, "cultivated": true}
 	next_id += 1
 	entries.append(entry)
 	_index(entry)

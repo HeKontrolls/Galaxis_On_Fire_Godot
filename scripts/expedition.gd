@@ -176,7 +176,9 @@ func talk() -> void:
 			for item: String in ["Hoe", "Watering Can"]:
 				g._add_item(item, 1)
 			g._add_item("Crop Seeds", 6)
-			g._show_notice("R0-VR gave you a hoe, watering can and 6 seeds")
+			for seed: String in ["Carrot Seeds", "Seed Potato", "Tomato Seeds", "Wheat Seeds"]:
+				g._add_item(seed, 2)
+			g._show_notice("R0-VR gave you farming tools and five seed types")
 		else:
 			g._show_notice("New objective: " + TITLES[stage()])
 		g._refresh_hotbar()

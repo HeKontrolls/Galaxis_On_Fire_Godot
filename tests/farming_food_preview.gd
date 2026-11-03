@@ -35,23 +35,39 @@ func preview() -> void:
 		surface[x] = 80
 		for y in range(1, 125):
 			WG.set_tile(grid, x, y, 0 if y < 80 else (1 if y == 80 else (2 if y < 95 else 3)))
-	for x in range(585, 603):
-		WG.set_tile(grid, x, 80, 13 if x % 2 else 12)
-		if x % 3 != 0:
-			WG.set_tile(grid, x, 79, 14 + int((x - 585) / 6))
+	for kind in range(5):
+		for stage in range(3):
+			var x := 579 + kind * 7 + stage * 2
+			WG.set_tile(grid, x, 80, 13)
+			WG.set_tile(grid, x, 79, 14 + stage)
+		var channel := 579 + kind * 7 + 5
+		WG.set_tile(grid, channel, 80, 4)
+		WG.set_tile(grid, channel, 81, 4)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 31529
 	WG._plant_tree(grid, 573, 80, rng)
 	WG._plant_tree(grid, 633, 80, rng)
-	WG.set_tile(grid, 611, 79, 35)
-	WG.set_tile(grid, 612, 79, 37)
-	WG.set_tile(grid, 615, 79, 34)
-	WG.set_tile(grid, 616, 79, 36)
+	WG.set_tile(grid, 617, 79, 35)
+	WG.set_tile(grid, 618, 79, 37)
+	WG.set_tile(grid, 621, 79, 34)
+	WG.set_tile(grid, 622, 79, 36)
+	game.expedition.data.clear()
+	game.world["ground_life"] = []
+	game.world["ground_life_version"] = 1
+	game.world["ground_cover_version"] = 1
+	game.world["surface_rocks_version"] = 1
+	game.world["vines"] = []
+	game.world["vines_version"] = 1
 	game.world["tiles"] = grid
 	game.world["surface"] = surface
 	game.world.erase("water")
 	game.world.erase("rain_water")
 	game._reset_world_environment()
+	var crops := ["Corn","Carrot","Potato","Tomato","Wheat"]
+	for kind in range(5):
+		for stage in range(3):
+			var point := "%d,79" % (579 + kind * 7 + stage * 2)
+			game.farming.plants[point].crop = crops[kind]
 	game.world_texture = WG.make_texture(grid)
 	game.world_image = game.world_texture.get_image()
 	game.foliage.reset()
@@ -62,7 +78,7 @@ func preview() -> void:
 	game.equipped_tool = "Hoe"
 	game.use_hoe = true
 	game.use_pickaxe = false
-	game.inventory = {"Hoe": 1, "Watering Can": 1, "Crop Seeds": 18, "Corn": 12, "Roasted Corn": 3, "Wood": 16, "Torch": 4}
+	game.inventory = {"Hoe": 1, "Watering Can": 1, "Crop Seeds": 18, "Corn": 12, "Roasted Corn": 3, "Wood": 16, "Torch": 4, "Carrot Seeds": 12, "Seed Potato": 12, "Tomato Seeds": 12, "Wheat Seeds": 12, "Carrot": 6, "Potato": 6, "Tomato": 6, "Wheat": 6, "Baked Potato": 2, "Tomato Soup": 2, "Bread": 2, "Vegetable Stew": 2}
 	game._equip_inventory_item("Corn")
 	game.health = 40
 	game._eat_food("Corn")
@@ -73,9 +89,12 @@ func preview() -> void:
 	game.inventory_open = true
 	await capture(game, "farming_food_backpack_preview")
 	game.inventory_open = false
-	game.crafting_open = true
-	game._set_recipe_tab(2)
-	game.recipe_index = 14
+	game.stations.open({"name":"Furnace","tile":Vector2i(617,79)})
+	game.stations.deposit("Carrot",1)
+	game.stations.deposit("Potato",1)
+	game.stations.deposit("Tomato",1)
+	game.stations.deposit("Wood",1)
+	game.furnaces.update(7)
 	await capture(game, "farming_food_cooking_preview")
 	print("RENDERED edible crops, food icons, eating feedback, backpack and furnace cooking")
 	quit(0)

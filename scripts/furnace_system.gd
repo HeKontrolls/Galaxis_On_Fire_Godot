@@ -3,7 +3,8 @@ extends RefCounted
 const WG = preload("res://scripts/world_gen.gd")
 const Slots = preload("res://scripts/station_slots.gd")
 const TIMES := {"Copper Ingot": 8.0, "Iron Ingot": 11.0, "Gold Ingot": 9.0,
-	"Netherite Scrap": 16.0, "Netherite Ingot": 18.0}
+	"Netherite Scrap": 16.0, "Netherite Ingot": 18.0,
+	"Roasted Corn":6.0,"Baked Potato":8.0,"Tomato Soup":10.0,"Bread":10.0,"Vegetable Stew":14.0}
 const HEAT_SECONDS := 5.0
 var g
 var focus_key := ""
@@ -43,7 +44,10 @@ static func auto_queue(machine: Dictionary, recipes: Array) -> bool:
 	prepare(machine)
 	if not machine["jobs"].is_empty():
 		return false
-	for recipe: Dictionary in recipes:
+	# Cook complete mixed meals before consuming their ingredients separately.
+	var ordered := recipes.duplicate()
+	ordered.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a["needs"].size() > b["needs"].size())
+	for recipe: Dictionary in ordered:
 		if str(recipe.get("station", "")) != "Furnace" or (not timed(recipe) and str(recipe["out"]) != "Roasted Corn"):
 			continue
 		if not machine["output"].has(recipe["out"]) and machine["output"].size() >= 6:
