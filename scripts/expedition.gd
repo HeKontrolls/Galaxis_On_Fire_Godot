@@ -38,7 +38,7 @@ func home() -> bool:
 	return active() and str(data.get("home", "")) == g._world_key()
 
 func can_land(index: int) -> bool:
-	if not active():
+	if g.dev_travel_unlocked or not active():
 		return true
 	if str(data.get("home", "")).is_empty():
 		if g._planet_climate(index) != 0:
@@ -50,13 +50,13 @@ func can_land(index: int) -> bool:
 	return true
 
 func can_launch() -> bool:
-	if active() and stage() < 7:
+	if not g.dev_travel_unlocked and active() and stage() < 7:
 		g._show_notice("Escape pod damaged - follow R0-VR's repair objectives")
 		return false
 	return true
 
 func prepare() -> void:
-	if not active():
+	if g.dev_travel_unlocked or not active():
 		return
 	if not str(data.get("home", "")).is_empty():
 		if home():
@@ -95,22 +95,22 @@ func prepare() -> void:
 		g.world["torches"]["%d,%d" % [x, floor_y - 3]] = true
 
 func record_item(item: String) -> void:
-	if active():
+	if active() and not g.dev_travel_unlocked:
 		data["seen"][item] = true
 
 func gathered(item: String, count: int) -> void:
-	if active():
+	if active() and not g.dev_travel_unlocked:
 		data["gathered"][item] = int(data["gathered"].get(item, 0)) + count
 
 func placed(item: String, tile: Vector2i) -> void:
-	if not home():
+	if g.dev_travel_unlocked or not home():
 		return
 	data["placed"][item] = true
 	if item in ["Wood", "Planks", "Dirt", "Stone", "Cobblestone"] and not bool(data["shelter"]):
 		data["builds"]["%d,%d" % [tile.x, tile.y]] = true
 
 func update(delta: float) -> void:
-	if not active():
+	if g.dev_travel_unlocked or not active():
 		return
 	budget -= delta
 	if budget > 0:
@@ -162,6 +162,9 @@ func ready() -> bool:
 	return true
 
 func talk() -> void:
+	if g.dev_travel_unlocked:
+		g._show_notice("Developer travel: turn Free Travel off in F3 to resume objectives")
+		return
 	update(1.0)
 	if not g.dialogue_open:
 		g.dialogue_open = true
@@ -220,7 +223,7 @@ func near(at: Vector2) -> bool:
 	return center.distance_to(at - Vector2(0, 16)) <= 80 and g.interactions._visible(center, Rect2(at - Vector2(12, 30), Vector2(24, 30)))
 
 func interact() -> bool:
-	if not home():
+	if g.dev_travel_unlocked or not home():
 		return false
 	if near(point("site")) and not bool(data["core"]):
 		if guardian_alive():
@@ -319,7 +322,7 @@ func direction_to(at: Vector2) -> String:
 	return "%d blocks %s, %d %s" % [absi(roundi(delta.x)), "east" if delta.x >= 0 else "west", absi(roundi(delta.y)), "down" if delta.y >= 0 else "up"]
 
 func draw_hud() -> void:
-	if not active():
+	if g.dev_travel_unlocked or not active():
 		return
 	var at := hud_rect().position
 	g._rounded_box(hud_rect(), Color("101d27"), Color("617984"), 9.0, 1.0)

@@ -4,7 +4,7 @@ const Tools = preload("res://scripts/tool_catalog.gd")
 
 # Coordinates, text, colors and actions ported from main.py debug helpers and
 # systems/planet_render.py's DEBUG CONTROLS panel in the Python project.
-const TABS := ["Weather", "Tools", "Farming", "Power", "Seasons"]
+const TABS := ["Weather", "Tools", "Farming", "Power", "Seasons", "Travel"]
 const WEATHER_KEYS := ["sunny", "cloudy", "rainy", "foggy", "snowy", "thunderstorm"]
 const WEATHER_LABELS := ["Sunny", "Cloudy", "Rain", "Fog", "Snow", "Storm"]
 const WEATHER_VALUES := ["Clear", "Cloudy", "Rain", "Fog", "Snow", "Storm"]
@@ -50,7 +50,10 @@ func opened() -> void:
 	slider_drag = ""
 	if g.dev_mode:
 		command_input = ""
-		message("Select a debug tab.", 3.0)
+		if g.scene_name in ["galaxy", "system"]:
+			active_tab = "travel"
+			g.dev_travel_unlocked = true
+		message("Free travel enabled; expedition paused." if g.dev_travel_unlocked else "Select a debug tab.", 3.0)
 
 
 func update(delta: float) -> void:
@@ -64,6 +67,15 @@ func message(value: String, seconds: float = 5.0) -> void:
 
 func _rect(local: Rect2) -> Rect2:
 	return Rect2(Vector2(g.window_positions["dev"]) + local.position, local.size)
+
+
+func tab_rect(index: int) -> Rect2:
+	var width := 540.0 / TABS.size()
+	return Rect2(10 + index * width, 38, width - 4, 30)
+
+
+func travel_rect(climate: int) -> Rect2:
+	return Rect2(10 + (climate % 2) * 274, 146 + int(climate / 2) * 44, 266, 38)
 
 
 func _text(value: String, local: Vector2, color: Color = Color.WHITE) -> void:
@@ -270,13 +282,33 @@ func click(point: Vector2) -> void:
 		slider_drag = ""
 		return
 	for i in range(TABS.size()):
-		if _rect(Rect2(10 + i * 109, 38, 104, 30)).has_point(point):
+		if _rect(tab_rect(i)).has_point(point):
 			active_tab = TABS[i].to_lower()
 			return
 	if _rect(Rect2(2, 2, 522, 32)).has_point(point):
 		g._start_window_drag("dev", point)
 		return
 	match active_tab:
+		"travel":
+			if _rect(Rect2(10, 82, 260, 32)).has_point(point):
+				var enabled: bool = not g.dev_travel_unlocked
+				# Exit a test landing before restoring locks on an unfinished campaign.
+				if not enabled and g.scene_name == "planet" and g.expedition.active() and g.expedition.stage() < 7 and not g.expedition.home():
+					g._leave_planet()
+				g.dev_travel_unlocked = enabled
+				message("Free travel enabled; expedition paused." if g.dev_travel_unlocked else "Expedition travel rules restored.")
+				return
+			if _rect(Rect2(284, 82, 266, 32)).has_point(point):
+				g.dev_travel_unlocked = true
+				g.dev_mode = false
+				g.dragged_window = ""
+				if g.scene_name == "planet": g._leave_planet()
+				elif g.scene_name == "galaxy": g._open_system(g.star_index)
+				return
+			for climate in range(g.WG.NAMES.size()):
+				if _rect(travel_rect(climate)).has_point(point):
+					g._dev_visit_climate(climate)
+					return
 		"weather":
 			for entry in [["day_length", 94], ["night_dark", 132]]:
 				if _rect(Rect2(159, int(entry[1]) - 13, 302, 36)).has_point(point):
@@ -335,11 +367,19 @@ func draw() -> void:
 	var close := Rect2(530, 6, 22, 22)
 	_button(close, "X", Color("963737") if _rect(close).has_point(mouse) else Color("6e2a2a"), Color.WHITE, 5.0, true)
 	for i in range(TABS.size()):
-		var rect := Rect2(10 + i * 109, 38, 104, 30)
+		var rect := tab_rect(i)
 		var active: bool = active_tab == TABS[i].to_lower()
 		_button(rect, TABS[i], Color("28587a") if active else (Color("222a36") if _rect(rect).has_point(mouse) else Color("161a22")),
 			Color("a5dcff") if active else Color("6e7887"), 5.0, true)
 	match active_tab:
+		"travel":
+			_button(Rect2(10, 82, 260, 32), "Free Travel: " + ("ON" if g.dev_travel_unlocked else "OFF"), Color("26703e") if g.dev_travel_unlocked else Color("34262a"))
+			_button(Rect2(284, 82, 266, 32), "Return to Orbit" if g.scene_name == "planet" else "Browse This System", Color("263e58"))
+			g._button_text(_rect(Rect2(10, 118, 540, 25)), "System: " + str(g.star_names[g.star_index]), 16, Color("b8d3e0"), false)
+			for climate in range(g.WG.NAMES.size()):
+				var rect := travel_rect(climate)
+				_button(rect, str(g.WG.NAMES[climate]), Color("28587a") if _rect(rect).has_point(mouse) else Color("172632"))
+			g._button_text(_rect(Rect2(10, 325, 540, 22)), "Choose a type to land. Turn free travel off to resume objectives.", 14, Color("b6cabb"), false)
 		"weather":
 			_slider("day_length", "Day Length", float(g.settings_data["day_length"]), 60, 1800, "%.0fs" % float(g.settings_data["day_length"]), 94)
 			_slider("night_dark", "Night Darkness", float(g.settings_data["night_dark"]), 0, 0.9, "%.2f" % float(g.settings_data["night_dark"]), 132)

@@ -248,6 +248,7 @@ var tool_action_kind := ""
 var tool_action_target := Vector2.ZERO
 var equipped_tool := "Hand"
 var dev_mode := false
+var dev_travel_unlocked := false
 var dev_invulnerable := false
 var dev_free_flight := false
 var dev_controls: RefCounted
@@ -419,6 +420,7 @@ func _start_new_game() -> void:
 	attack_cooldown = 0.0
 	tool_action_timer = 0.0
 	dev_mode = false
+	dev_travel_unlocked = false
 	dev_invulnerable = false
 	dev_free_flight = false
 	inventory_trash.clear()
@@ -1035,6 +1037,7 @@ func _open_planet(index: int) -> void:
 func _leave_planet() -> void:
 	if not expedition.can_launch():
 		return
+	dev_mode = false
 	stations.close(false)
 	_stop_held_actions()
 	dragged_window = ""
@@ -1049,6 +1052,19 @@ func _leave_planet() -> void:
 	paused = false
 	dialogue_open = false
 	queue_redraw()
+
+
+func _dev_visit_climate(climate: int) -> void:
+	if climate < 0 or climate >= WG.NAMES.size(): return
+	dev_travel_unlocked = true
+	if scene_name == "planet": _leave_planet()
+	dev_mode = false
+	dragged_window = ""
+	for index in range(8):
+		if _planet_climate(index) == climate:
+			selected_planet_index = index
+			await _open_planet(index)
+			return
 
 
 func _show_notice(text_value: String) -> void:
@@ -1284,7 +1300,7 @@ func _farm_interaction(tile: Vector2i, tool: String, selected: String) -> bool:
 	farming.commit(result)
 	_apply_farm_edits(result.edits)
 	if result.has("watered"): _start_watering(tile)
-	if expedition.home() and int(result.drops.get("Corn", 0)) > 0: expedition.data.harvested = true
+	if not dev_travel_unlocked and expedition.home() and int(result.drops.get("Corn", 0)) > 0: expedition.data.harvested = true
 	var yields: PackedStringArray = []
 	for item: String in result.drops:
 		_drop_item(item, result.drops[item], tile)
@@ -1552,7 +1568,7 @@ func _input(event: InputEvent) -> void:
 				primary_held = false
 			elif event.button_index == MOUSE_BUTTON_RIGHT:
 				secondary_held = false
-	if dev_mode and scene_name == "planet" and dev_controls.handle_input(event):
+	if dev_mode and scene_name in ["planet", "galaxy", "system"] and dev_controls.handle_input(event):
 		queue_redraw()
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -1609,17 +1625,21 @@ func _key_pressed(key: Key) -> void:
 			_save_game()
 		queue_redraw()
 		return
-	if scene_name == "planet" and key == KEY_F3:
+	if scene_name in ["planet", "galaxy", "system"] and key == KEY_F3:
 		stations.close(false)
 		dev_mode = not dev_mode
+		dragged_window = ""
 		dev_controls.opened()
 		crafting_open = false
 		inventory_open = false
+		dialogue_open = false
+		_stop_held_actions()
 		queue_redraw()
 		return
-	if scene_name == "planet" and dev_mode:
+	if scene_name in ["planet", "galaxy", "system"] and dev_mode:
 		if key == KEY_ESCAPE:
 			dev_mode = false
+			dragged_window = ""
 		elif key == KEY_ENTER:
 			dev_controls.run_command()
 		elif key == KEY_TAB:
@@ -1748,6 +1768,11 @@ func _mouse_pressed(event: InputEventMouseButton) -> void:
 			_pause_click(point)
 		queue_redraw()
 		return
+	if dev_mode and scene_name in ["planet", "galaxy", "system"]:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			_dev_click(point)
+		queue_redraw()
+		return
 	if scene_name == "galaxy":
 		if event.button_index != MOUSE_BUTTON_LEFT:
 			return
@@ -1773,11 +1798,6 @@ func _mouse_pressed(event: InputEventMouseButton) -> void:
 					selected_planet_index = i
 					break
 	elif scene_name == "planet" and not paused:
-		if dev_mode:
-			if event.button_index == MOUSE_BUTTON_LEFT:
-				_dev_click(point)
-			queue_redraw()
-			return
 		if _gameplay_ui_click(point, event.button_index, event.ctrl_pressed, event.alt_pressed):
 			queue_redraw()
 			return
@@ -2985,7 +3005,7 @@ func _save_game() -> void:
 		}
 	var data := {
 		"schema": 2, "galaxy_seed": galaxy_seed, "star_index": star_index,
-		"expedition": expedition.data,
+		"expedition": expedition.data, "dev_travel_unlocked": dev_travel_unlocked,
 		"planet_index": planet_index, "scene": scene_name,
 		"inventory": inventory, "health": health, "player_name": player_name,
 		"inventory_order": _inventory_items(),
@@ -3058,6 +3078,7 @@ func _load_game() -> void:
 	mining_cooldown = clampf(float(parsed.get("mining_cooldown", 0.0)), 0.0, Tools.MINING_SWING)
 	attack_cooldown = clampf(float(parsed.get("attack_cooldown", 0.0)), 0.0, 0.60)
 	dev_mode = false
+	dev_travel_unlocked = bool(parsed.get("dev_travel_unlocked", false))
 	dev_invulnerable = false
 	dev_free_flight = false
 	selected_slot = clampi(int(parsed.get("selected_slot", 0)), 0, place_items.size() - 1)
@@ -3239,7 +3260,7 @@ func _draw_stars() -> void:
 
 func _draw_galaxy_view() -> void:
 	_text("Galaxy View - click a star to open system", Vector2(20, 40), 27)
-	_text("ESC = Menu", Vector2(20, 68), 18, Color("a7b6c6"))
+	_text("ESC = Menu  |  F3 = Developer travel", Vector2(20, 68), 18, Color("a7b6c6"))
 	_text("Green ring = active system  |  Cyan ring = visited system", Vector2(20, 91), 17, Color("a7b6c6"))
 	var hover := -1
 	var mouse := get_viewport().get_mouse_position()
@@ -3287,8 +3308,10 @@ func _draw_orbital_rings(center: Vector2, radius: float, front: bool) -> void:
 func _draw_system_view() -> void:
 	var center := Vector2(640, 320)
 	_text("Star System View - click a planet, E or button to enter", Vector2(20, 83), 20)
-	_text("ESC = back to Galaxy  |  1-8 = select planet  |  Green band = habitable zone", Vector2(20, 109), 17, Color("aab9c8"))
-	if expedition.active() and str(expedition.data.get("home", "")).is_empty():
+	_text("ESC = Galaxy  |  1-8 = select planet  |  F3 = Developer travel  |  Green band = habitable zone", Vector2(20, 109), 17, Color("aab9c8"))
+	if dev_travel_unlocked:
+		_text("Developer free travel enabled - expedition objectives paused", Vector2(20, 136), 16, Color("95dfaf"))
+	elif expedition.active() and str(expedition.data.get("home", "")).is_empty():
 		_text("First landing: choose the Temperate forest planet to begin your expedition", Vector2(20, 136), 16, Color("efca8d"))
 	_button(Rect2(20, 20, 170, 42), "Back to Galaxy")
 	var inner_r := _system_radius_for_au(system_hab_inner)
@@ -3524,6 +3547,8 @@ func _draw() -> void:
 	elif scene_name == "loading":
 		_text(load_progress, Vector2(280, 340), 32)
 		_text("Building terrain, caves, resources and a safe landing area", Vector2(280, 377), 19, Color("a6c1d2"))
+	if dev_mode and scene_name in ["galaxy", "system"]:
+		_draw_dev_panel()
 	if notice_timer > 0.0 and scene_name != "planet":
 		_text(notice, Vector2(35, 577) if scene_name == "system" else Vector2(35, 685), 18, Color("f5d78a"))
 
@@ -4126,6 +4151,8 @@ func _draw_planet() -> void:
 		_text(str(count), pointer + Vector2(12, 22), 13, Color("f5dfaa"))
 	if dialogue_open:
 		_draw_dialogue()
+	if dev_travel_unlocked:
+		_text("DEV TRAVEL  |  G: Orbit  |  F3: Controls", Vector2(20, 146), 14, Color("95dfaf"))
 	if dev_mode:
 		_draw_dev_panel()
 	if paused and scene_name == "planet":
