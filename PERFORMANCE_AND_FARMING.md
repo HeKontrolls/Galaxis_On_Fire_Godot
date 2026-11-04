@@ -1,6 +1,6 @@
 # Performance and farming update
 
-Measured with Godot 4.7.2, OpenGL Compatibility, NVIDIA GeForce RTX 3070, 1280 x 720, VSync disabled and uncapped FPS. These are local development measurements, not a guarantee for other hardware.
+Measured with Godot 4.7.2, OpenGL Compatibility, VSync disabled and uncapped FPS. These are local development measurements, not a guarantee for other hardware.
 
 | Scene | Initial 90-frame FPS | Updated 90-frame FPS | Updated 1,200-frame FPS | Updated longer-run p95 frame time |
 | --- | ---: | ---: | ---: | ---: |
