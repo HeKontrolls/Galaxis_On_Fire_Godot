@@ -201,13 +201,14 @@ func draw()->void:
 		if float(c.get("magic_rot",0))>0:effect("blight_status",Vector2(float(c.x)+12,float(c.y)-28)-g.camera_pos,Vector2(12,12))
 		if float(c.get("magic_slow",0))>0:effect("frost_status",Vector2(float(c.x)+12,float(c.y)-18)-g.camera_pos,Vector2(12,12))
 func draw_hud()->void:
-	g._rounded_box(Rect2(16,158,244,43),Color("101e2b"),Color("758aaf"),7,1)
-	g._text("MP",Vector2(28,177),12,Color("b4b4ed"));g.draw_rect(Rect2(55,166,111,8),Color("34344c"));g.draw_rect(Rect2(55,166,111*mana/max_mana(),8),Color("8998df"))
-	g._text("%d / %d" % [int(mana),int(max_mana())],Vector2(177,177),12,Color("e7def1"))
+	g._text("MP",Vector2(29,56),12,Color("b4b4ed"))
+	g._fill_rounded_rect(Rect2(53,46,120,9),Color("34344c"),4)
+	if mana>0:g._fill_rounded_rect(Rect2(53,46,120*clampf(mana/max_mana(),0,1),9),Color("8998df"),4)
+	g._text("%d / %d" % [int(mana),int(max_mana())],Vector2(185,56),12,Color("e7def1"))
 	var caption:="K: Magic skills and spell guide"
 	if ward_time>0:caption="Ward %.0f | %.1fs" % [ward,ward_time]
 	elif C.has_focus(g.equipped_tool) and float(cooldowns.get(g.equipped_tool,0))>0:caption="Recovery %.1fs" % cooldowns[g.equipped_tool]
-	g._button_text(Rect2(24,179,228,19),caption,11,Color("b9bfd9"),false,Vector2.ZERO)
+	g._button_text(Rect2(24,88,228,20),caption,11,Color("b9bfd9"),false,Vector2.ZERO)
 func open_codex()->void:
 	g.alchemy.close(false);g.stations.close(false);g.power_ui.close(false);g.interactions.close(false);g._stop_held_actions();codex_open=true
 	g.inventory_open=true;g.crafting_open=false;g.dialogue_open=false

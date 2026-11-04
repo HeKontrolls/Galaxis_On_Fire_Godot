@@ -1,6 +1,15 @@
 extends Node2D
 
 const BuildInfo=preload("res://scripts/build_info.gd")
+const NetworkSession = preload("res://scripts/network_session.gd")
+const NetworkMenu = preload("res://scripts/network_menu.gd")
+var network
+var network_menu
+var network_actor := false
+var network_owner
+var network_peer_id := 0
+var network_keys := {}
+var network_last_input := 0
 
 const WG = preload("res://scripts/world_gen.gd")
 const Furnishings = preload("res://scripts/furnishings.gd")
@@ -76,7 +85,7 @@ const ITEM_CATALOG = ["Dirt", "Stone", "Wood", "Sand", "Snow", "Grass", "Planks"
 const SCREEN := Vector2(1280, 720)
 const SAVE_PATH := "user://galaxis_save.json"
 const SETTINGS_PATH := "user://galaxis_settings.json"
-const MAIN_MENU_ITEMS := ["New Game", "Load Game", "Settings", "How to Play", "Host Game", "Join Game", "Quit"]
+const MAIN_MENU_ITEMS := ["New Game", "Load Game", "Settings", "How to Play", "Multiplayer", "Quit"]
 const SETTINGS_TABS := ["Gameplay", "Video", "Audio", "Controls"]
 const RECIPE_TABS := ["Basic", "Workbench", "Furnace"]
 const RECIPE_GROUPS := [[0, 1, 2, 3, 4, 5, 58, 82], [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82], [9, 10, 11, 14, 25, 26, 50, 51, 52, 53, 83, 84]]
@@ -85,8 +94,9 @@ const HOTBAR_X := 400.0
 const HOTBAR_Y := 650.0
 const HOTBAR_STEP := 54.0
 const HOTBAR_SIZE := 48.0
-const HUD_PACK_RECT := Rect2(16, 81, 42, 40)
-const HUD_CRAFT_RECT := Rect2(66, 81, 42, 40)
+const HUD_STATUS_RECT := Rect2(16, 16, 244, 100)
+const HUD_PACK_RECT := Rect2(16, 126, 42, 40)
+const HUD_CRAFT_RECT := Rect2(66, 126, 42, 40)
 const HUD_PAGE_RECTS := [Rect2(543, 700, 27, 14), Rect2(576, 700, 27, 14), Rect2(609, 700, 27, 14), Rect2(642, 700, 27, 14), Rect2(675, 700, 27, 14), Rect2(708, 700, 27, 14)]
 const SPEED := 235.0
 const GRAVITY := 1100.0
@@ -376,14 +386,14 @@ var ring_mesh_key := -1
 
 
 func _ready() -> void:
-	get_window().title="Galaxis on Fire - "+BuildInfo.label()
+	if not network_actor: get_window().title="Galaxis on Fire - "+BuildInfo.label()
 	dev_controls = DevControls.new(self)
 	power_ui = PowerWindow.new(self)
 	alchemy=AlchemyWindow.new(self)
 	interactions = WorldInteractions.new(self)
 	window_positions["chest"] = Vector2(660, 205)
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	_load_settings()
+	if not network_actor: _load_settings()
 	sound = GameAudio.new(self)
 	add_child(sound)
 	sound.configure(settings_data)
@@ -417,6 +427,14 @@ func _ready() -> void:
 	elder_frames = sprite_art.actor("robot_guide")
 	explorer_sprite = elder_frames["idle_east"][0]
 	_make_galaxy()
+	if not network_actor:
+		network = NetworkSession.new()
+		network.name = "NetworkSession"
+		add_child(network)
+		network.bind(self)
+		network_menu = NetworkMenu.new()
+		add_child(network_menu)
+		network_menu.bind(self, network)
 	queue_redraw()
 
 
@@ -440,6 +458,7 @@ func _load_settings() -> void:
 
 
 func _save_settings() -> void:
+	if network_actor or (network != null and network.is_client()): return
 	var data := settings_data.duplicate()
 	data["player_name"] = player_name
 	var file := FileAccess.open(settings_path, FileAccess.WRITE)
@@ -474,6 +493,7 @@ func _start_new_game() -> void:
 		galaxy_seed = _seed_from_text(seed_text)
 	worlds.clear()
 	farms.clear()
+	if network != null: network.saved_profiles.clear()
 	expedition.start()
 	stations.close(false)
 	power_ui.close(false)
@@ -647,7 +667,7 @@ func _menu_click(point: Vector2) -> void:
 					"Load Game": _open_load("menu")
 					"Settings": _open_settings("menu")
 					"How to Play": scene_name = "help"
-					"Host Game", "Join Game": _show_notice("Multiplayer is not in the Godot build yet")
+					"Multiplayer": network_menu.show_menu(true)
 					"Quit":
 						confirm_action = "quit"
 						confirm_return = "menu"
@@ -709,6 +729,16 @@ func _pause_click(point: Vector2) -> void:
 	for i in range(labels.size()):
 		if not Rect2(at + Vector2(35, 73 + i * 58), Vector2(400, 46)).has_point(point):
 			continue
+		if network_actor:
+			if i in [4, 5]:
+				network_owner.multiplayer.multiplayer_peer.disconnect_peer(network_peer_id)
+				return
+			if i in [1, 2, 3]:
+				_show_notice("The host manages saving and world settings")
+				return
+		if network != null and network.active() and i in [2, 3]:
+			_show_notice("End the hosted session before loading another save or changing settings")
+			return
 		match labels[i]:
 			"Resume": paused = false
 			"Save Game": _save_game()
@@ -1231,52 +1261,57 @@ func _update_elder(delta: float) -> void:
 func _update_population(delta: float) -> void:
 	damage_cooldown = maxf(0.0, damage_cooldown - delta)
 	for creature in world.get("creatures", []):
-		creature["hit_flash"] = maxf(0.0, float(creature.get("hit_flash", 0.0)) - delta)
-		creature["moving"] = false
-		if not creature["alive"]:
-			continue
-		if absf(creature["x"] - player_pos.x) > SCREEN.x:
-			continue
-		var creature_delta:float=delta*magic.creature_scale(creature)
-		if bool(creature.get("wildlife", false)):
-			wildlife_mobs.update(self, creature, creature_delta)
-			continue
-		if bool(creature.get("flying", false)):
-			flying_monsters.update(self, creature, creature_delta)
-			continue
-		var guardian := bool(creature.get("quest_guardian", false))
-		if guardian and absf(player_pos.y - float(creature["y"])) < 80 and absf(player_pos.x - float(creature["home_x"])) < 100:
-			creature["direction"] = 1 if player_pos.x > float(creature["x"]) else -1
-		var alerted := false
-		if not guardian and absf(player_pos.y - float(creature["y"])) < 48.0 and absf(player_pos.x - float(creature["x"])) < float(creature.get("alert_radius", 80.0)):
-			alerted = interactions._visible(Vector2(float(creature["x"]) + 12, float(creature["y"]) + 9), Rect2(player_pos, Vector2(16, 28)))
-			if alerted:
-				creature["direction"] = 1 if player_pos.x > float(creature["x"]) else -1
-		var speed := 42.0 if guardian else float(creature.get("speed", 28.0)) * (1.35 if alerted else 1.0)
-		var target_x: float = creature["x"] + float(creature["direction"]) * speed * creature_delta
-		var radius := 72.0 if guardian else float(creature.get("patrol_radius", 96.0)) * (2.0 if alerted else 1.0)
-		if absf(target_x - creature["home_x"]) > radius:
-			creature["direction"] = -creature["direction"]
-		elif target_x >= 0.0 and target_x < WG.WIDTH * WG.TILE:
-			var ground_y := expedition.guardian_ground(creature, target_x) if guardian else _walkable_y(int(target_x / WG.TILE))
-			if ground_y > 0 and absf(float(ground_y - 18) - float(creature["y"])) < 24.0 and expedition.guardian_fits(Vector2(target_x, ground_y - 18)):
-				creature["x"] = target_x
-				creature["y"] = float(ground_y - 18)
-				creature["moving"] = true
-			else:
-				creature["direction"] = -creature["direction"]
-				if guardian and ground_y < 0:
-					creature["y"] = minf(WG.HEIGHT * WG.TILE - 34, float(creature["y"]) + 120.0 * creature_delta)
-		if Vector2(creature["x"], creature["y"]).distance_to(player_pos) < 23.0 and damage_cooldown <= 0.0 and not dev_invulnerable:
-			health -= magic.absorb(int(creature.get("damage", 8)))
-			damage_cooldown = 1.2
-			_show_notice("A creature hit you")
-			if health <= 0:
-				health = 100
-				magic.respawn()
-				player_pos = world["spawn"]
-				_show_notice("Respawned")
+		var context = network.pickup_owner(Vector2(float(creature["x"]), float(creature["y"]))) if network != null and network.role == "host" else self
+		context._update_creature(creature, delta)
 
+
+func _update_creature(creature: Dictionary, delta: float) -> void:
+	var grid: PackedByteArray = world["tiles"]
+	creature["hit_flash"] = maxf(0.0, float(creature.get("hit_flash", 0.0)) - delta)
+	creature["moving"] = false
+	if not creature["alive"]:
+		return
+	if absf(creature["x"] - player_pos.x) > SCREEN.x:
+		return
+	var creature_delta:float=delta*magic.creature_scale(creature)
+	if bool(creature.get("wildlife", false)):
+		wildlife_mobs.update(self, creature, creature_delta)
+		return
+	if bool(creature.get("flying", false)):
+		flying_monsters.update(self, creature, creature_delta)
+		return
+	var guardian := bool(creature.get("quest_guardian", false))
+	if guardian and absf(player_pos.y - float(creature["y"])) < 80 and absf(player_pos.x - float(creature["home_x"])) < 100:
+		creature["direction"] = 1 if player_pos.x > float(creature["x"]) else -1
+	var alerted := false
+	if not guardian and absf(player_pos.y - float(creature["y"])) < 48.0 and absf(player_pos.x - float(creature["x"])) < float(creature.get("alert_radius", 80.0)):
+		alerted = interactions._visible(Vector2(float(creature["x"]) + 12, float(creature["y"]) + 9), Rect2(player_pos, Vector2(16, 28)))
+		if alerted:
+			creature["direction"] = 1 if player_pos.x > float(creature["x"]) else -1
+	var speed := 42.0 if guardian else float(creature.get("speed", 28.0)) * (1.35 if alerted else 1.0)
+	var target_x: float = creature["x"] + float(creature["direction"]) * speed * creature_delta
+	var radius := 72.0 if guardian else float(creature.get("patrol_radius", 96.0)) * (2.0 if alerted else 1.0)
+	if absf(target_x - creature["home_x"]) > radius:
+		creature["direction"] = -creature["direction"]
+	elif target_x >= 0.0 and target_x < WG.WIDTH * WG.TILE:
+		var ground_y := expedition.guardian_ground(creature, target_x) if guardian else _walkable_y(int(target_x / WG.TILE))
+		if ground_y > 0 and absf(float(ground_y - 18) - float(creature["y"])) < 24.0 and expedition.guardian_fits(Vector2(target_x, ground_y - 18)):
+			creature["x"] = target_x
+			creature["y"] = float(ground_y - 18)
+			creature["moving"] = true
+		else:
+			creature["direction"] = -creature["direction"]
+			if guardian and ground_y < 0:
+				creature["y"] = minf(WG.HEIGHT * WG.TILE - 34, float(creature["y"]) + 120.0 * creature_delta)
+	if Vector2(creature["x"], creature["y"]).distance_to(player_pos) < 23.0 and damage_cooldown <= 0.0 and not dev_invulnerable:
+		health -= magic.absorb(int(creature.get("damage", 8)))
+		damage_cooldown = 1.2
+		_show_notice("A creature hit you")
+		if health <= 0:
+			health = 100
+			magic.respawn()
+			player_pos = world["spawn"]
+			_show_notice("Respawned")
 
 func _attack(target: Variant = null) -> void:
 	if Ranged.has_weapon(equipped_tool) or MagicCatalog.has_item(equipped_tool): return
@@ -1473,34 +1508,46 @@ func _update_food_feedback(delta: float) -> void:
 func _process(delta: float) -> void:
 	animation_clock += delta
 	_update_food_feedback(delta)
-	if dev_controls != null:
-		dev_controls.update(delta)
+	if dev_controls != null: dev_controls.update(delta)
 	tool_action_timer = maxf(0.0, tool_action_timer - delta)
 	mining_feedback_timer = maxf(0.0, mining_feedback_timer - delta)
 	lava_flash = maxf(0.0, lava_flash - delta)
-	if scene_name == "planet":
-		weather = _climate_weather(weather)
-		_refresh_hotbar()
-		_update_clouds(delta)
-		if not paused and not dev_mode:
-			furnaces.update(delta)
-			alchemy.update(delta)
-			power.update(delta)
-			if crafting_open or inventory_open or stations.is_open():
-				weather_blend.update(weather, delta, int(world.get("climate", 0)))
-				cloud_cover = move_toward(cloud_cover, _cloud_target(), delta * 0.20)
-				wind_cache_clock = -1.0
-	if notice_timer > 0.0:
-		notice_timer -= delta
-	if scene_name != "planet" or paused or crafting_open or inventory_open or stations.is_open() or dev_mode:
+	if notice_timer > 0: notice_timer -= delta
+	if scene_name != "planet":
+		if sound != null: sound.update(delta)
+		queue_redraw()
+		return
+	weather = _climate_weather(weather)
+	_refresh_hotbar()
+	_update_clouds(delta)
+	var client: bool = network != null and network.is_client()
+	var hosting: bool = network != null and network.role == "host"
+	var controls_blocked: bool = paused or crafting_open or inventory_open or stations.is_open() or dev_mode
+	if client:
+		if network.ready_for_play and not controls_blocked: _update_player(minf(delta, 0.05))
+		_update_camera()
+		_update_mouse_aim()
+		weather_blend.update(weather, delta, int(world.get("climate", 0)))
+		cloud_cover = move_toward(cloud_cover, _cloud_target(), delta * 0.20)
+		wind_cache_clock = -1.0
+		if sound != null: sound.update(delta)
+		queue_redraw()
+		return
+	if (not paused and not dev_mode) or hosting:
+		furnaces.update(delta)
+		alchemy.update(delta)
+		power.update(delta)
+	if controls_blocked and not hosting:
 		_stop_held_actions()
-		if sound != null:
-			sound.update(delta)
+		if not paused and not dev_mode:
+			weather_blend.update(weather, delta, int(world.get("climate", 0)))
+			cloud_cover = move_toward(cloud_cover, _cloud_target(), delta * 0.20)
+			wind_cache_clock = -1.0
+		if sound != null: sound.update(delta)
 		queue_redraw()
 		return
 	var next_time: float = time_of_day + delta / float(settings_data["day_length"])
-	if next_time >= 1.0:
-		day_count += int(floor(next_time))
+	if next_time >= 1.0: day_count += int(floor(next_time))
 	time_of_day = fposmod(next_time, 1.0)
 	cloud_cover = move_toward(cloud_cover, _cloud_target(), delta * 0.20)
 	weather_timer += delta
@@ -1508,7 +1555,8 @@ func _process(delta: float) -> void:
 		weather_timer -= 80.0
 		weather = _next_weather()
 		weather_cycle += 1
-	_update_player(delta)
+	if not controls_blocked: _update_player(delta)
+	else: _stop_held_actions()
 	attack_cooldown = maxf(0.0, attack_cooldown - delta)
 	attack_visual = maxf(0.0, attack_visual - delta)
 	_update_elder(delta)
@@ -1525,12 +1573,40 @@ func _process(delta: float) -> void:
 	furnishings.update(self, delta)
 	water_ripples.update(self, delta)
 	hanging_vines.update(self, delta)
-	_update_held_actions(delta)
+	if not controls_blocked: _update_held_actions(delta)
 	ranged.update(delta)
 	magic.update(delta)
-	if sound != null:
-		sound.update(delta)
+	if sound != null: sound.update(delta)
 	queue_redraw()
+
+
+func _network_player_step(delta: float) -> void:
+	animation_clock += delta
+	_update_food_feedback(delta)
+	tool_action_timer = maxf(0, tool_action_timer - delta)
+	mining_feedback_timer = maxf(0, mining_feedback_timer - delta)
+	attack_cooldown = maxf(0, attack_cooldown - delta)
+	attack_visual = maxf(0, attack_visual - delta)
+	if notice_timer > 0: notice_timer -= delta
+	if Time.get_ticks_msec() - network_last_input > 500: network_keys.clear()
+	if not paused and not inventory_open and not crafting_open and not stations.is_open():
+		_update_player(delta)
+		_update_camera()
+		_update_mouse_aim()
+		_update_held_actions(delta)
+	else: _stop_held_actions()
+	ranged.update(delta)
+	magic.update(delta)
+
+
+func _key_down(key: Key) -> bool:
+	return network_keys.has(key) if network_actor else Input.is_key_pressed(key)
+
+
+func _restore_network_profiles(value: Variant) -> Dictionary:
+	if not value is String or value.length() > 8 * 1024 * 1024: return {}
+	var data: Variant = bytes_to_var(Marshalls.base64_to_raw(value)) if not value.is_empty() else {}
+	return data if data is Dictionary else {}
 
 
 func _player_rect(at: Vector2) -> Rect2:
@@ -1566,8 +1642,8 @@ func _update_player(delta: float) -> void:
 	if dev_free_flight:
 		furnishings.climbing = false
 		var flight := Vector2(
-			float(Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT)) - float(Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT)),
-			float(Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)) - float(Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP) or Input.is_key_pressed(KEY_SPACE)))
+			float(_key_down(KEY_D) or _key_down(KEY_RIGHT)) - float(_key_down(KEY_A) or _key_down(KEY_LEFT)),
+			float(_key_down(KEY_S) or _key_down(KEY_DOWN)) - float(_key_down(KEY_W) or _key_down(KEY_UP) or _key_down(KEY_SPACE)))
 		if flight.x != 0.0:
 			facing = int(signf(flight.x))
 		player_pos += flight.normalized() * SPEED * 1.8 * delta
@@ -1577,14 +1653,14 @@ func _update_player(delta: float) -> void:
 		_update_lava_damage(delta)
 		return
 	var movement := 0.0
-	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
+	if _key_down(KEY_A) or _key_down(KEY_LEFT):
 		movement -= 1.0
-	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
+	if _key_down(KEY_D) or _key_down(KEY_RIGHT):
 		movement += 1.0
-	var rising := Input.is_key_pressed(KEY_SPACE) or Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP)
-	var climbing_up := Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP)
-	var climbing_down := Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)
-	if furnishings.climb(self, delta, movement, climbing_up, climbing_down, Input.is_key_pressed(KEY_SPACE)):
+	var rising := _key_down(KEY_SPACE) or _key_down(KEY_W) or _key_down(KEY_UP)
+	var climbing_up := _key_down(KEY_W) or _key_down(KEY_UP)
+	var climbing_down := _key_down(KEY_S) or _key_down(KEY_DOWN)
+	if furnishings.climb(self, delta, movement, climbing_up, climbing_down, _key_down(KEY_SPACE)):
 		return
 	_update_player_motion(delta, movement, rising)
 
@@ -1629,6 +1705,7 @@ func _update_player_motion(delta: float, movement: float, rising: bool) -> void:
 
 
 func _update_lava_damage(delta: float) -> void:
+	if network != null and network.is_client(): return
 	if dev_invulnerable or not lava_sim.intersects(_player_rect(player_pos)):
 		lava_hurt_timer = 0.0
 		return
@@ -1656,6 +1733,13 @@ func _update_camera() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if not network_actor and network_menu != null and network_menu.visible_menu(): return
+	if not network_actor and network != null and network.is_client():
+		if event is InputEventMouseMotion:
+			aim_screen = event.position
+			_remember_mouse_aim(event.position)
+		network.forward_event(event)
+		return
 	if alchemy.handle_input(event):queue_redraw();return
 	if event is InputEventMouseMotion:
 		aim_screen = event.position
@@ -1718,6 +1802,12 @@ func _start_window_drag(kind: String, point: Vector2) -> void:
 
 
 func _key_pressed(key: Key) -> void:
+	if network_actor and key in [KEY_F3, KEY_F5, KEY_F9, KEY_G]:
+		_show_notice("The host manages world travel, saves, and developer mode")
+		return
+	if network != null and network.active() and key == KEY_F9:
+		_show_notice("End the hosted session before loading another save")
+		return
 	if scene_name in ["menu", "new_game", "load", "settings", "help", "confirm"]:
 		_menu_key(key)
 		queue_redraw()
@@ -1949,7 +2039,9 @@ func _mouse_pressed(event: InputEventMouseButton) -> void:
 
 
 func _notification(what: int) -> void:
+	if network_actor: return
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+		if network != null and network.is_client(): network.release_controls()
 		_stop_held_actions()
 		_cancel_inventory_drag()
 		dragged_window = ""
@@ -1968,7 +2060,7 @@ func _world_input_blocked(point: Vector2) -> bool:
 		return true
 	if scene_name != "planet" or paused or crafting_open or inventory_open or stations.is_open() or dev_mode or dialogue_open:
 		return true
-	for rect in [HUD_PACK_RECT, HUD_CRAFT_RECT, Rect2(388, 610, 504, 106), Rect2(16, 16, 244, 55), Rect2(16,158,244,43), Rect2(940, 16, 324, 140)]:
+	for rect in [HUD_PACK_RECT, HUD_CRAFT_RECT, Rect2(388, 610, 504, 106), HUD_STATUS_RECT, Rect2(940, 16, 324, 140)]:
 		if rect.has_point(point):
 			return true
 	return false
@@ -2077,6 +2169,12 @@ func _update_water(delta: float) -> void:
 	var stamp := _profile_tick()
 	water_sim.set_active_region(player_pos + Vector2(8, 14))
 	lava_sim.set_active_region(player_pos + Vector2(8, 14))
+	if network != null and network.role == "host":
+		for actor in network.actors.values():
+			var cell := Vector2i(Vector2(actor.player_pos + Vector2(8, 14)) / WG.TILE)
+			var area := Rect2i(cell - Vector2i(72, 52), Vector2i(145, 105))
+			water_sim.region = water_sim.region.merge(area)
+			lava_sim.region = lava_sim.region.merge(area)
 	precipitation.update(int((player_pos.x + 8.0) / WG.TILE), delta, _rain_strength() > 0.001, weather_blend.amount("Storm") > 0.5, clampf(sin(time_of_day * TAU), 0.0, 1.0), environment.roof, water_sim, lava_sim, _rain_strength())
 	snowfall.update(self, delta)
 	var dirty := water_sim.update(delta)
@@ -2487,7 +2585,7 @@ func _gameplay_ui_click(point: Vector2, button: int, control: bool = false, alte
 		if button == MOUSE_BUTTON_LEFT:
 			_toggle_crafting(0)
 		return true
-	if Rect2(16, 16, 244, 55).has_point(point) or Rect2(940, 16, 324, 140).has_point(point):
+	if HUD_STATUS_RECT.has_point(point) or Rect2(940, 16, 324, 140).has_point(point):
 		return true
 	return false
 
@@ -2546,6 +2644,8 @@ func _edit_tile(tile: Vector2i, tile_id: int, upload: bool = true) -> void:
 		tile_id = 11
 	WG.set_tile(grid, tile.x, tile.y, tile_id)
 	world["tiles"] = grid
+	if network_actor: network_owner.tile_changed(self, tile)
+	elif network != null and network.role == "host": network.tile_changed(self, tile)
 	var paint: Color = WG.terrain_underlay_color(tile_id)
 	world_image.set_pixel(tile.x, tile.y, paint)
 	if upload:
@@ -2659,7 +2759,8 @@ func _update_drops(delta: float) -> void:
 			continue
 		var tree_block := int(drop.get("block_id", 0)) in [7, 8]
 		var pickup_ready := float(drop["pickup_delay"]) <= 0.0 and (not tree_block or bool(drop.get("landed", false)))
-		var pull_target := player_pos + Vector2(8, 13)
+		var collector = network.pickup_owner(Vector2(float(drop["x"]), float(drop["y"]))) if network != null and network.role == "host" else self
+		var pull_target: Vector2 = collector.player_pos + Vector2(8, 13)
 		var pull_distance := Vector2(float(drop["x"]), float(drop["y"])).distance_to(pull_target)
 		if pickup_ready and pull_distance < 112.0:
 			var direction: Vector2 = (pull_target - Vector2(float(drop["x"]), float(drop["y"]))).normalized()
@@ -2669,7 +2770,7 @@ func _update_drops(delta: float) -> void:
 			drop["vx"] = 0.0
 			drop["vy"] = 0.0
 			if Vector2(float(drop["x"]), float(drop["y"])).distance_to(pull_target) < 19.0:
-				_collect_drop(drop)
+				collector._collect_drop(drop)
 				drops.remove_at(i)
 			continue
 		var vx := float(drop["vx"]) * maxf(0.0, 1.0 - delta * (0.18 if tree_block else 2.0))
@@ -2690,7 +2791,7 @@ func _update_drops(delta: float) -> void:
 		drop["vx"] = vx
 		drop["vy"] = vy
 		if pickup_ready and Vector2(next_x, next_y).distance_to(pull_target) < 19.0:
-			_collect_drop(drop)
+			collector._collect_drop(drop)
 			drops.remove_at(i)
 	world["drops"] = drops
 
@@ -3143,6 +3244,9 @@ func _near_station(station: String) -> bool:
 
 
 func _save_game() -> void:
+	if network_actor or (network != null and network.is_client()):
+		_show_notice("The host saves this multiplayer world")
+		return
 	_refresh_hotbar()
 	if scene_name == "planet":
 		_update_water(0.0)
@@ -3230,6 +3334,7 @@ func _save_game() -> void:
 		"weather_cycle": weather_cycle, "weather_timer": weather_timer,
 		"weather_blend": weather_blend.snapshot(),
 		"worlds": saved_worlds,
+		"multiplayer_profiles": Marshalls.raw_to_base64(var_to_bytes(network.profiles_for_save())) if network != null else "",
 	}
 	var file := FileAccess.open(save_path, FileAccess.WRITE)
 	if file == null:
@@ -3241,6 +3346,7 @@ func _save_game() -> void:
 
 
 func _load_game() -> void:
+	if network_actor or (network != null and network.is_client()): return
 	stations.close(false)
 	power_ui.close(false)
 	alchemy.close(false)
@@ -3257,6 +3363,7 @@ func _load_game() -> void:
 	if not parsed is Dictionary or int(parsed.get("schema", -1)) not in [1, 2]:
 		_show_notice("Save format is unsupported")
 		return
+	if network != null: network.saved_profiles = _restore_network_profiles(parsed.get("multiplayer_profiles", {}))
 	galaxy_seed = int(parsed.get("galaxy_seed", galaxy_seed))
 	expedition.data = parsed.get("expedition", {}) if parsed.get("expedition", {}) is Dictionary else {}
 	star_index = int(parsed.get("star_index", 0))
@@ -3641,7 +3748,7 @@ func _draw_main_menu() -> void:
 		draw_texture_rect(logo, Rect2(51, 52, 270, 74), false)
 	_text("Chart the stars. Land and survive.", Vector2(52, 165), 16, Color("b8d0e1"))
 	for i in range(MAIN_MENU_ITEMS.size()):
-		_draw_menu_button(Rect2(52, 228 + i * 61, 268, 51), MAIN_MENU_ITEMS[i], MAIN_MENU_ITEMS[i] not in ["Host Game", "Join Game"])
+		_draw_menu_button(Rect2(52, 228 + i * 61, 268, 51), MAIN_MENU_ITEMS[i])
 	_button_text(Rect2(52,650,268,20),BuildInfo.label(),13,Color("c0cfe0"),false,Vector2.ZERO)
 	_button_text(Rect2(52,673,268,18),BuildInfo.build_name(),11,Color("91a9bb"),false,Vector2.ZERO)
 
@@ -3729,12 +3836,15 @@ func _draw_confirm_menu() -> void:
 func _draw_pause_menu() -> void:
 	var at: Vector2 = window_positions["pause"]
 	draw_rect(Rect2(Vector2.ZERO, SCREEN), Color(0, 0, 0, 0.62), true)
-	_draw_menu_panel(Rect2(at, Vector2(470, 445)), "PAUSED")
+	_draw_menu_panel(Rect2(at, Vector2(470, 445)), "SESSION MENU" if network != null and network.active() else "PAUSED")
 	_rounded_box(Rect2(at + Vector2(428, 15), Vector2(30, 30)), Color("743e46"), Color.WHITE, 6.0, 1.0)
 	_text("X", at + Vector2(437, 38), 18)
 	var labels := ["Resume", "Save Game", "Load Game", "Settings", "Save & Main Menu", "Save & Quit"]
+	var guest: bool = network != null and network.is_client()
+	if guest:
+		labels = ["Resume", "Host manages saves", "Host manages loading", "Host manages settings", "Disconnect to Menu", "Disconnect"]
 	for i in range(labels.size()):
-		_button(Rect2(at + Vector2(35, 73 + i * 58), Vector2(400, 46)), labels[i])
+		_draw_menu_button(Rect2(at + Vector2(35, 73 + i * 58), Vector2(400, 46)), labels[i], not guest or i not in [1, 2, 3])
 
 
 func _draw() -> void:
@@ -4342,6 +4452,7 @@ func _draw_planet() -> void:
 				draw_texture(sprite, npc_pos + Vector2(-16, -11))
 	ranged.draw()
 	_draw_player_sprite(player_screen)
+	if network != null: network.draw_players()
 	sand_gravity.draw(self)
 	_draw_food_feedback(player_screen)
 	_draw_water()
@@ -4362,6 +4473,8 @@ func _draw_planet() -> void:
 	magic.draw()
 	stamp = _profile_end("weather_lighting", stamp)
 	_draw_gameplay_hud(sun)
+	if network != null and network.active():
+		_button_text(Rect2(365, 14, 490, 26), ("HOST" if network.role == "host" else "CO-OP") + " | %d / 8 captains | Esc: session menu" % (network.actors.size() + 1 if network.role == "host" else maxi(1, network.remote_players.size())), 14, Color("d9e4d8"), false, Vector2.ZERO)
 	_draw_mining_feedback()
 	if crafting_open:
 		_draw_crafting()
@@ -4563,12 +4676,12 @@ func _draw_hud_shortcuts() -> void:
 	var hint := "Backpack  [I]" if HUD_PACK_RECT.has_point(mouse) else ("Crafting  [C]  /  Build  [M]" if HUD_CRAFT_RECT.has_point(mouse) else "")
 	if not hint.is_empty():
 		var width := ThemeDB.fallback_font.get_string_size(hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x + 20.0
-		_rounded_box(Rect2(16, 130, width, 29), Color("111f2d"), Color("5a7181"), 6.0, 1.0)
-		_text(hint, Vector2(26, 150), 13, Color("ead9b8"))
+		_rounded_box(Rect2(16, 175, width, 29), Color("111f2d"), Color("5a7181"), 6.0, 1.0)
+		_text(hint, Vector2(26, 195), 13, Color("ead9b8"))
 
 
 func _draw_gameplay_hud(sun: float) -> void:
-	_rounded_box(Rect2(16, 16, 244, 55), Color(0.043, 0.070, 0.105, 0.96), Color("637c8b"), 10.0, 1.0)
+	_rounded_box(HUD_STATUS_RECT, Color(0.043, 0.070, 0.105, 0.96), Color("637c8b"), 10.0, 1.0)
 	_text("HP", Vector2(29, 36), 12, Color("d59a91"))
 	_fill_rounded_rect(Rect2(53, 26, 120, 9), Color("3b2830"), 4.0)
 	if health > 0:
@@ -4580,15 +4693,15 @@ func _draw_gameplay_hud(sun: float) -> void:
 	elif food.edible(place_items[selected_slot]) and int(inventory.get(place_items[selected_slot], 0)) > 0 and tool_action_timer <= 0.0:
 		held = place_items[selected_slot]
 	if held != "Hand":
-		_draw_item_icon(held, Rect2(28, 44, 16, 20))
-	_text(Tools.display_name(held), Vector2(53, 61), 13, Color("b7c9d5"))
+		_draw_item_icon(held, Rect2(28, 63, 16, 20))
+	_button_text(Rect2(53, 62, 144, 23), Tools.display_name(held), 13, Color("b7c9d5"), false, Vector2.ZERO)
 	if Ranged.has_weapon(held):
-		_text("%d DMG" % Ranged.WEAPONS[held].damage, Vector2(203, 61), 10, Color("e4c68b"))
+		_text("%d DMG" % Ranged.WEAPONS[held].damage, Vector2(203, 80), 10, Color("e4c68b"))
 	elif Tools.family(held) in Tools.FAMILIES:
 		var stat := "%d DMG" % Tools.damage(held) if Tools.family(held) == "Sword" else "%.0f PWR" % Tools.mining_damage(held, 2 if Tools.family(held) == "Shovel" else 3)
 		if Tools.family(held) == "Axe":
 			stat = "%d hits" % Tools.mining_hits(held, 7)
-		_text(stat, Vector2(203, 61), 10, Color("e4c68b"))
+		_text(stat, Vector2(203, 80), 10, Color("e4c68b"))
 	_draw_hud_shortcuts()
 	magic.draw_hud()
 	_draw_weather_panel(sun)

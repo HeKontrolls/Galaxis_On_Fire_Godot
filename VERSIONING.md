@@ -1,6 +1,27 @@
 # Build versions and GitHub checkpoints
 
-The first numbered Godot build is **v0.1.0-alpha+build.1**, named **Alchemy and Spellcraft**. It starts from the existing game; earlier commits remain unchanged in history. This version belongs to the game, independently of the Godot engine version.
+The first numbered Godot build is **v0.1.0-alpha+build.1**. It starts from the existing game; earlier commits remain unchanged in history. This version belongs to the game, independently of the Godot engine version.
+
+## Where to change build info and patch notes
+
+Edit **`version.json`** in the project root for build metadata:
+
+- `version`: the release number and channel, such as `0.1.0-alpha`.
+- `build`: the increasing build number, such as `2`.
+- `name`: the build name shown in the main menu.
+- `date`: the build date in `YYYY-MM-DD` format.
+
+The recommended way to prepare a build is to run the helper, which updates the manifest, Godot settings, and changelog together:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\Prepare-Build.ps1 -Message "Name of the next build"
+```
+
+The message becomes the build name, the date is filled automatically, and the build number advances once. Edit that build's section in **`CHANGELOG.md`** to write detailed patch notes. Use its section body as GitHub release notes or as the detailed description in Git Commit App.
+
+If a build is already prepared, do not run the command again to edit its name or notes. Edit the changelog directly, or use `-ReuseVersion -Message "Revised build name"` to synchronize metadata without another build increment. The helper refreshes the build date. `project.godot` contains generated runtime settings, and `scripts/build_info.gd` reads those settings; neither is the main place to edit the version.
+
+Git Commit App recognizes a prepared build and reuses its number. Its commit message becomes the final build name, so use the prepared name there if you want to keep it. Detailed changelog notes are preserved. Preparing a build alone makes no commit, tag, GitHub upload, or GitHub Release.
 
 ## Normal uploads
 

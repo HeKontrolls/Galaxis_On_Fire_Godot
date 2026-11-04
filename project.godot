@@ -19,9 +19,9 @@ config/description="A separate Godot rebuild of Galaxis on Fire."
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://assets/galaxis_on_fire_logo.png"
-config/version="0.1.0-alpha+build.1"
-config/build_number=1
-config/build_name="Git Commit"
+config/version="0.1.0-alpha+build.2"
+config/build_number=2
+config/build_name="Multiplayer Expeditions and Ally Spacing"
 config/build_date="2026-11-04"
 
 [display]
