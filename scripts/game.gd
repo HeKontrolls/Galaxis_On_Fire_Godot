@@ -1,5 +1,7 @@
 extends Node2D
 
+const BuildInfo=preload("res://scripts/build_info.gd")
+
 const WG = preload("res://scripts/world_gen.gd")
 const Furnishings = preload("res://scripts/furnishings.gd")
 var furnishings := Furnishings.new()
@@ -374,6 +376,7 @@ var ring_mesh_key := -1
 
 
 func _ready() -> void:
+	get_window().title="Galaxis on Fire - "+BuildInfo.label()
 	dev_controls = DevControls.new(self)
 	power_ui = PowerWindow.new(self)
 	alchemy=AlchemyWindow.new(self)
@@ -3639,7 +3642,8 @@ func _draw_main_menu() -> void:
 	_text("Chart the stars. Land and survive.", Vector2(52, 165), 16, Color("b8d0e1"))
 	for i in range(MAIN_MENU_ITEMS.size()):
 		_draw_menu_button(Rect2(52, 228 + i * 61, 268, 51), MAIN_MENU_ITEMS[i], MAIN_MENU_ITEMS[i] not in ["Host Game", "Join Game"])
-	_text("GALAXIS  /  GODOT BUILD", Vector2(52, 679), 13, Color("91a9bb"))
+	_button_text(Rect2(52,650,268,20),BuildInfo.label(),13,Color("c0cfe0"),false,Vector2.ZERO)
+	_button_text(Rect2(52,673,268,18),BuildInfo.build_name(),11,Color("91a9bb"),false,Vector2.ZERO)
 
 
 func _draw_input_field(rect: Rect2, value: String, active: bool, hint: String) -> void:
