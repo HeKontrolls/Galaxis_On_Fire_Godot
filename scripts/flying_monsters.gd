@@ -94,11 +94,11 @@ func update(game, c: Dictionary, delta: float) -> void:
 	if absf(moved.x - at.x) > 0.01: c["direction"] = 1 if moved.x > at.x else -1
 	c["x"] = moved.x; c["y"] = moved.y
 	if str(c["flight_state"]) == "dive" and moved.distance_to(player) < 24 and game.damage_cooldown <= 0 and not game.dev_invulnerable and game.interactions._visible(moved + Vector2(12, 9), Rect2(game.player_pos, Vector2(16, 28))):
-		game.health -= int(c["damage"]); game.damage_cooldown = 1.2
+		game.health -= game.magic.absorb(int(c["damage"])); game.damage_cooldown = 1.2
 		c["flight_state"] = "recover"; c["flight_timer"] = 2.2
 		game._show_notice(str(c.get("species_name", NAMES[family])) + " struck you")
 		if game.health <= 0:
-			game.health = 100; game.player_pos = game.world["spawn"]; game._show_notice("Respawned")
+			game.health = 100; game.magic.respawn(); game.player_pos = game.world["spawn"]; game._show_notice("Respawned")
 
 func texture_for(family: int) -> Texture2D:
 	if not sheets.has(family): sheets[family] = Art.texture("res://assets/sprites/monsters/flying_%d.png" % family)

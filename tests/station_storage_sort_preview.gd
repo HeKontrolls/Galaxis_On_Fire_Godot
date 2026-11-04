@@ -42,11 +42,24 @@ func run() -> void:
 	game.stations.state()["recipe"] = 19
 	game.stations.page = game.stations.recipes().find(19) / 5
 	await capture(game, "workbench_slots_preview")
+	root.warp_mouse(game.stations.slot_rect("input",4).get_center())
+	await capture(game,"workbench_tooltip_preview")
+	# Overlapping windows used to paint the workbench over the backpack tooltip.
+	game.inventory["Wood Power Pole"]=1
+	var pole_index:int=game._inventory_items().find("Wood Power Pole")
+	var hover:=Vector2(790+44+(pole_index%8)*54,190+69+int(pole_index/8)*54)
+	game.window_positions.workbench=Vector2(maxf(0,hover.x-728),160)
+	root.warp_mouse(hover)
+	await capture(game,"bench_backpack_tooltip_preview")
+	game.window_positions.workbench=Vector2(20,160)
+	game.inventory.erase("Wood Power Pole")
 	game.stations.open({"name": "Furnace", "tile": Vector2i(x - 3, y)})
 	for item: String in ["Copper Ore", "Iron Ore", "Gold Ore", "Corn", "Netherite Scrap", "Gold Ingot", "Coal Ore"]:
 		game.stations.deposit(item)
 	game.furnaces.update(17.0)
 	await capture(game, "furnace_slots_preview")
+	root.warp_mouse(game.stations.slot_rect("input",4).get_center())
+	await capture(game,"furnace_tooltip_preview")
 	game.stations.close(false)
 	game.inventory["Iron Sword"] = 1
 	game.inventory["Wood Shovel"] = 0

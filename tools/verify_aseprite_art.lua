@@ -62,3 +62,9 @@ dofile(root .. "/tools/verify_door_aseprite.lua")
 dofile(root .. "/tools/verify_farming_aseprite.lua")
 
 dofile(root .. "/tools/verify_weapons_aseprite.lua")
+
+dofile(root .. "/tools/verify_power_aseprite.lua")
+
+dofile(root .. "/tools/verify_magic_aseprite.lua")
+
+dofile(root .. "/tools/verify_alchemy_aseprite.lua")

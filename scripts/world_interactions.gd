@@ -88,6 +88,8 @@ func interact() -> bool:
 			g.world["chest_contents"] = {}
 		if not g.world["chest_contents"].has(chest_key):
 			g.world["chest_contents"][chest_key] = {} if g.world.get("placed_chests", {}).has(chest_key) else {"Coal Ore": 3, "Copper Ore": 2}
+		g.magic.codex_open=false
+		g.alchemy.close(false)
 		g.inventory_open = true
 		g.crafting_open = false
 		var chest_rect := Rect2(Vector2(g.window_positions["chest"]), SIZE)
@@ -223,12 +225,14 @@ func draw() -> void:
 	g._text("%d / 32 stacks" % stored.size(), at + Vector2(300, 307), 14, Color("b9ab86"))
 	g._text("Click pack to store. Click chest to take.", at + Vector2(20, 348), 13)
 	g._text("Right-click: one item  |  Drag into chest: store stack", at + Vector2(20, 368), 12, Color("b9cad4"))
-	var mouse: Vector2 = g.get_viewport().get_mouse_position()
+
+
+func draw_tooltip() -> void:
+	if not is_open() or not g.inventory_drag_item.is_empty():return
+	var at:Vector2=g.window_positions.chest
+	var stored:=items()
+	var mouse:Vector2=g.get_viewport().get_mouse_position()
 	for index in range(stored.size()):
-		if Rect2(at + Vector2(20 + index % 8 * 54, 45 + (index / 8) * 54), Vector2(48, 48)).has_point(mouse):
-			var text := "%s x%d" % [Tools.display_name(str(stored[index])), int(contents()[stored[index]])]
-			var width := ThemeDB.fallback_font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x + 18
-			var box := Rect2(Vector2(clampf(mouse.x + 12, 5, 1275 - width), mouse.y - 28), Vector2(width, 28))
-			g._rounded_box(box, Color("080c13"), Color("d2b783"), 5, 1)
-			g._text(text, box.position + Vector2(9, 20), 14)
+		if Rect2(at+Vector2(20+index%8*54,45+(index/8)*54),Vector2(48,48)).has_point(mouse):
+			g._draw_item_tooltip(mouse,["%s x%d" % [Tools.display_name(str(stored[index])),int(contents()[stored[index]])]])
 			break

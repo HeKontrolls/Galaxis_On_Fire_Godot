@@ -4,7 +4,7 @@ const WG = preload("res://scripts/world_gen.gd")
 const Slots = preload("res://scripts/station_slots.gd")
 const TIMES := {"Copper Ingot": 8.0, "Iron Ingot": 11.0, "Gold Ingot": 9.0,
 	"Netherite Scrap": 16.0, "Netherite Ingot": 18.0,
-	"Roasted Corn":6.0,"Baked Potato":8.0,"Tomato Soup":10.0,"Bread":10.0,"Vegetable Stew":14.0}
+	"Roasted Corn":6.0,"Baked Potato":8.0,"Tomato Soup":10.0,"Bread":10.0,"Vegetable Stew":14.0,"Biofuel":16.0,"Refined Fuel":24.0}
 const HEAT_SECONDS := 5.0
 var g
 var focus_key := ""

@@ -184,6 +184,7 @@ func hit_creature(c: Dictionary,damage: int,velocity: Vector2) -> void:
 	if g.FlyingMonsters.fits(g.world,pushed):c.x=pushed.x
 	if int(c.hp)<=0:
 		c.alive=false
+		g.spellcraft.dead_loot(c)
 		g._drop_item(g.WildlifeMobs.loot(c) if bool(c.get("wildlife",false)) else "Alien Fiber",1,Vector2i(floor(Vector2(float(c.x),float(c.y))/16)))
 		g._show_notice("Creature defeated")
 	else:g._show_notice("Arrow hit: %d damage" % damage)

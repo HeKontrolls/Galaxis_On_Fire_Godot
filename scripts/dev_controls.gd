@@ -4,7 +4,7 @@ const Tools = preload("res://scripts/tool_catalog.gd")
 
 # Coordinates, text, colors and actions ported from main.py debug helpers and
 # systems/planet_render.py's DEBUG CONTROLS panel in the Python project.
-const TABS := ["Weather", "Tools", "Farming", "Power", "Seasons", "Travel"]
+const TABS := ["Weather", "Tools", "Farming", "Power", "Seasons", "Travel", "Magic"]
 const WEATHER_KEYS := ["sunny", "cloudy", "rainy", "foggy", "snowy", "thunderstorm"]
 const WEATHER_LABELS := ["Sunny", "Cloudy", "Rain", "Fog", "Snow", "Storm"]
 const WEATHER_VALUES := ["Clear", "Cloudy", "Rain", "Fog", "Snow", "Storm"]
@@ -13,8 +13,9 @@ const STARTER_MATERIALS := {"Wood": 64, "Planks": 64, "Coal Ore": 64, "Copper Or
 	"Iron Ore": 64, "Gold Ore": 64, "Crystal": 64, "Chest": 2, "Furnace": 1, "Workbench": 1}
 const STARTER_TOOLS := {"Pickaxe": 1, "Sword": 1, "Axe": 1, "Hammer": 1, "Torch": 64, "Wood Bow": 1, "Stone Arrow": 64}
 const FARMING_KIT := {"Hoe": 1, "Watering Can": 1, "Crop Seeds": 32, "Carrot Seeds": 16, "Seed Potato": 16, "Tomato Seeds": 16, "Wheat Seeds": 16}
-const POWER_KIT := {"Biomass Generator": 1, "Wood Power Pole": 6, "Power Switch": 1,
-	"Electric Lamp": 4, "Wire": 20, "Raw Biomass": 20}
+const POWER_KIT := {"Biomass Generator": 2, "Coal Generator": 1, "Fuel Generator": 1, "Wood Power Pole": 8, "Power Connector": 8, "Power Switch": 2, "Electric Lamp": 12, "Logic Input": 4, "Logic Output": 2, "NOT Gate": 2, "AND Gate": 2, "OR Gate": 2, "XOR Gate": 2, "NAND Gate": 2, "NOR Gate": 2, "RS NOR Latch": 2, "RS NAND Latch": 2, "T Flip-Flop": 2, "Wall Light": 6, "Ceiling Light": 6, "Floodlight": 4, "Red Signal Lamp": 4, "Wall Switch": 4, "Push Button": 4, "Pressure Plate": 4, "Daylight Sensor": 4, "Wire": 128, "Logic Wire": 128, "Raw Biomass": 32, "Coal Ore": 16, "Biofuel": 16, "Refined Fuel": 8}
+const MAGIC_KIT := {"Ember Wand":1,"Frost Wand":1,"Storm Staff":1,"Crystal Staff":1,"Mending Tome":1,"Ward Book":1,"Greater Ward Book":1,"Lumen Tome":1,"Mana Tonic":8}
+const ALCHEMY_KIT := {"Alchemy Desk":1,"Cauldron":1,"Blank Wand":4,"Blank Staff":4,"Blank Tome":4,"Fire Essence":16,"Frost Essence":16,"Storm Essence":16,"Life Essence":16,"Spirit Essence":16,"Arcane Ink":16,"Bone Fragment":16,"Soul Wand":1,"Grave Tome":1}
 const YELLOW := Color("ffdc50")
 var g
 var font := SystemFont.new()
@@ -40,7 +41,7 @@ func _init(game) -> void:
 			if not item_catalog.has(str(item)):
 				item_catalog.append(str(item))
 		item_catalog.sort()
-	for item in ["Corn", "Roasted Corn", "Obsidian", "Diamond", "Ancient Debris", "Netherite Scrap", "Netherite Ingot", "Glacial Ice", "Gravel"] + Tools.BASE_TOOLS + Tools.variants() + g.GroundLife.ITEMS + g.Furnishings.ITEMS + g.CropCatalog.ITEMS + g.Ranged.ITEMS:
+	for item in ["Corn", "Roasted Corn", "Obsidian", "Diamond", "Ancient Debris", "Netherite Scrap", "Netherite Ingot", "Glacial Ice", "Gravel"] + Tools.BASE_TOOLS + Tools.variants() + g.GroundLife.ITEMS + g.Furnishings.ITEMS + g.CropCatalog.ITEMS + g.Ranged.ITEMS + g.PowerCatalog.ITEMS + g.MagicCatalog.ITEMS + g.SpellcraftCatalog.ITEMS:
 		if not item_catalog.has(item):
 			item_catalog.append(item)
 	item_catalog.sort()
@@ -340,10 +341,18 @@ func click(point: Vector2) -> void:
 			if _rect(Rect2(10, 100, 330, 36)).has_point(point):
 				grant(FARMING_KIT)
 				message("Farming kit ready (3/3 stacks).")
+		"magic":
+			if _rect(Rect2(10,100,330,36)).has_point(point):
+				grant(MAGIC_KIT);grant(ALCHEMY_KIT);g.magic.mana=g.magic.max_mana();message("Magic and alchemy kit ready. K opens the skill tree.")
+			elif _rect(Rect2(10,230,330,36)).has_point(point):
+				for school:String in g.MagicCatalog.SCHOOLS:g.magic.xp[school]=300.0
+				for node:String in g.SpellcraftCatalog.NODES:
+					if g.spellcraft.can_learn(node):g.spellcraft.learn(node)
+				g.magic.mana=g.magic.max_mana();message("All research unlocked for testing.")
 		"power":
 			if _rect(Rect2(10, 100, 330, 36)).has_point(point):
 				grant(POWER_KIT)
-				message("Power kit ready (6/6 stacks).")
+				message("Power and logic kit ready (%d stacks)." % POWER_KIT.size())
 		"seasons":
 			for i in range(4):
 				if _rect(Rect2(10 + i * 132, 112, 122, 36)).has_point(point):
@@ -414,13 +423,19 @@ func draw() -> void:
 			_text("Grants farming tools and all five seed types.", Vector2(10, 110))
 			var rect := Rect2(10, 100, 330, 36)
 			_button(rect, "Grant Farming Test Kit", Color("2a5c36") if _rect(rect).has_point(mouse) else Color("1c3a26"), Color.WHITE, 6.0, false, Vector2(10, 8))
+		"magic":
+			_text("Magic test setup",Vector2(10,82),YELLOW)
+			_button(Rect2(10,100,330,36),"Grant Magic Test Kit",Color("354568"),Color.WHITE,6.0)
+			_text("Mana: %.0f / %.0f | K: skill and spell guide" % [g.magic.mana,g.magic.max_mana()],Vector2(10,158))
+			_text("K: skill tree | F at desk / cauldron: create spells.",Vector2(10,190))
+			_button(Rect2(10,230,330,36),"Unlock magic research (testing)",Color("4a3e5b"))
 		"power":
 			_text("Power system test setup", Vector2(10, 82), YELLOW)
 			var power: Dictionary = g.world.get("power", {})
-			_text("Placed nodes: %d | Active grids: %d" % [power.get("nodes", {}).size(), power.get("grids", []).size()], Vector2(10, 110))
+			_text("Placed nodes: %d | Grids: %d" % [power.get("nodes", {}).size(), power.get("grids", []).size()], Vector2(10, 110))
 			var rect := Rect2(10, 100, 330, 36)
 			_button(rect, "Grant Power Test Kit", Color("485c7e") if _rect(rect).has_point(mouse) else Color("263248"), Color.WHITE, 6.0, false, Vector2(10, 8))
-			_text("Place devices, equip Wire, then right-click two terminals.", Vector2(10, 158), Color("505050"))
+			_text("Place devices, equip Wire, then right-click two terminals.", Vector2(10, 158), Color("a5bdc9"))
 		"seasons":
 			var cal := calendar()
 			_text("Current: " + str(cal["date_label"]), Vector2(10, 82), YELLOW)
@@ -430,7 +445,7 @@ func draw() -> void:
 					Color("cdeba0") if active else Color.WHITE, 6.0, true)
 			_button(Rect2(10, 168, 150, 34), "Previous Day", Color("2a3646"), Color.WHITE, 6.0, false, Vector2(10, 7))
 			_button(Rect2(170, 168, 150, 34), "Next Day", Color("2a3646"), Color.WHITE, 6.0, false, Vector2(10, 7))
-			_text("Changing season updates weather probabilities immediately.", Vector2(10, 224), Color("505050"))
+			_text("Changing season updates weather probabilities immediately.", Vector2(10, 224), Color("a5bdc9"))
 	if not feedback.is_empty() and feedback_timer > 0.0:
 		var shown_feedback := feedback
 		while font.get_string_size(shown_feedback, HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x > 540:

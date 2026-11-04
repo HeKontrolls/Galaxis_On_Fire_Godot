@@ -18,6 +18,7 @@ var last_update := -100.0
 var last_sun := -1.0
 var last_night := -1.0
 var last_held_torch := false
+var last_magic_light := 0.0
 var fog_textures: Array[CanvasTexture] = []
 var fog_profiles := {}
 var fog_profile_version := -1
@@ -126,18 +127,19 @@ func _propagate(values: PackedFloat32Array, pending: Array[int], grid: PackedByt
 					pending.append(next)
 
 
-func prepare(camera: Vector2, player: Vector2, sun: float, night_dark: float, clock: float, held_torch: bool = false) -> void:
+func prepare(camera: Vector2, player: Vector2, sun: float, night_dark: float, clock: float, held_torch: bool = false, magic_light: float = 0.0) -> void:
 	var start := Vector2i(maxi(0, int(floor(camera.x / 128)) * 8 - MARGIN), maxi(0, int(floor(camera.y / 128)) * 8 - MARGIN))
 	var end := Vector2i(mini(WG.WIDTH, int(ceil((camera.x + 1280) / 128)) * 8 + MARGIN), mini(WG.HEIGHT, int(ceil((camera.y + 720) / 128)) * 8 + MARGIN))
 	var next_bounds := Rect2i(start, end - start)
 	var player_tile := Vector2i(floor((player + Vector2(8, 14)) / WG.TILE))
 	var rebuild := dirty or bounds != next_bounds or absf(last_sun - sun) >= 0.02 or not is_equal_approx(last_night, night_dark)
-	if not rebuild and player_tile == last_player_tile and last_held_torch == held_torch:
+	if not rebuild and player_tile == last_player_tile and last_held_torch == held_torch and is_equal_approx(last_magic_light,magic_light):
 		return
 	bounds = next_bounds
 	last_update = clock
 	last_player_tile = player_tile
 	last_held_torch = held_torch
+	last_magic_light=magic_light
 	dirty = false
 	var pending: Array[int] = []
 	var warm_pending: Array[int] = []
@@ -187,6 +189,8 @@ func prepare(camera: Vector2, player: Vector2, sun: float, night_dark: float, cl
 		for hearth: Vector2i in world.get("furniture_lights", []):
 			_seed(light, hearth, 1.15, pending)
 			_seed(warmth, hearth, 1.0, warm_pending)
+		for lamp: Dictionary in world.get("power_lights", []):
+			_seed(light, Vector2i(int(lamp.x), int(lamp.y)), float(lamp.get("strength",1.15)), pending)
 		_crystal_glow(grid)
 		_propagate(light, pending, grid)
 		_propagate(warmth, warm_pending, grid)
@@ -197,7 +201,7 @@ func prepare(camera: Vector2, player: Vector2, sun: float, night_dark: float, cl
 	else:
 		light = base_light.duplicate()
 		warmth = base_warmth.duplicate()
-	_seed(light, player_tile, 1.02 if held_torch else 0.18, pending)
+	_seed(light, player_tile, maxf(1.02 if held_torch else 0.18,magic_light), pending)
 	if held_torch:
 		_seed(warmth, player_tile, 0.95, warm_pending)
 	var dynamic := not pending.is_empty() or not warm_pending.is_empty()

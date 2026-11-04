@@ -37,7 +37,22 @@ const BiomeBackgrounds = preload("res://scripts/biome_backgrounds.gd")
 const SurfaceEffects = preload("res://scripts/surface_effects.gd")
 const FluidRenderer = preload("res://scripts/fluid_renderer.gd")
 const FluidReactions = preload("res://scripts/fluid_reactions.gd")
+const PowerCatalog = preload("res://scripts/power_catalog.gd")
+const PowerSystem = preload("res://scripts/power_system.gd")
+const PowerWindow = preload("res://scripts/power_window.gd")
+var power := PowerSystem.new()
+var power_ui: RefCounted
 const Materials = preload("res://scripts/materials.gd")
+const SpellcraftCatalog=preload("res://scripts/spellcraft_catalog.gd")
+const SpellcraftSystem=preload("res://scripts/spellcraft_system.gd")
+const AlchemyWindow=preload("res://scripts/alchemy_window.gd")
+const Necromancy=preload("res://scripts/necromancy.gd")
+var spellcraft:=SpellcraftSystem.new()
+var necromancy:=Necromancy.new()
+var alchemy
+const MagicCatalog = preload("res://scripts/magic_catalog.gd")
+const MagicSystem = preload("res://scripts/magic_system.gd")
+var magic := MagicSystem.new()
 const Ranged = preload("res://scripts/ranged_weapons.gd")
 var ranged := Ranged.new()
 const Tools = preload("res://scripts/tool_catalog.gd")
@@ -55,14 +70,14 @@ const StationWindows = preload("res://scripts/station_windows.gd")
 const Expedition = preload("res://scripts/expedition.gd")
 const WeatherBlend = preload("res://scripts/weather_blend.gd")
 const OceanPreparation = preload("res://scripts/ocean_preparation.gd")
-const ITEM_CATALOG = ["Dirt", "Stone", "Wood", "Sand", "Snow", "Grass", "Planks", "Cobblestone", "Workbench", "Furnace", "Torch", "Chest", "Leaves", "Crop Seeds", "Corn", "Roasted Corn", "Obsidian", "Gravel"] + GroundLife.ITEMS + Furnishings.ITEMS + CropCatalog.NEW_ITEMS + Ranged.ITEMS
+const ITEM_CATALOG = ["Dirt", "Stone", "Wood", "Sand", "Snow", "Grass", "Planks", "Cobblestone", "Workbench", "Furnace", "Torch", "Chest", "Leaves", "Crop Seeds", "Corn", "Roasted Corn", "Obsidian", "Gravel"] + GroundLife.ITEMS + Furnishings.BASE_ITEMS + CropCatalog.NEW_ITEMS + Ranged.ITEMS + PowerCatalog.ITEMS + MagicCatalog.ITEMS + SpellcraftCatalog.ITEMS
 const SCREEN := Vector2(1280, 720)
 const SAVE_PATH := "user://galaxis_save.json"
 const SETTINGS_PATH := "user://galaxis_settings.json"
 const MAIN_MENU_ITEMS := ["New Game", "Load Game", "Settings", "How to Play", "Host Game", "Join Game", "Quit"]
 const SETTINGS_TABS := ["Gameplay", "Video", "Audio", "Controls"]
 const RECIPE_TABS := ["Basic", "Workbench", "Furnace"]
-const RECIPE_GROUPS := [[0, 1, 2, 3, 4, 5, 58], [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 54, 55, 56, 57, 58, 59, 60, 61], [9, 10, 11, 14, 25, 26, 50, 51, 52, 53]]
+const RECIPE_GROUPS := [[0, 1, 2, 3, 4, 5, 58, 82], [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82], [9, 10, 11, 14, 25, 26, 50, 51, 52, 53, 83, 84]]
 const RECIPE_PAGE_SIZE := 6
 const HOTBAR_X := 400.0
 const HOTBAR_Y := 650.0
@@ -153,6 +168,53 @@ const RECIPES := [
 	{"name": "Copper Arrows x16", "out": "Copper Arrow", "count": 16, "needs": {"Stick": 4, "Copper Ingot": 1}, "station": "Workbench"},
 	{"name": "Iron Arrows x16", "out": "Iron Arrow", "count": 16, "needs": {"Stick": 4, "Iron Ingot": 1}, "station": "Workbench"},
 	{"name": "Crystal Arrows x8", "out": "Crystal Arrow", "count": 8, "needs": {"Iron Arrow": 8, "Crystal": 1}, "station": "Workbench"},
+	{"name": "Biomass Generator", "out": "Biomass Generator", "count": 1, "needs": {"Iron Ingot": 4, "Copper Ingot": 2, "Planks": 8}, "station": "Workbench"},
+	{"name": "Coal Generator", "out": "Coal Generator", "count": 1, "needs": {"Iron Ingot": 8, "Copper Ingot": 4, "Cobblestone": 8}, "station": "Workbench"},
+	{"name": "Fuel Generator", "out": "Fuel Generator", "count": 1, "needs": {"Iron Ingot": 12, "Copper Ingot": 6, "Crystal": 2}, "station": "Workbench"},
+	{"name": "Wood Power Pole", "out": "Wood Power Pole", "count": 1, "needs": {"Wood": 4, "Copper Ingot": 1}, "station": "Workbench"},
+	{"name": "Power Connector", "out": "Power Connector", "count": 1, "needs": {"Copper Ingot": 1, "Stone": 1}, "station": "Workbench"},
+	{"name": "Power Switch", "out": "Power Switch", "count": 1, "needs": {"Copper Ingot": 1, "Stick": 1}, "station": "Workbench"},
+	{"name": "Electric Lamp", "out": "Electric Lamp", "count": 1, "needs": {"Copper Ingot": 2, "Crystal": 1}, "station": "Workbench"},
+	{"name": "Logic Input", "out": "Logic Input", "count": 1, "needs": {"Copper Ingot": 1, "Planks": 2}, "station": "Workbench"},
+	{"name": "Logic Output", "out": "Logic Output", "count": 1, "needs": {"Copper Ingot": 2, "Iron Ingot": 1}, "station": "Workbench"},
+	{"name": "NOT Gate", "out": "NOT Gate", "count": 1, "needs": {"Copper Ingot": 2, "Iron Ingot": 1, "Crystal": 1}, "station": "Workbench"},
+	{"name": "AND Gate", "out": "AND Gate", "count": 1, "needs": {"Copper Ingot": 2, "Iron Ingot": 1, "Crystal": 1}, "station": "Workbench"},
+	{"name": "OR Gate", "out": "OR Gate", "count": 1, "needs": {"Copper Ingot": 2, "Iron Ingot": 1, "Crystal": 1}, "station": "Workbench"},
+	{"name": "XOR Gate", "out": "XOR Gate", "count": 1, "needs": {"Copper Ingot": 2, "Iron Ingot": 1, "Crystal": 1}, "station": "Workbench"},
+	{"name": "NAND Gate", "out": "NAND Gate", "count": 1, "needs": {"Copper Ingot": 2, "Iron Ingot": 1, "Crystal": 1}, "station": "Workbench"},
+	{"name": "NOR Gate", "out": "NOR Gate", "count": 1, "needs": {"Copper Ingot": 2, "Iron Ingot": 1, "Crystal": 1}, "station": "Workbench"},
+	{"name": "RS NOR Latch", "out": "RS NOR Latch", "count": 1, "needs": {"Copper Ingot": 2, "Iron Ingot": 1, "Crystal": 2}, "station": "Workbench"},
+	{"name": "RS NAND Latch", "out": "RS NAND Latch", "count": 1, "needs": {"Copper Ingot": 2, "Iron Ingot": 1, "Crystal": 2}, "station": "Workbench"},
+	{"name": "T Flip-Flop", "out": "T Flip-Flop", "count": 1, "needs": {"Copper Ingot": 2, "Iron Ingot": 1, "Crystal": 2}, "station": "Workbench"},
+	{"name": "Wire x8", "out": "Wire", "count": 8, "needs": {"Copper Ingot": 1}, "station": "Workbench"},
+	{"name": "Logic Wire x8", "out": "Logic Wire", "count": 8, "needs": {"Copper Ingot": 1, "Alien Fiber": 1}, "station": "Workbench"},
+	{"name": "Raw Biomass x4", "out": "Raw Biomass", "count": 4, "needs": {"Leaves": 4}},
+	{"name": "Biofuel x2", "out": "Biofuel", "count": 2, "needs": {"Raw Biomass": 4, "Corn": 2, "Wood": 1}, "station": "Furnace"},
+	{"name": "Refined Fuel x2", "out": "Refined Fuel", "count": 2, "needs": {"Biofuel": 2, "Coal Ore": 2}, "station": "Furnace"},
+	{"name": "Wall Light", "out": "Wall Light", "count": 1, "needs": {"Copper Ingot": 1, "Crystal": 1}, "station": "Workbench"},
+	{"name": "Ceiling Light", "out": "Ceiling Light", "count": 1, "needs": {"Copper Ingot": 2, "Iron Ingot": 1, "Crystal": 1}, "station": "Workbench"},
+	{"name": "Floodlight", "out": "Floodlight", "count": 1, "needs": {"Copper Ingot": 3, "Iron Ingot": 3, "Crystal": 2}, "station": "Workbench"},
+	{"name": "Red Signal Lamp", "out": "Red Signal Lamp", "count": 1, "needs": {"Copper Ingot": 1, "Crystal": 1}, "station": "Workbench"},
+	{"name": "Wall Switch", "out": "Wall Switch", "count": 1, "needs": {"Copper Ingot": 1, "Stone": 1}, "station": "Workbench"},
+	{"name": "Push Button", "out": "Push Button", "count": 1, "needs": {"Copper Ingot": 1, "Stick": 1}, "station": "Workbench"},
+	{"name": "Pressure Plate", "out": "Pressure Plate", "count": 1, "needs": {"Copper Ingot": 1, "Planks": 2}, "station": "Workbench"},
+	{"name": "Daylight Sensor", "out": "Daylight Sensor", "count": 1, "needs": {"Copper Ingot": 2, "Crystal": 2, "Iron Ingot": 1}, "station": "Workbench"},
+	{"name": "Ember Wand", "out": "Ember Wand", "count": 1, "needs": {"Stick": 4, "Copper Ingot": 1, "Crystal": 1}, "station": "Workbench"},
+	{"name": "Frost Wand", "out": "Frost Wand", "count": 1, "needs": {"Stick": 4, "Glacial Ice": 4, "Crystal": 2}, "station": "Workbench"},
+	{"name": "Storm Staff", "out": "Storm Staff", "count": 1, "needs": {"Planks": 8, "Copper Ingot": 4, "Crystal": 3}, "station": "Workbench"},
+	{"name": "Crystal Staff", "out": "Crystal Staff", "count": 1, "needs": {"Planks": 8, "Iron Ingot": 3, "Crystal": 4}, "station": "Workbench"},
+	{"name": "Mending Tome", "out": "Mending Tome", "count": 1, "needs": {"Alien Fiber": 6, "Wildflower": 4, "Crystal": 2}, "station": "Workbench"},
+	{"name": "Ward Book", "out": "Ward Book", "count": 1, "needs": {"Alien Fiber": 6, "Iron Ingot": 2, "Crystal": 2}, "station": "Workbench"},
+	{"name": "Greater Ward Book", "out": "Greater Ward Book", "count": 1, "needs": {"Ward Book": 1, "Gold Ingot": 3, "Crystal": 5}, "station": "Workbench"},
+	{"name": "Lumen Tome", "out": "Lumen Tome", "count": 1, "needs": {"Alien Fiber": 4, "Crystal": 2, "Torch": 4}, "station": "Workbench"},
+	{"name": "Mana Tonic", "out": "Mana Tonic", "count": 1, "needs": {"Crystal": 1, "Corn": 2}, "station": "Workbench"},
+	{"name": "Alchemy Desk", "out": "Alchemy Desk", "count": 1, "needs": {"Planks": 12, "Copper Ingot": 3, "Crystal": 2}, "station": "Workbench"},
+	{"name": "Cauldron", "out": "Cauldron", "count": 1, "needs": {"Iron Ingot": 6, "Stone": 8, "Wood": 4}, "station": "Workbench"},
+	{"name": "Blank Wand", "out": "Blank Wand", "count": 1, "needs": {"Stick": 4, "Copper Ingot": 1}, "station": "Workbench"},
+	{"name": "Blank Staff", "out": "Blank Staff", "count": 1, "needs": {"Planks": 6, "Iron Ingot": 2}, "station": "Workbench"},
+	{"name": "Blank Tome", "out": "Blank Tome", "count": 1, "needs": {"Alien Fiber": 6, "Planks": 2}, "station": "Workbench"},
+	{"name": "Soul Wand", "out": "Soul Wand", "count": 1, "needs": {"Blank Wand": 1, "Spirit Essence": 2, "Arcane Ink": 1}, "station": "Workbench"},
+	{"name": "Grave Tome", "out": "Grave Tome", "count": 1, "needs": {"Blank Tome": 1, "Spirit Essence": 3, "Bone Fragment": 3, "Arcane Ink": 2}, "station": "Workbench"},
 ]
 
 var scene_name := "menu"
@@ -313,6 +375,8 @@ var ring_mesh_key := -1
 
 func _ready() -> void:
 	dev_controls = DevControls.new(self)
+	power_ui = PowerWindow.new(self)
+	alchemy=AlchemyWindow.new(self)
 	interactions = WorldInteractions.new(self)
 	window_positions["chest"] = Vector2(660, 205)
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -326,6 +390,9 @@ func _ready() -> void:
 		cloud_textures.append(_make_cloud_texture(variant))
 	cloud_texture = cloud_textures[0]
 	ranged.bind(self)
+	magic.bind(self)
+	spellcraft.bind(self)
+	necromancy.bind(self)
 	tool_textures = Tools.make_textures()
 	ground_life.load_art()
 	station_frames = sprite_art.stations()
@@ -406,6 +473,8 @@ func _start_new_game() -> void:
 	farms.clear()
 	expedition.start()
 	stations.close(false)
+	power_ui.close(false)
+	alchemy.close(false)
 	inventory_order.clear()
 	furnaces.focus_key = ""
 	pending_weather_blend.clear()
@@ -434,6 +503,7 @@ func _start_new_game() -> void:
 	dev_travel_unlocked = false
 	ranged.reset()
 	ranged.selected_ammo = "Stone Arrow"
+	magic.new_character()
 	dev_invulnerable = false
 	dev_free_flight = false
 	inventory_trash.clear()
@@ -960,6 +1030,8 @@ func _open_planet(index: int) -> void:
 	if not expedition.can_land(index):
 		return
 	stations.close(false)
+	power_ui.close(false)
+	alchemy.close(false)
 	interactions.close(false)
 	_stop_held_actions()
 	if system_planets.is_empty():
@@ -1052,6 +1124,8 @@ func _leave_planet() -> void:
 		return
 	dev_mode = false
 	stations.close(false)
+	power_ui.close(false)
+	alchemy.close(false)
 	_stop_held_actions()
 	dragged_window = ""
 	if not world.is_empty():
@@ -1160,11 +1234,12 @@ func _update_population(delta: float) -> void:
 			continue
 		if absf(creature["x"] - player_pos.x) > SCREEN.x:
 			continue
+		var creature_delta:float=delta*magic.creature_scale(creature)
 		if bool(creature.get("wildlife", false)):
-			wildlife_mobs.update(self, creature, delta)
+			wildlife_mobs.update(self, creature, creature_delta)
 			continue
 		if bool(creature.get("flying", false)):
-			flying_monsters.update(self, creature, delta)
+			flying_monsters.update(self, creature, creature_delta)
 			continue
 		var guardian := bool(creature.get("quest_guardian", false))
 		if guardian and absf(player_pos.y - float(creature["y"])) < 80 and absf(player_pos.x - float(creature["home_x"])) < 100:
@@ -1175,7 +1250,7 @@ func _update_population(delta: float) -> void:
 			if alerted:
 				creature["direction"] = 1 if player_pos.x > float(creature["x"]) else -1
 		var speed := 42.0 if guardian else float(creature.get("speed", 28.0)) * (1.35 if alerted else 1.0)
-		var target_x: float = creature["x"] + float(creature["direction"]) * speed * delta
+		var target_x: float = creature["x"] + float(creature["direction"]) * speed * creature_delta
 		var radius := 72.0 if guardian else float(creature.get("patrol_radius", 96.0)) * (2.0 if alerted else 1.0)
 		if absf(target_x - creature["home_x"]) > radius:
 			creature["direction"] = -creature["direction"]
@@ -1188,19 +1263,20 @@ func _update_population(delta: float) -> void:
 			else:
 				creature["direction"] = -creature["direction"]
 				if guardian and ground_y < 0:
-					creature["y"] = minf(WG.HEIGHT * WG.TILE - 34, float(creature["y"]) + 120.0 * delta)
+					creature["y"] = minf(WG.HEIGHT * WG.TILE - 34, float(creature["y"]) + 120.0 * creature_delta)
 		if Vector2(creature["x"], creature["y"]).distance_to(player_pos) < 23.0 and damage_cooldown <= 0.0 and not dev_invulnerable:
-			health -= int(creature.get("damage", 8))
+			health -= magic.absorb(int(creature.get("damage", 8)))
 			damage_cooldown = 1.2
 			_show_notice("A creature hit you")
 			if health <= 0:
 				health = 100
+				magic.respawn()
 				player_pos = world["spawn"]
 				_show_notice("Respawned")
 
 
 func _attack(target: Variant = null) -> void:
-	if Ranged.has_weapon(equipped_tool): return
+	if Ranged.has_weapon(equipped_tool) or MagicCatalog.has_item(equipped_tool): return
 	if attack_cooldown > 0.0:
 		return
 	attack_cooldown = Tools.attack_interval(equipped_tool)
@@ -1222,6 +1298,7 @@ func _attack(target: Variant = null) -> void:
 				creature["x"] = pushed_x
 			if creature["hp"] <= 0:
 				creature["alive"] = false
+				spellcraft.dead_loot(creature)
 				_drop_item(WildlifeMobs.loot(creature) if creature.get("wildlife", false) else "Alien Fiber", 1, Vector2i(int(creature["x"] / WG.TILE), int(creature["y"] / WG.TILE)))
 				_show_notice("Creature defeated")
 			else:
@@ -1285,7 +1362,7 @@ func _apply_farm_edits(edits: Array) -> void:
 func _farm_space_clear(tile: Vector2i) -> bool:
 	for dy in range(3):
 		var at := tile + Vector2i(0, -dy)
-		if WG.tile_at(world.tiles, at.x, at.y) != 0 or not furnishings.at(at).is_empty(): return false
+		if WG.tile_at(world.tiles, at.x, at.y) != 0 or not furnishings.at(at).is_empty() or not power.at(at).is_empty(): return false
 	for entry: Dictionary in ground_life.entries:
 		if not bool(entry.get("alive", false)) or GroundLife.animal(str(entry.species)): continue
 		var base := Vector2(float(entry.x), float(entry.y))
@@ -1294,7 +1371,7 @@ func _farm_space_clear(tile: Vector2i) -> bool:
 
 
 func _farm_interaction(tile: Vector2i, tool: String, selected: String) -> bool:
-	if Ranged.has_weapon(equipped_tool) or Tools.family(equipped_tool) == "Sword": return false
+	if Ranged.has_weapon(equipped_tool) or MagicCatalog.has_item(equipped_tool) or Tools.family(equipped_tool) == "Sword": return false
 	var target := farming.plant_target(tile)
 	if target.x >= 0:
 		tile = target + Vector2i.DOWN if tool == "Watering Can" else target
@@ -1404,6 +1481,8 @@ func _process(delta: float) -> void:
 		_update_clouds(delta)
 		if not paused and not dev_mode:
 			furnaces.update(delta)
+			alchemy.update(delta)
+			power.update(delta)
 			if crafting_open or inventory_open or stations.is_open():
 				weather_blend.update(weather, delta, int(world.get("climate", 0)))
 				cloud_cover = move_toward(cloud_cover, _cloud_target(), delta * 0.20)
@@ -1445,6 +1524,7 @@ func _process(delta: float) -> void:
 	hanging_vines.update(self, delta)
 	_update_held_actions(delta)
 	ranged.update(delta)
+	magic.update(delta)
 	if sound != null:
 		sound.update(delta)
 	queue_redraw()
@@ -1559,6 +1639,7 @@ func _update_lava_damage(delta: float) -> void:
 		_show_notice("Lava burns! -20 HP")
 		if health <= 0:
 			health = 100
+			magic.respawn()
 			player_pos = world["spawn"]
 			player_velocity = Vector2.ZERO
 			lava_hurt_timer = 0.0
@@ -1572,6 +1653,7 @@ func _update_camera() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if alchemy.handle_input(event):queue_redraw();return
 	if event is InputEventMouseMotion:
 		aim_screen = event.position
 		_remember_mouse_aim(event.position)
@@ -1619,6 +1701,9 @@ func _window_size(kind: String) -> Vector2:
 		"chest": return Vector2(466, 382)
 		"crafting": return Vector2(560, 510)
 		"workbench", "furnace": return StationWindows.SIZE
+		"power": return PowerWindow.SIZE
+		"magic": return MagicSystem.CODEX_SIZE
+		"alchemy": return AlchemyWindow.SIZE
 		"dev": return Vector2(560, 390)
 		"pause": return Vector2(470, 445)
 	return Vector2(830, 150)
@@ -1643,6 +1728,8 @@ func _key_pressed(key: Key) -> void:
 		return
 	if scene_name in ["planet", "galaxy", "system"] and key == KEY_F3:
 		stations.close(false)
+		power_ui.close(false)
+		alchemy.close(false)
 		dev_mode = not dev_mode
 		dragged_window = ""
 		dev_controls.opened()
@@ -1662,11 +1749,21 @@ func _key_pressed(key: Key) -> void:
 			dev_controls.autocomplete()
 		queue_redraw()
 		return
+	if key==KEY_K and scene_name=="planet" and not paused and not dev_mode:
+		if magic.codex_open and inventory_open:magic.close_codex()
+		else:magic.open_codex()
+		return
+	if key == KEY_ESCAPE and scene_name == "planet" and not power.pending.is_empty() and not inventory_open:
+		power.pending.clear()
+		return
 	if key == KEY_ESCAPE:
 		if scene_name == "planet":
+			magic.codex_open=false
 			_cancel_inventory_drag()
-			var had_station := stations.is_open()
+			var had_station: bool = stations.is_open() or power_ui.is_open() or alchemy.is_open()
 			stations.close(false)
+			power_ui.close(false)
+			alchemy.close(false)
 			interactions.close(false)
 			if crafting_open or inventory_open or had_station or dialogue_open:
 				crafting_open = false
@@ -1689,6 +1786,10 @@ func _key_pressed(key: Key) -> void:
 		if key == KEY_F and not paused and not dev_mode:
 			if dialogue_open:
 				_talk_to_explorer()
+			elif alchemy.is_open():
+				alchemy.close()
+			elif power_ui.is_open():
+				power_ui.close()
 			elif stations.is_open():
 				stations.close()
 			elif interactions.is_open():
@@ -1696,9 +1797,11 @@ func _key_pressed(key: Key) -> void:
 			elif crafting_open:
 				crafting_open = false
 			elif not inventory_open and not dialogue_open:
-				if furnishings.aimed(self):
+				if power.aimed():
+					power.interact()
+				elif furnishings.aimed(self):
 					furnishings.interact(self)
-				elif not interactions.interact() and not furnishings.interact(self) and not expedition.interact():
+				elif not interactions.interact() and not furnishings.interact(self) and not power.interact() and not expedition.interact():
 					_attack()
 			queue_redraw()
 			return
@@ -1709,6 +1812,9 @@ func _key_pressed(key: Key) -> void:
 		elif key == KEY_M:
 			_toggle_crafting(1)
 		elif key == KEY_I:
+			magic.codex_open=false
+			power_ui.close(false)
+			alchemy.close(false)
 			interactions.close(false)
 			inventory_open = not inventory_open
 			crafting_open = false
@@ -1814,6 +1920,9 @@ func _mouse_pressed(event: InputEventMouseButton) -> void:
 					selected_planet_index = i
 					break
 	elif scene_name == "planet" and not paused:
+		if magic.codex_click(point,event.button_index):
+			queue_redraw()
+			return
 		if _gameplay_ui_click(point, event.button_index, event.ctrl_pressed, event.alt_pressed):
 			queue_redraw()
 			return
@@ -1856,13 +1965,17 @@ func _world_input_blocked(point: Vector2) -> bool:
 		return true
 	if scene_name != "planet" or paused or crafting_open or inventory_open or stations.is_open() or dev_mode or dialogue_open:
 		return true
-	for rect in [HUD_PACK_RECT, HUD_CRAFT_RECT, Rect2(388, 610, 504, 106), Rect2(16, 16, 244, 55), Rect2(940, 16, 324, 140)]:
+	for rect in [HUD_PACK_RECT, HUD_CRAFT_RECT, Rect2(388, 610, 504, 106), Rect2(16, 16, 244, 55), Rect2(16,158,244,43), Rect2(940, 16, 324, 140)]:
 		if rect.has_point(point):
 			return true
 	return false
 
 
 func _primary_action(point: Vector2) -> void:
+	if MagicCatalog.has_item(equipped_tool):
+		if equipped_tool=="Mana Tonic":magic.drink()
+		else:magic.cast(point+camera_pos)
+		return
 	if Ranged.has_weapon(equipped_tool):
 		ranged.begin(point + camera_pos)
 		return
@@ -1895,6 +2008,7 @@ func _update_mouse_aim() -> void:
 
 
 func _primary_interval() -> float:
+	if MagicCatalog.has_item(equipped_tool):return maxf(0.1,maxf(float(magic.cooldowns.get(equipped_tool,0)),attack_cooldown))
 	if Ranged.has_weapon(equipped_tool): return maxf(0.05, attack_cooldown)
 	if tool_action_kind == "attack" and attack_cooldown > 0.0:
 		return attack_cooldown
@@ -1917,6 +2031,7 @@ func _update_held_actions(delta: float) -> void:
 
 func _reset_world_environment() -> void:
 	ranged.reset()
+	magic.clear_world()
 	weather_blend.reset(_climate_weather(weather), int(world.get("climate", 0)))
 	mining_feedback_timer = 0.0
 	mouse_aim_valid = false
@@ -1934,6 +2049,9 @@ func _reset_world_environment() -> void:
 	underground.reset(self)
 	background_ores.reset(self)
 	furnishings.reset(self)
+	power_ui.close(false)
+	alchemy.close(false)
+	power.bind(self)
 	biome_backgrounds.reset(world)
 	ground_life.reset(self)
 	hanging_vines.reset(self)
@@ -1945,6 +2063,8 @@ func _reset_world_environment() -> void:
 	precipitation.reset(int(world["seed"]))
 	surface_effects.reset(int(world["seed"]))
 	fluid_reactions.reset(self)
+	necromancy.restore_pending()
+
 
 
 func _update_water(delta: float) -> void:
@@ -2015,7 +2135,8 @@ func _inventory_items() -> Array[String]:
 
 
 func _inventory_category(item: String) -> int:
-	if Ranged.has_item(item): return 1
+	if PowerCatalog.has_item(item) or SpellcraftCatalog.has_item(item): return 3
+	if Ranged.has_item(item) or MagicCatalog.has_item(item) or SpellcraftCatalog.has_item(item): return 1
 	if Tools.has_item(item):
 		return 1 if Tools.family(item) == "Sword" else 0
 	if ores.has_item(item):
@@ -2049,6 +2170,7 @@ func _refresh_hotbar() -> void:
 	tool_wear.sync(inventory)
 	hotbar.prune(inventory)
 	var item: String = place_items[selected_slot]
+	if SpellcraftCatalog.is_spell(item) and not tool_textures.has(item):tool_textures[item]=MagicCatalog.icon(item)
 	var tool := item if tool_textures.has(item) and int(inventory.get(item, 0)) > 0 else "Hand"
 	if equipped_tool != tool:
 		ranged.cancel()
@@ -2061,6 +2183,7 @@ func _refresh_hotbar() -> void:
 
 func _select_hotbar_slot(slot: int) -> void:
 	if slot != selected_slot:
+		power.pending.clear()
 		_stop_held_actions()
 		tool_action_timer = 0.0
 	selected_slot = clampi(slot, 0, Hotbar.SIZE - 1)
@@ -2110,6 +2233,7 @@ func _equip_inventory_item(item: String) -> bool:
 	if not _add_to_hotbar(item, true):
 		return false
 	inventory_open = false
+	magic.codex_open=false
 	return true
 
 
@@ -2142,6 +2266,17 @@ func _hotbar_ui_click(point: Vector2, button: int, control: bool, alternate: boo
 
 func _finish_inventory_drag(point: Vector2) -> void:
 	if inventory_drag_item.is_empty():
+		return
+	if inventory_dragging and alchemy.accepts_drag(point,inventory_drag_item):
+		_cancel_inventory_drag();return
+	if not inventory_dragging and inventory_drag_slot<0 and alchemy.is_open():
+		alchemy.deposit(inventory_drag_item);_cancel_inventory_drag();return
+	if inventory_dragging and power_ui.accepts_drag(point, inventory_drag_item):
+		_cancel_inventory_drag()
+		return
+	if not inventory_dragging and inventory_drag_slot < 0 and power_ui.is_open():
+		power_ui.deposit(inventory_drag_item)
+		_cancel_inventory_drag()
 		return
 	if stations.finish_drag(point):
 		_cancel_inventory_drag()
@@ -2218,6 +2353,9 @@ func _destroy_trash() -> void:
 
 
 func _gameplay_ui_click(point: Vector2, button: int, control: bool = false, alternate: bool = false) -> bool:
+	if alchemy.click(point,button):return true
+	if power_ui.click(point, button):
+		return true
 	if stations.click(point, button, control):
 		return true
 	if interactions.click(point, button):
@@ -2270,6 +2408,11 @@ func _gameplay_ui_click(point: Vector2, button: int, control: bool = false, alte
 					break
 				var rect := Rect2(at + Vector2(20 + (cell % 8) * 54, 45 + (cell / 8) * 54), Vector2(48, 48))
 				if rect.has_point(point):
+					if alchemy.is_open():
+						alchemy.deposit(items[index],1);return true
+					if power_ui.is_open():
+						power_ui.deposit(items[index], 1)
+						return true
 					if stations.is_open():
 						stations.deposit(items[index], 1)
 						return true
@@ -2299,6 +2442,8 @@ func _gameplay_ui_click(point: Vector2, button: int, control: bool = false, alte
 			return true
 		if Rect2(at + Vector2(433, 6), Vector2(27, 28)).has_point(point):
 			interactions.close(false)
+			power_ui.close(false)
+			alchemy.close(false)
 			inventory_open = false
 			dragged_window = ""
 			return true
@@ -2409,6 +2554,7 @@ func _edit_tile(tile: Vector2i, tile_id: int, upload: bool = true) -> void:
 	hanging_vines.terrain_changed(self, tile)
 	underground.changed(self, tile)
 	furnishings.terrain_changed(self, tile)
+	power.terrain_changed(tile)
 	farming.track(tile, tile_id)
 	if not unsupported.is_empty():
 		_edit_tile(unsupported.tile, 0, upload)
@@ -2661,6 +2807,7 @@ func _wear_pickaxe(item: String, cost: int = 1) -> void:
 
 
 func _mine(point: Vector2) -> void:
+	if MagicCatalog.has_item(equipped_tool):return
 	if Ranged.has_weapon(equipped_tool):
 		_show_notice("Ranged weapons cannot mine. Hold left-click to aim and shoot")
 		return
@@ -2690,6 +2837,8 @@ func _mine(point: Vector2) -> void:
 		return
 	var grid: PackedByteArray = world["tiles"]
 	var old_id: int = WG.tile_at(grid, tile.x, tile.y)
+	if power.harvest(tile):
+		return
 	if furnishings.harvest(self, tile):
 		return
 	if equipped_tool in ["Hammer", "Mattock"] and background_ores.harvest(self, tile):
@@ -2768,6 +2917,21 @@ func _mine(point: Vector2) -> void:
 
 
 func _place(point: Vector2) -> void:
+	if MagicCatalog.has_item(equipped_tool):
+		_stop_held_actions()
+		if equipped_tool=="Mana Tonic":magic.drink()
+		else:magic.open_codex()
+		return
+	var electrical_item: String = place_items[selected_slot]
+	if electrical_item in ["Wire", "Logic Wire"]:
+		_stop_held_actions()
+		power.wire_click(electrical_item, point + camera_pos)
+		return
+	if PowerCatalog.has_device(electrical_item):
+		var cell := _mouse_to_tile(point)
+		if _in_reach(cell) and int(inventory.get(electrical_item, 0)) > 0 and power.place(electrical_item, cell):
+			inventory[electrical_item] = int(inventory[electrical_item]) - 1
+		return
 	if Ranged.has_weapon(equipped_tool):
 		_stop_held_actions()
 		ranged.cycle_ammo()
@@ -2804,6 +2968,9 @@ func _place(point: Vector2) -> void:
 	if Furnishings.has_item(item):
 		if furnishings.place(self, item, tile):
 			inventory[item] -= 1
+		return
+	if not power.at(tile).is_empty():
+		_show_notice("Remove the electrical device first")
 		return
 	if not furnishings.at(tile).is_empty():
 		_show_notice("Remove the furnishing first")
@@ -2852,7 +3019,7 @@ func _place_station(tile: Vector2i, item: String) -> void:
 		return
 	var grid: PackedByteArray = world["tiles"]
 	for dx in range(2):
-		if not furnishings.at(tile + Vector2i(dx,0)).is_empty() or not furnishings.at(tile + Vector2i(dx,-1)).is_empty():
+		if not furnishings.at(tile + Vector2i(dx,0)).is_empty() or not furnishings.at(tile + Vector2i(dx,-1)).is_empty() or not power.at(tile + Vector2i(dx,0)).is_empty() or not power.at(tile + Vector2i(dx,-1)).is_empty():
 			_show_notice("Remove the furnishing first")
 			return
 		if WG.tile_at(grid, tile.x + dx, tile.y) != 0 or not WG.is_solid(WG.tile_at(grid, tile.x + dx, tile.y + 1)):
@@ -2905,6 +3072,8 @@ func _toggle_crafting(index: int) -> void:
 			stations.open(selected)
 		return
 	stations.close(false)
+	power_ui.close(false)
+	alchemy.close(false)
 	interactions.close(false)
 	if crafting_open and recipe_tab == index:
 		crafting_open = false
@@ -2989,6 +3158,7 @@ func _save_game() -> void:
 			"underworld_forts": entry.get("underworld_forts", []),
 			"cave_life": entry.get("cave_life", []), "cave_life_version": entry.get("cave_life_version", 0),
 			"background_ores": entry.get("background_ores", []), "background_ore_version": entry.get("background_ore_version", 0),
+			"power": entry.get("power", {}), "alchemy": entry.get("alchemy",{}),
 			"furniture": entry.get("furniture", {}), "wood_background": entry.get("wood_background", {}),
 			"underground_pools": entry.get("underground_pools", []),
 			"surface": Array(entry["surface"]),
@@ -3052,7 +3222,7 @@ func _save_game() -> void:
 		"selected_slot": selected_slot, "hotbar_page": hotbar_page,
 		"hotbar_slots": place_items,
 		"tool_wear": tool_wear.uses,
-		"equipped_tool": equipped_tool, "arrow_ammo": ranged.selected_ammo,
+		"equipped_tool": equipped_tool, "arrow_ammo": ranged.selected_ammo, "magic": magic.snapshot(),
 		"time_of_day": time_of_day, "day_count": day_count, "weather": weather,
 		"weather_cycle": weather_cycle, "weather_timer": weather_timer,
 		"weather_blend": weather_blend.snapshot(),
@@ -3069,6 +3239,8 @@ func _save_game() -> void:
 
 func _load_game() -> void:
 	stations.close(false)
+	power_ui.close(false)
+	alchemy.close(false)
 	inventory_order.clear()
 	if not FileAccess.file_exists(save_path):
 		_show_notice("No Godot save exists yet")
@@ -3106,6 +3278,8 @@ func _load_game() -> void:
 	inventory_dragging = false
 	inventory_drag_slot = -1
 	inventory_page = 0
+	for key in inventory:
+		if SpellcraftCatalog.is_spell(str(key)):tool_textures[str(key)]=MagicCatalog.icon(str(key))
 	equipped_tool = str(parsed.get("equipped_tool", "Hand"))
 	if equipped_tool != "Hand" and (not tool_textures.has(equipped_tool) or int(inventory.get(equipped_tool, 0)) <= 0):
 		equipped_tool = "Hand"
@@ -3114,6 +3288,7 @@ func _load_game() -> void:
 	mining_cooldown = clampf(float(parsed.get("mining_cooldown", 0.0)), 0.0, Tools.MINING_SWING)
 	attack_cooldown = clampf(float(parsed.get("attack_cooldown", 0.0)), 0.0, 1.10)
 	ranged.reset()
+	magic.restore(parsed.get("magic",{}))
 	ranged.selected_ammo = str(parsed.get("arrow_ammo", "Stone Arrow"))
 	if not Ranged.AMMO.has(ranged.selected_ammo): ranged.selected_ammo = "Stone Arrow"
 	dev_mode = false
@@ -3172,6 +3347,7 @@ func _load_game() -> void:
 			"underworld_forts": saved.get("underworld_forts", []),
 			"cave_life": saved.get("cave_life", []), "cave_life_version": int(saved.get("cave_life_version", 0)),
 			"background_ores": saved.get("background_ores", []), "background_ore_version": int(saved.get("background_ore_version", 0)),
+			"power": saved.get("power", {}), "alchemy": saved.get("alchemy",{}),
 			"furniture": saved.get("furniture", {}), "wood_background": saved.get("wood_background", {}),
 			"underground_pools": saved.get("underground_pools", []),
 			"spawn": Vector2(float(spawn_data[0]), float(spawn_data[1])),
@@ -3743,7 +3919,7 @@ func _draw_station(x: int, y: int, tile_id: int) -> void:
 
 func _draw_lighting(x0: int, y0: int, x1: int, y1: int, sun: float) -> void:
 	var held_torch: bool = place_items[selected_slot] == "Torch" and int(inventory.get("Torch", 0)) > 0
-	environment.prepare(camera_pos, player_pos, sun, float(settings_data["night_dark"]), animation_clock, held_torch)
+	environment.prepare(camera_pos, player_pos, sun, float(settings_data["night_dark"]), animation_clock, held_torch, 1.05 if magic.lumen>0 else 0.0)
 	var transform := Transform2D(0.0, Vector2(environment.bounds.position) * WG.TILE - camera_pos)
 	draw_mesh(environment.warm_mesh, null, transform)
 	if environment.crystal_mesh != null: draw_mesh(environment.crystal_mesh, null, transform)
@@ -3799,6 +3975,7 @@ func _draw_player_arm(screen_pos: Vector2, hand: Vector2) -> void:
 
 
 func _held_tool_pose(screen_pos: Vector2) -> Transform2D:
+	if MagicCatalog.has_focus(equipped_tool):return magic.pose(screen_pos)
 	if Ranged.has_weapon(equipped_tool): return ranged.pose(screen_pos)
 	var active := tool_action_timer > 0.0
 	var progress := clampf(1.0 - tool_action_timer / tool_action_duration, 0.0, 1.0) if active else 1.0
@@ -3818,6 +3995,9 @@ func _draw_swing_trail(screen_pos: Vector2, progress: float) -> void:
 
 
 func _draw_held_tool(screen_pos: Vector2) -> void:
+	if MagicCatalog.has_focus(equipped_tool):
+		magic.draw_held(screen_pos)
+		return
 	if Ranged.has_weapon(equipped_tool):
 		ranged.draw_held(screen_pos)
 		return
@@ -3988,7 +4168,7 @@ func _draw_drops() -> void:
 			if int(drop["count"]) > 1:
 				_text(str(drop["count"]), p + Vector2(7, 4), 11, Color("fff1bd"))
 			continue
-		if item in ["Obsidian", "Gravel"] or Furnishings.has_item(item) or Ranged.has_item(item):
+		if item in ["Obsidian", "Gravel"] or Furnishings.has_item(item) or Ranged.has_item(item) or PowerCatalog.has_item(item) or MagicCatalog.has_item(item):
 			_draw_item_icon(item, Rect2(p - Vector2(8, 8), Vector2(16, 16)))
 			if int(drop["count"]) > 1:
 				_text(str(drop["count"]), p + Vector2(7, 4), 11, Color("fff1bd"))
@@ -4121,6 +4301,7 @@ func _draw_planet() -> void:
 		_draw_foliage(x0, y0, x1, y1)
 		ground_life.draw_life(self)
 		furnishings.draw(self)
+		power.draw()
 		_draw_torches(x0, y0, x1, y1)
 		_draw_drops()
 		stamp = _profile_end("foliage_items", stamp)
@@ -4174,6 +4355,7 @@ func _draw_planet() -> void:
 	if weather_blend.amount("Storm") > 0.001 and fposmod(animation_clock, 11.0) < 0.12:
 		_draw_surface_flash(weather_blend.amount("Storm"))
 	_draw_lighting(0, 0, 0, 0, maxf(0.15, sun * (1.0 - weather_blend.darkness() * 0.35)))
+	magic.draw()
 	stamp = _profile_end("weather_lighting", stamp)
 	_draw_gameplay_hud(sun)
 	_draw_mining_feedback()
@@ -4183,6 +4365,14 @@ func _draw_planet() -> void:
 		_draw_inventory()
 	interactions.draw()
 	stations.draw()
+	power_ui.draw()
+	alchemy.draw()
+	magic.draw_codex()
+	_draw_inventory_tooltip()
+	interactions.draw_tooltip()
+	stations.draw_tooltip()
+	alchemy.draw_tooltip()
+	spellcraft.ui.draw_tooltip()
 	if inventory_dragging and not inventory_drag_item.is_empty():
 		var pointer := get_viewport().get_mouse_position()
 		var count := int(inventory.get(inventory_drag_item, 0))
@@ -4207,6 +4397,24 @@ func _draw_planet() -> void:
 
 
 func _draw_item_icon(item: String, rect: Rect2) -> void:
+	if SpellcraftCatalog.has_item(item):
+		if not alchemy.textures.has(item):alchemy.textures[item]=SpellcraftCatalog.icon(item)
+		var native:Texture2D=alchemy.textures[item]
+		var scale:=minf(rect.size.x/native.get_width(),rect.size.y/native.get_height())
+		draw_texture_rect(native,Rect2(rect.get_center()-native.get_size()*scale*0.5,native.get_size()*scale),false)
+		return
+	if MagicCatalog.has_item(item):
+		if not tool_textures.has(item):tool_textures[item]=MagicCatalog.icon(item)
+		var icon:Texture2D=tool_textures[item]
+		var scale:=minf(rect.size.x/icon.get_width(),rect.size.y/icon.get_height())
+		draw_texture_rect(icon,Rect2(rect.get_center()-icon.get_size()*scale*0.5,icon.get_size()*scale),false)
+		return
+	if PowerCatalog.has_item(item):
+		var icon := power.icon(item)
+		var scale := minf(rect.size.x / icon.get_width(), rect.size.y / icon.get_height())
+		var size := icon.get_size() * scale
+		draw_texture_rect(icon, Rect2(rect.get_center() - size * 0.5, size), false)
+		return
 	if Ranged.AMMO.has(item):
 		draw_texture_rect(ranged.texture(item), rect, false)
 		return
@@ -4378,11 +4586,13 @@ func _draw_gameplay_hud(sun: float) -> void:
 			stat = "%d hits" % Tools.mining_hits(held, 7)
 		_text(stat, Vector2(203, 61), 10, Color("e4c68b"))
 	_draw_hud_shortcuts()
+	magic.draw_hud()
 	_draw_weather_panel(sun)
 	expedition.draw_hud()
 	_draw_farm_hint()
 	interactions.draw_hint()
 	furnishings.draw_hint(self)
+	power.draw_hint()
 	_rounded_box(Rect2(388, 638, 504, 78), Color(0.035, 0.057, 0.085, 0.93), Color("536b7e"), 12.0, 1.0)
 	for i in range(9):
 		var slot := hotbar_page * 9 + i
@@ -4423,6 +4633,7 @@ func _draw_gameplay_hud(sun: float) -> void:
 			caption += "Close this window to eat"
 		else:
 			caption += "Health full" if health >= 100 else ("Eat again in %.1fs" % food_cooldown if food_cooldown > 0.0 else "Right-click / R to eat")
+	if MagicCatalog.has_item(selected_item):caption=Tools.display_name(selected_item)+" | "+(spellcraft.summary(selected_item) if SpellcraftCatalog.is_spell(selected_item) else MagicCatalog.summary(selected_item))
 	var caption_width := ThemeDB.fallback_font.get_string_size(caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
 	_rounded_box(Rect2(628 - caption_width * 0.5, 610, caption_width + 24, 25), Color(0.035, 0.057, 0.085, 0.90), Color("536b7e"), 7.0, 1.0)
 	_text(caption, Vector2(640 - caption_width * 0.5, 628), 14, Color("e8d2ab"))
@@ -4511,8 +4722,8 @@ func _draw_crafting() -> void:
 		draw_rect(rect, Color("e7ca70") if index == recipe_index else Color("788693"), false, 1.0)
 		_draw_item_icon(str(recipe["out"]), Rect2(rect.position + Vector2(6, 5), Vector2(35, 35)))
 		var recipe_label := str(recipe["name"]) + (" - %.0fs" % FurnaceSystem.TIMES[recipe["out"]] if FurnaceSystem.timed(recipe) else "")
-		_text(recipe_label, rect.position + Vector2(47, 21), 17)
-		_text(_recipe_needs(recipe["needs"]), rect.position + Vector2(47, 40), 13, Color("b9c4cd"))
+		_button_text(Rect2(rect.position+Vector2(47,2),Vector2(378,22)),recipe_label,17,Color.WHITE,false,Vector2.ZERO)
+		_button_text(Rect2(rect.position+Vector2(47,24),Vector2(378,20)),_recipe_needs(recipe["needs"]),13,Color("b9c4cd"),false,Vector2.ZERO)
 		var ready := _recipe_ready(recipe)
 		_rounded_box(Rect2(rect.position + Vector2(432, 8), Vector2(91, 31)),
 			Color("244456") if ready else Color("30343d"), Color("deedf6") if ready else Color("68717d"), 12.0, 2.0)
@@ -4543,7 +4754,6 @@ func _draw_inventory() -> void:
 	_text("X", at + Vector2(441, 26), 16)
 	var items := _inventory_items()
 	var mouse := get_viewport().get_mouse_position()
-	var hovered := ""
 	for cell in range(32):
 		var index := inventory_page * 32 + cell
 		var rect := Rect2(at + Vector2(20 + (cell % 8) * 54, 45 + (cell / 8) * 54), Vector2(48, 48))
@@ -4554,8 +4764,6 @@ func _draw_inventory() -> void:
 		var item: String = items[index]
 		_draw_item_icon(item, Rect2(rect.position + Vector2(7, 5), Vector2(33, 33)))
 		_text(str(inventory[item]), rect.position + Vector2(29, 43), 12)
-		if rect.has_point(mouse):
-			hovered = item
 	draw_line(at + Vector2(16, 267), at + Vector2(450, 267), Color("465566"), 1.0)
 	_rounded_box(Rect2(at + Vector2(16, 274), Vector2(434, 70)), Color("18191f"), Color("6a4148"), 7.0, 1.0)
 	var trash_rect := Rect2(at + Vector2(20, 278), Vector2(48, 48))
@@ -4568,34 +4776,60 @@ func _draw_inventory() -> void:
 		for line in range(3):
 			draw_line(bin + Vector2(5 + line * 6, 5), bin + Vector2(5 + line * 6, 18), Color("9a8586"), 1.0)
 		_text("Trash", at + Vector2(80, 297), 16, Color("d7b7b6"))
-		_text("Drag a stack here, then press X to destroy", at + Vector2(80, 320), 12, Color("b1a3a8"))
+		_button_text(Rect2(at+Vector2(80,304),Vector2(306,26)),"Drag a stack here, then press X to destroy",12,Color("b1a3a8"),false,Vector2.ZERO)
 	else:
 		_draw_item_icon(str(inventory_trash["item"]), Rect2(trash_rect.position + Vector2(7, 5), Vector2(34, 34)))
 		_text(str(inventory_trash["count"]), trash_rect.position + Vector2(25, 43), 12)
-		_text("%s x%d" % [inventory_trash["item"], int(inventory_trash["count"])], at + Vector2(80, 297), 15, Color("f1d3cd"))
-		_text("Click the slot to return it to your backpack", at + Vector2(80, 320), 12, Color("b1a3a8"))
+		_button_text(Rect2(at+Vector2(80,278),Vector2(306,24)),"%s x%d" % [inventory_trash["item"],int(inventory_trash["count"])],15,Color("f1d3cd"),false,Vector2.ZERO)
+		_button_text(Rect2(at+Vector2(80,304),Vector2(306,26)),"Click the slot to return it to your backpack",12,Color("b1a3a8"),false,Vector2.ZERO)
 	_rounded_box(Rect2(at + Vector2(398, 286), Vector2(32, 32)), Color("9c343c") if not inventory_trash.is_empty() else Color("472e34"), Color("de8d8d"), 6.0, 1.0)
 	_text("X", at + Vector2(408, 309), 19, Color.WHITE if not inventory_trash.is_empty() else Color("94787c"))
-	_text("Click: store stack | Right-click: store one | Ctrl+click: hotbar" if interactions.is_open() or stations.is_open() else "Ctrl+click: add to hotbar | Drag: assign/move | Ctrl+bar: remove", at + Vector2(20, 367), 11, Color("c9d7e3"))
-	if hovered != "":
+	_text("Click: store stack | Right-click: store one | Ctrl+click: hotbar" if interactions.is_open() or stations.is_open() or power_ui.is_open() or alchemy.is_open() else "Ctrl+click: add to hotbar | Drag: assign/move | Ctrl+bar: remove", at + Vector2(20, 367), 11, Color("c9d7e3"))
+
+
+func _draw_item_tooltip(mouse: Vector2, lines: Array, detail_color:=Color("e4c68b")) -> void:
+	var width:=190.0
+	for i in range(lines.size()):width=maxf(width,ThemeDB.fallback_font.get_string_size(str(lines[i]),HORIZONTAL_ALIGNMENT_LEFT,-1,14 if i==0 else 12).x+20)
+	width=minf(width,SCREEN.x-12)
+	var size:=Vector2(width,28+maxi(0,lines.size()-1)*20)
+	var position:=Vector2(clampf(mouse.x+12,6,SCREEN.x-size.x-6),clampf(mouse.y-size.y-6,6,SCREEN.y-size.y-6))
+	var tooltip:=Rect2(position,size)
+	_rounded_box(tooltip,Color("080c13"),Color("e5e9ee"),5,1)
+	for i in range(lines.size()):
+		_button_text(Rect2(position+Vector2(8,3+i*20),Vector2(width-16,22)),str(lines[i]),14 if i==0 else 12,Color.WHITE if i==0 else detail_color,false,Vector2.ZERO)
+
+
+func _draw_inventory_tooltip() -> void:
+	if not inventory_open or not inventory_drag_item.is_empty():return
+	var mouse:=get_viewport().get_mouse_position()
+	# Station/chest windows are drawn over the pack, so only their visible slots may claim the hover.
+	if alchemy.is_open() and Rect2(Vector2(window_positions.alchemy),AlchemyWindow.SIZE).has_point(mouse):return
+	if magic.codex_open and inventory_open and Rect2(Vector2(window_positions.magic),MagicSystem.CODEX_SIZE).has_point(mouse):return
+	if stations.is_open() and Rect2(Vector2(window_positions[stations.kind]),StationWindows.SIZE).has_point(mouse):return
+	if power_ui.is_open() and Rect2(Vector2(window_positions.power),PowerWindow.SIZE).has_point(mouse):return
+	if interactions.is_open() and Rect2(Vector2(window_positions.chest),interactions.SIZE).has_point(mouse):return
+	var at:Vector2=window_positions.inventory
+	var items:=_inventory_items()
+	var hovered:=""
+	for cell in range(32):
+		var index:=inventory_page*32+cell
+		if index<items.size() and Rect2(at+Vector2(20+(cell%8)*54,45+(cell/8)*54),Vector2(48,48)).has_point(mouse):hovered=str(items[index]);break
+	if not hovered.is_empty():
 		var description := ores.description(hovered) if ores.has_item(hovered) else (food.description(hovered) if food.has_icon(hovered) else Tools.display_name(hovered))
-		var stats := Tools.summary(hovered)
+		var stats := MagicCatalog.summary(hovered) if MagicCatalog.has_item(hovered) else (PowerCatalog.description(hovered) if PowerCatalog.has_item(hovered) else Tools.summary(hovered))
 		if Furnishings.has_item(hovered):stats=Furnishings.description(hovered)
+		if SpellcraftCatalog.has_item(hovered):stats=SpellcraftCatalog.description(hovered)
+		if SpellcraftCatalog.is_spell(hovered):stats=spellcraft.summary(hovered)
 		if Tools.max_durability(hovered) > 0:
 			stats = "Level %d | %.0fx | Durability %d/%d | +%d damage" % [Tools.mining_level(hovered), float(Tools.profile(hovered)["speed"]), tool_wear.remaining(hovered, inventory), Tools.max_durability(hovered), int(Tools.profile(hovered)["bonus"])]
 			if Tools.family(hovered) == "Shovel":
 				stats = "Soil %.0fx | Durability %d/%d | %d damage" % [float(Tools.profile(hovered)["speed"]), tool_wear.remaining(hovered, inventory), Tools.max_durability(hovered), Tools.damage(hovered)]
 		if GroundLife.has_item(hovered):
 			stats = "Select, then right-click clear ground to plant / release"
-		var width := maxf(190, maxf(description.length() * 8.0 + 50, stats.length() * 8.0 + 16))
-		var tooltip := Rect2(mouse + Vector2(12, -28), Vector2(width, 48 if food.edible(hovered) or not stats.is_empty() else 27))
-		tooltip.position.x = minf(tooltip.position.x, SCREEN.x - tooltip.size.x - 5.0)
-		_rounded_box(tooltip, Color("080c13"), Color("e5e9ee"), 5.0, 1.0)
-		_text("%s x%d" % [description, int(inventory[hovered])], tooltip.position + Vector2(8, 19), 14)
-		if food.edible(hovered):
-			_text("Right-click to eat | Left-click to equip", tooltip.position + Vector2(8, 39), 12, Color("b7d39b"))
-		elif not stats.is_empty():
-			_text(stats, tooltip.position + Vector2(8, 39), 12, Color("e4c68b"))
+		var lines:Array=["%s x%d" % [description,int(inventory[hovered])]]
+		if food.edible(hovered):lines.append("Right-click to eat | Left-click to equip")
+		elif not stats.is_empty():lines.append(stats)
+		_draw_item_tooltip(mouse,lines,Color("b7d39b") if food.edible(hovered) else Color("e4c68b"))
 
 
 func _recipe_needs(needs: Dictionary) -> String:

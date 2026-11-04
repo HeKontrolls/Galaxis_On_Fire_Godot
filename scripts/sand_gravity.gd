@@ -38,7 +38,7 @@ func terrain_changed(tile: Vector2i) -> void:
 func _open(game, tile: Vector2i) -> bool:
 	if tile.x < 0 or tile.x >= WG.WIDTH or tile.y < 0 or tile.y >= WG.HEIGHT:
 		return false
-	if not game.furnishings.at(tile).is_empty(): return false
+	if not game.furnishings.at(tile).is_empty() or not game.power.at(tile).is_empty(): return false
 	# Do not overwrite crops, tree trunks, stations, chests or placed lights.
 	return WG.tile_at(game.world.tiles, tile.x, tile.y) in [0, 4, 11] \
 		and not game.world.get("torches", {}).has("%d,%d" % [tile.x, tile.y])

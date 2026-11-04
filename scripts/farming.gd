@@ -124,6 +124,9 @@ func _lamp(tile: Vector2i) -> bool:
 		if str(entry.get("item",""))!="Fireplace" or not bool(entry.get("lit",false)):continue
 		var at:=Vector2i(int(entry.x)+1,int(entry.y)-1)
 		if (at-tile).length()<=6 and _light_path(tile,at):return true
+	for lamp:Dictionary in world.get("power_lights",[]):
+		var at:=Vector2i(int(lamp.x),int(lamp.y))
+		if int(lamp.get("grow_radius",6))>0 and (at-tile).length()<=int(lamp.get("grow_radius",6)) and _light_path(tile,at):return true
 	return false
 func _light_path(a: Vector2i,b: Vector2i) -> bool:
 	var steps:=maxi(absi(b.x-a.x),absi(b.y-a.y))

@@ -1,9 +1,11 @@
 extends RefCounted
 const WG = preload("res://scripts/world_gen.gd")
+const Alchemy=preload("res://scripts/spellcraft_catalog.gd")
 const Art = preload("res://scripts/sprite_art.gd")
-const ITEMS := ["Wooden Chair", "Wooden Table", "Wooden Ladder", "Fireplace", "Wooden Wall", "Wooden Door"]
+const BASE_ITEMS := ["Wooden Chair", "Wooden Table", "Wooden Ladder", "Fireplace", "Wooden Wall", "Wooden Door"]
+const ITEMS := BASE_ITEMS+Alchemy.STATIONS
 const ART := {"Wooden Chair":"chair", "Wooden Table":"table", "Wooden Ladder":"ladder", "Fireplace":"fireplace", "Wooden Wall":"wood_background", "Wooden Door":"door"}
-const SIZES := {"Wooden Chair":Vector2i(1,2), "Wooden Table":Vector2i(3,2), "Wooden Ladder":Vector2i(1,1), "Fireplace":Vector2i(3,3), "Wooden Door":Vector2i(1,3)}
+const SIZES := {"Wooden Chair":Vector2i(1,2), "Wooden Table":Vector2i(3,2), "Wooden Ladder":Vector2i(1,1), "Fireplace":Vector2i(3,3), "Wooden Door":Vector2i(1,3),"Alchemy Desk":Vector2i(3,2),"Cauldron":Vector2i(3,2)}
 var entries := {}
 var walls := {}
 var occupied := {}
@@ -17,12 +19,16 @@ var door_motion := {}
 static func key(cell: Vector2i) -> String: return "%d,%d" % [cell.x,cell.y]
 static func has_item(item: String) -> bool: return item in ITEMS
 static func description(item: String) -> String:
+	if item in Alchemy.STATIONS:return Alchemy.description(item)
 	if item=="Wooden Door":return "F: open/close | Blocks passage when closed"
 	if item=="Wooden Ladder":return "W/S: climb | Space: jump off"
 	if item=="Wooden Wall":return "Background wall | Hammer/Mattock to remove"
 	if item=="Fireplace":return "F: light/extinguish | Water puts out the fire"
 	return "Passable furnishing | Place on solid ground"
 func texture(item: String) -> Texture2D:
+	if item in Alchemy.STATIONS:
+		if not textures.has(item):textures[item]=Alchemy.sheet(Alchemy.filename(item))
+		return textures[item]
 	if not textures.has(item): textures[item] = Art.texture("res://assets/sprites/housing/" + ART[item] + ".png")
 	return textures[item]
 func size(item: String) -> Vector2i: return SIZES.get(item,Vector2i.ONE)
@@ -61,7 +67,7 @@ func can_place(game,item: String,cell: Vector2i) -> bool:
 	for y in range(bounds.position.y,bounds.end.y):
 		for x in range(bounds.position.x,bounds.end.x):
 			var tile:=Vector2i(x,y)
-			if WG.tile_at(game.world.tiles,x,y) not in [0,4] or occupied.has(tile) or game.world.get("torches",{}).has(key(tile)): return false
+			if WG.tile_at(game.world.tiles,x,y) not in [0,4] or occupied.has(tile) or not game.power.at(tile).is_empty() or game.world.get("torches",{}).has(key(tile)): return false
 	if item=="Wooden Ladder":
 		if wall_at(cell): return true
 		for offset: Vector2i in [Vector2i.UP,Vector2i.DOWN,Vector2i.LEFT,Vector2i.RIGHT]:
@@ -94,6 +100,7 @@ func _remove(game,origin: String) -> void:
 	var bounds:=rect(str(entry.item),Vector2i(int(entry.x),int(entry.y)))
 	for y in range(bounds.position.y,bounds.end.y):
 		for x in range(bounds.position.x,bounds.end.x):occupied.erase(Vector2i(x,y))
+	if str(entry.item) in Alchemy.STATIONS:game.alchemy.remove_station(origin)
 	entries.erase(origin)
 	door_motion.erase(origin)
 	if entry.item=="Wooden Door":
@@ -111,7 +118,7 @@ func harvest(game,cell: Vector2i) -> bool:
 	if not game.interactions._visible(game.player_pos+Vector2(8,14),Rect2(Vector2(cell*16),Vector2(16,16))): return true
 	game.mining_cooldown=game.Tools.MINING_SWING
 	if wall and entry.is_empty():
-		walls.erase(key(cell));game.terrain_cache.invalidate(cell);game._drop_item("Wooden Wall",1,cell)
+		walls.erase(key(cell));game.terrain_cache.invalidate(cell);game._drop_item("Wooden Wall",1,cell);game.power.terrain_changed(cell)
 	else:
 		var material:=3 if entry.item=="Fireplace" else 9
 		var power:float=game.Tools.mining_damage(game.equipped_tool,material)
@@ -191,7 +198,7 @@ func target(game) -> Dictionary:
 	var nearest:Dictionary={};var best:=INF
 	var mouse:Vector2=game.mouse_aim_screen+game.camera_pos if game.mouse_aim_valid else game.get_viewport().get_mouse_position()+game.camera_pos
 	for entry:Dictionary in entries.values():
-		if entry.item not in ["Fireplace","Wooden Door"]:continue
+		if entry.item not in ["Fireplace","Wooden Door"]+Alchemy.STATIONS:continue
 		var bounds:=entry_rect(entry)
 		var distance:float=(game.player_pos+Vector2(8,14)).distance_to(bounds.get_center())
 		var score:float=distance-(128 if bounds.has_point(mouse) else 0)
@@ -205,6 +212,7 @@ func interact(game) -> bool:
 	var entry:=target(game)
 	if entry.is_empty():return false
 	game._stop_held_actions()
+	if str(entry.item) in Alchemy.STATIONS:game.alchemy.open(entry);return true
 	if entry.item=="Wooden Door":
 		set_door_open(game,entry,not bool(entry.get("open",false)))
 		return true
@@ -247,6 +255,7 @@ func draw(game) -> void:
 		var bounds:=entry_rect(entry)
 		if not view.intersects(bounds):continue
 		var frame:=1+posmod(int(game.animation_clock/0.16),4) if entry.item=="Fireplace" and bool(entry.get("lit",false)) else 0
+		if entry.item=="Cauldron" and not game.world.get("alchemy",{}).get(key(Vector2i(int(entry.x),int(entry.y))),{}).get("job",{}).is_empty():frame=1+posmod(int(game.animation_clock*5),2)
 		var sprite:=texture(str(entry.item))
 		var shape:=size(str(entry.item))*16
 		var offset:=Vector2.ZERO

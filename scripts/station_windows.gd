@@ -18,6 +18,9 @@ func is_open() -> bool:
 	return not kind.is_empty() and g.scene_name == "planet"
 
 func open(selected: Dictionary) -> void:
+	g.magic.codex_open=false
+	g.alchemy.close(false)
+	g.power_ui.close(false)
 	g.interactions.close(false)
 	close(false)
 	kind = str(selected["name"]).to_lower()
@@ -299,12 +302,18 @@ func _draw_slot(zone: String, index: int) -> void:
 		return
 	g._draw_item_icon(str(stack["item"]), Rect2(box.position + Vector2(8, 6), Vector2(36, 36)))
 	g._text(str(int(stack["count"])), box.position + Vector2(29, 46), 12)
-	if box.has_point(mouse) and g.inventory_drag_item.is_empty():
-		var label := Tools.display_name(str(stack["item"])) + " x%d" % int(stack["count"])
-		var width := ThemeDB.fallback_font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x + 16
-		var tip := Rect2(Vector2(clampf(mouse.x + 12, 5, 1270 - width), mouse.y - 30), Vector2(width, 28))
-		g._rounded_box(tip, Color("101820"), Color("aabfcb"), 5, 1)
-		g._text(label, tip.position + Vector2(8, 19), 14)
+
+func tooltip_at(point: Vector2) -> String:
+	if not is_open() or not g.inventory_drag_item.is_empty():return ""
+	var hit:=slot_at(point)
+	if hit.is_empty() or str(hit.zone)=="result":return ""
+	var stack:=stack_at(str(hit.zone),int(hit.index))
+	return "" if stack.is_empty() else Tools.display_name(str(stack.item))+" x%d" % int(stack.count)
+
+func draw_tooltip() -> void:
+	var mouse:Vector2=g.get_viewport().get_mouse_position()
+	var label:=tooltip_at(mouse)
+	if not label.is_empty():g._draw_item_tooltip(mouse,[label])
 
 func draw() -> void:
 	if not is_open():
@@ -315,7 +324,7 @@ func draw() -> void:
 	g._text(kind.capitalize() + "  [F / Esc to close]", at + Vector2(52, 27), 18, Color("ede0c6"))
 	g._rounded_box(Rect2(at + Vector2(682, 6), Vector2(28, 28)), Color("78333d"), Color("c5a6a3"), 6, 1)
 	g._text("X", at + Vector2(691, 27), 17)
-	g._text("Ingredients stored here" if kind == "workbench" else "Ore / food ingredients", at + Vector2(24, 74), 14, Color("bed0d7"))
+	g._button_text(Rect2(at+Vector2(24,50),Vector2(180,32)), "Ingredients stored here" if kind == "workbench" else "Ore / food ingredients", 14, Color("bed0d7"), false, Vector2.ZERO)
 	for index in range(9 if kind == "workbench" else 6):
 		_draw_slot("input", index)
 	g._text("Output", at + Vector2(256 if kind == "workbench" else 442, 74), 14, Color("c8d8c5"))
@@ -344,9 +353,9 @@ func draw() -> void:
 		g._rounded_box(box, Color("2e493c") if ready(selected) else Color("29313b"), Color("c8d99e") if ready(selected) else Color("687983"), 6, 2)
 		g._draw_item_icon(str(selected["out"]), Rect2(box.position + Vector2(8, 7), Vector2(36, 36)))
 		g._text(str(int(selected["count"])), box.position + Vector2(32, 46), 12)
-		g._text(str(selected["name"]), at + Vector2(24, 367), 17, Color("e2d3b0"))
+		g._button_text(Rect2(at+Vector2(24,344),Vector2(670,30)),str(selected["name"]),17,Color("e2d3b0"),false,Vector2.ZERO)
 		var needs: String = g._recipe_needs(selected["needs"])
-		g._text(needs.substr(0, 90), at + Vector2(24, 391), 13, Color("b4c8d1"))
+		g._button_text(Rect2(at+Vector2(24,376),Vector2(670,24)),needs,13,Color("b4c8d1"),false,Vector2.ZERO)
 	else:
 		g._text("Fuel", at + Vector2(247, 92), 14, Color("e0b37f"))
 		_draw_slot("fuel", 0)
@@ -363,7 +372,7 @@ func draw() -> void:
 			g.draw_rect(Rect2(at + Vector2(232, 245), Vector2(156, 7)), Color("34434b"))
 			g.draw_rect(Rect2(at + Vector2(232, 245), Vector2(156 * progress, 7)), Color("a6c79b"))
 			g._text("%d%%" % roundi(progress * 100), at + Vector2(232, 275), 14)
-		g._text(status, at + Vector2(24, 319), 17, Color("e4d5b6"))
+		g._button_text(Rect2(at+Vector2(24,292),Vector2(670,36)),status,17,Color("e4d5b6"),false,Vector2.ZERO)
 		g._text("Coal smelts ore and alloys. Wood cooks meals.", at + Vector2(24, 352), 14, Color("bdcbd2"))
 		g._text("Each furnace stores and processes its own materials.", at + Vector2(24, 380), 13, Color("90a9b7"))
 	g._text("Drag between slots and backpack. Click to take a stack; right-click takes one.", at + Vector2(24, 423), 12, Color("91aab7"))
