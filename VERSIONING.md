@@ -23,6 +23,12 @@ If a build is already prepared, do not run the command again to edit its name or
 
 Git Commit App recognizes a prepared build and reuses its number. Its commit message becomes the final build name, so use the prepared name there if you want to keep it. Detailed changelog notes are preserved. Preparing a build alone makes no commit, tag, GitHub upload, or GitHub Release.
 
+## Completion workflow
+
+Every completed change batch is handed back with synchronized build metadata, numbered patch notes, affected wiki guides, and `docs/WIKI_COPY_PASTE.md`. Feature milestones advance the minor release, fixes advance the patch release, and documentation-only checkpoints advance the build. Follow-up edits reuse an already-prepared, uncommitted build; committed identities are never rewritten.
+
+Before using Git Commit App, review the prepared build and select all source, artwork, tests, instructions, and documentation belonging to it. Keep the prepared build name as your commit message if you want the title unchanged. The app reuses that build number. Wiki drafts still need to be pasted into GitHub's separate wiki.
+
 ## Normal uploads
 
 Keep using **Git Commit App.bat**. The existing `.git/Git Commit App.bat` launches the maintained app in the project root, so existing shortcuts still work. The root `Git Commit App.bat`, `git_commit_app.py`, and `tools/git_commit_backend.py` are tracked with the game so the uploader is included in future checkouts.

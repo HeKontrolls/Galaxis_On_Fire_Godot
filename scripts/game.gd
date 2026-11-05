@@ -117,6 +117,11 @@ const TILE_FOR_ITEM := {
 	"Glacial Ice": 27,
 	"Gravel": 45,
 }
+const EquipmentCatalog = preload("res://scripts/equipment_catalog.gd")
+const PlayerEquipment = preload("res://scripts/player_equipment.gd")
+var equipment := PlayerEquipment.new()
+const Melee = preload("res://scripts/melee_weapons.gd")
+const NightPopulation = preload("res://scripts/night_population.gd")
 const RECIPES := [
 	{"name": "Planks x4", "out": "Planks", "count": 4, "needs": {"Wood": 1}},
 	{"name": "Sticks x4", "out": "Stick", "count": 4, "needs": {"Planks": 1}},
@@ -227,7 +232,7 @@ const RECIPES := [
 	{"name": "Blank Tome", "out": "Blank Tome", "count": 1, "needs": {"Alien Fiber": 6, "Planks": 2}, "station": "Workbench"},
 	{"name": "Soul Wand", "out": "Soul Wand", "count": 1, "needs": {"Blank Wand": 1, "Spirit Essence": 2, "Arcane Ink": 1}, "station": "Workbench"},
 	{"name": "Grave Tome", "out": "Grave Tome", "count": 1, "needs": {"Blank Tome": 1, "Spirit Essence": 3, "Bone Fragment": 3, "Arcane Ink": 2}, "station": "Workbench"},
-]
+] + Melee.RECIPES + EquipmentCatalog.RECIPES
 
 var scene_name := "menu"
 var save_path := SAVE_PATH
@@ -402,6 +407,7 @@ func _ready() -> void:
 	for variant in range(10):
 		cloud_textures.append(_make_cloud_texture(variant))
 	cloud_texture = cloud_textures[0]
+	equipment.bind(self)
 	ranged.bind(self)
 	magic.bind(self)
 	spellcraft.bind(self)
@@ -527,6 +533,7 @@ func _start_new_game() -> void:
 	ranged.reset()
 	ranged.selected_ammo = "Stone Arrow"
 	magic.new_character()
+	equipment.reset()
 	dev_invulnerable = false
 	dev_free_flight = false
 	inventory_trash.clear()
@@ -1273,6 +1280,14 @@ func _update_creature(creature: Dictionary, delta: float) -> void:
 		return
 	if absf(creature["x"] - player_pos.x) > SCREEN.x:
 		return
+	var encounter_time: float = network_owner.g.time_of_day if network_actor and network_owner != null else time_of_day
+	if bool(creature.get("night_spawn", false)) and NightPopulation.intensity(encounter_time)>0:
+		# Nocturnal visitors approach the nearest player using normal collision AI.
+		creature["direction"] = 1 if player_pos.x>float(creature.x) else -1
+		if bool(creature.get("flying",false)):
+			creature.home_x = move_toward(float(creature.home_x), player_pos.x, delta*45.0)
+			creature.home_y = move_toward(float(creature.home_y), player_pos.y-80, delta*20.0)
+		else: creature.home_x = float(creature.x)
 	var creature_delta:float=delta*magic.creature_scale(creature)
 	if bool(creature.get("wildlife", false)):
 		wildlife_mobs.update(self, creature, creature_delta)
@@ -1304,7 +1319,7 @@ func _update_creature(creature: Dictionary, delta: float) -> void:
 			if guardian and ground_y < 0:
 				creature["y"] = minf(WG.HEIGHT * WG.TILE - 34, float(creature["y"]) + 120.0 * creature_delta)
 	if Vector2(creature["x"], creature["y"]).distance_to(player_pos) < 23.0 and damage_cooldown <= 0.0 and not dev_invulnerable:
-		health -= magic.absorb(int(creature.get("damage", 8)))
+		health -= equipment.absorb(int(creature.get("damage", 8)), Vector2(float(creature.x)+12,float(creature.y)+9))
 		damage_cooldown = 1.2
 		_show_notice("A creature hit you")
 		if health <= 0:
@@ -1314,6 +1329,7 @@ func _update_creature(creature: Dictionary, delta: float) -> void:
 			_show_notice("Respawned")
 
 func _attack(target: Variant = null) -> void:
+	if equipment.blocking and equipment.can_block(): return
 	if Ranged.has_weapon(equipped_tool) or MagicCatalog.has_item(equipped_tool): return
 	if attack_cooldown > 0.0:
 		return
@@ -1323,26 +1339,30 @@ func _attack(target: Variant = null) -> void:
 	_begin_tool_action("attack", aimed)
 	var origin := player_pos + Vector2(8, 11)
 	var hit_center := origin + mouse_aim_direction * 31
-	for creature in world.get("creatures", []):
-		if creature["alive"] and hit_center.distance_to(Vector2(creature["x"], creature["y"])) < 46.0 \
-			and (Vector2(creature["x"], creature["y"]) - origin).dot(mouse_aim_direction) >= 0.0:
-			if not interactions._visible(origin, Rect2(Vector2(creature["x"], creature["y"]), Vector2(24, 18))):
-				continue
-			creature["hp"] -= Tools.damage(equipped_tool)
-			creature["hit_flash"] = 0.20
-			var pushed_x := clampf(float(creature["x"]) + facing * 15.0, 0.0, WG.WIDTH * WG.TILE - 16.0)
-			var can_push := WildlifeMobs.fits(world, Vector2(pushed_x, float(creature["y"]))) if creature.get("wildlife", false) else expedition.guardian_fits(Vector2(pushed_x, float(creature["y"])))
-			if can_push:
-				creature["x"] = pushed_x
-			if creature["hp"] <= 0:
-				creature["alive"] = false
-				spellcraft.dead_loot(creature)
-				_drop_item(WildlifeMobs.loot(creature) if creature.get("wildlife", false) else "Alien Fiber", 1, Vector2i(int(creature["x"] / WG.TILE), int(creature["y"] / WG.TILE)))
-				_show_notice("Creature defeated")
-			else:
-				_show_notice("Hit %s: %d HP" % [PlanetMonsters.display_name(creature), int(creature["hp"])])
-			_wear_pickaxe(equipped_tool, 2)
-			return
+	var candidates: Array = world.get("creatures", []).duplicate()
+	candidates.sort_custom(func(a: Dictionary,b: Dictionary)->bool:
+		return origin.distance_squared_to(Vector2(float(a.x),float(a.y))) < origin.distance_squared_to(Vector2(float(b.x),float(b.y))))
+	var remaining := int(Melee.WEAPONS[equipped_tool].hits) if Melee.has_weapon(equipped_tool) else 1
+	for creature: Dictionary in candidates:
+		if not bool(creature.get("alive",false)): continue
+		var at := Vector2(float(creature.x),float(creature.y))
+		var in_arc := Melee.hits(equipped_tool,origin,mouse_aim_direction,Ranged.hit_box(creature)) if Melee.has_weapon(equipped_tool) else (hit_center.distance_to(at)<46.0 and (at-origin).dot(mouse_aim_direction)>=0)
+		if not in_arc or not interactions._visible(origin,Rect2(at,Vector2(24,18))): continue
+		creature.hp -= Tools.damage(equipped_tool)
+		creature.hit_flash = 0.20
+		var push := float(Melee.WEAPONS[equipped_tool].push) if Melee.has_weapon(equipped_tool) else 15.0
+		# Sweep knockback so heavy weapons cannot push a victim through a wall.
+		var pushed := flying_monsters.move_clear(world,at,Vector2(facing*push,0))
+		creature.x = pushed.x
+		if creature.hp<=0:
+			creature.alive=false
+			spellcraft.dead_loot(creature)
+			_drop_item(WildlifeMobs.loot(creature) if creature.get("wildlife",false) else "Alien Fiber",1,Vector2i(floor(at/16)))
+			_show_notice("Creature defeated")
+		else: _show_notice("Hit %s: %d HP" % [PlanetMonsters.display_name(creature),int(creature.hp)])
+		_wear_pickaxe(equipped_tool,2)
+		remaining-=1
+		if remaining<=0: return
 
 
 func _talk_to_explorer() -> void:
@@ -1555,11 +1575,13 @@ func _process(delta: float) -> void:
 		weather_timer -= 80.0
 		weather = _next_weather()
 		weather_cycle += 1
+	equipment.update(delta)
 	if not controls_blocked: _update_player(delta)
 	else: _stop_held_actions()
 	attack_cooldown = maxf(0.0, attack_cooldown - delta)
 	attack_visual = maxf(0.0, attack_visual - delta)
 	_update_elder(delta)
+	NightPopulation.update(self, delta)
 	_update_population(delta)
 	_update_crops(delta)
 	_update_grass(delta)
@@ -1581,6 +1603,7 @@ func _process(delta: float) -> void:
 
 
 func _network_player_step(delta: float) -> void:
+	equipment.update(delta)
 	animation_clock += delta
 	_update_food_feedback(delta)
 	tool_action_timer = maxf(0, tool_action_timer - delta)
@@ -1681,7 +1704,7 @@ func _update_player_motion(delta: float, movement: float, rising: bool) -> void:
 	var in_water := water_sim.submerged(player_pos + Vector2(8, 14))
 	var touching_water := water_sim.intersects(_player_rect(player_pos))
 	if movement != 0: facing = int(signf(movement))
-	var horizontal := movement * SPEED * (0.7 if in_water else 1.0) * delta
+	var horizontal := movement * SPEED * equipment.movement() * (0.7 if in_water else 1.0) * delta
 	var blocked := _move_axis(horizontal, true)
 	if blocked and touching_water and rising and not crafting_open: _try_water_step(horizontal)
 	if player_grounded and not in_water and not crafting_open and rising:
@@ -1753,6 +1776,7 @@ func _input(event: InputEvent) -> void:
 				ranged.release()
 			elif event.button_index == MOUSE_BUTTON_RIGHT:
 				secondary_held = false
+				equipment.blocking = false
 	if dev_mode and scene_name in ["planet", "galaxy", "system"] and dev_controls.handle_input(event):
 		queue_redraw()
 		return
@@ -2048,6 +2072,7 @@ func _notification(what: int) -> void:
 
 
 func _stop_held_actions() -> void:
+	equipment.blocking = false
 	ranged.cancel()
 	primary_held = false
 	secondary_held = false
@@ -2067,6 +2092,9 @@ func _world_input_blocked(point: Vector2) -> bool:
 
 
 func _primary_action(point: Vector2) -> void:
+	if equipment.blocking and equipment.can_block(): return
+	if EquipmentCatalog.ITEMS.has(place_items[selected_slot]):
+		equipment.equip(place_items[selected_slot]); return
 	if MagicCatalog.has_item(equipped_tool):
 		if equipped_tool=="Mana Tonic":magic.drink()
 		else:magic.cast(point+camera_pos)
@@ -2331,6 +2359,7 @@ func _add_to_hotbar(item: String, select: bool = false) -> bool:
 
 
 func _equip_inventory_item(item: String) -> bool:
+	if EquipmentCatalog.ITEMS.has(item): return equipment.equip(item)
 	if not _add_to_hotbar(item, true):
 		return false
 	inventory_open = false
@@ -2368,6 +2397,8 @@ func _hotbar_ui_click(point: Vector2, button: int, control: bool, alternate: boo
 func _finish_inventory_drag(point: Vector2) -> void:
 	if inventory_drag_item.is_empty():
 		return
+	if inventory_dragging and equipment.drag(point, inventory_drag_item):
+		_cancel_inventory_drag(); return
 	if inventory_dragging and alchemy.accepts_drag(point,inventory_drag_item):
 		_cancel_inventory_drag();return
 	if not inventory_dragging and inventory_drag_slot<0 and alchemy.is_open():
@@ -2461,6 +2492,7 @@ func _gameplay_ui_click(point: Vector2, button: int, control: bool = false, alte
 		return true
 	if interactions.click(point, button):
 		return true
+	if equipment.click(point, button): return true
 	var pack_covers_bar := inventory_open and Rect2(Vector2(window_positions["inventory"]), _window_size("inventory")).has_point(point)
 	if not crafting_open and not dialogue_open and not pack_covers_bar and _hotbar_ui_click(point, button, control, alternate):
 		return true
@@ -2519,6 +2551,8 @@ func _gameplay_ui_click(point: Vector2, button: int, control: bool = false, alte
 						return true
 					if interactions.is_open():
 						interactions.deposit(items[index], 1)
+					elif EquipmentCatalog.ITEMS.has(items[index]):
+						equipment.equip(items[index])
 					elif food.edible(items[index]):
 						_eat_food(items[index])
 					break
@@ -3021,6 +3055,9 @@ func _mine(point: Vector2) -> void:
 
 
 func _place(point: Vector2) -> void:
+	if EquipmentCatalog.ITEMS.has(place_items[selected_slot]):
+		equipment.equip(place_items[selected_slot]); return
+	if equipment.begin_block(point + camera_pos): return
 	if MagicCatalog.has_item(equipped_tool):
 		_stop_held_actions()
 		if equipped_tool=="Mana Tonic":magic.drink()
@@ -3273,6 +3310,7 @@ func _save_game() -> void:
 			"player_pos": [point.x, point.y],
 			"seed": entry["seed"], "climate": entry["climate"],
 			"creatures": entry.get("creatures", []),
+			"night_spawn_serial": entry.get("night_spawn_serial", 0), "night_spawn_wait": entry.get("night_spawn_wait", 6.0),
 			"vines": entry.get("vines", []), "vines_version": entry.get("vines_version", 0),
 			"flyers_version": entry.get("flyers_version", 0),
 			"wildlife_version": entry.get("wildlife_version", 0),
@@ -3329,6 +3367,7 @@ func _save_game() -> void:
 		"selected_slot": selected_slot, "hotbar_page": hotbar_page,
 		"hotbar_slots": place_items,
 		"tool_wear": tool_wear.uses,
+		"equipment": equipment.snapshot(),
 		"equipped_tool": equipped_tool, "arrow_ammo": ranged.selected_ammo, "magic": magic.snapshot(),
 		"time_of_day": time_of_day, "day_count": day_count, "weather": weather,
 		"weather_cycle": weather_cycle, "weather_timer": weather_timer,
@@ -3369,6 +3408,7 @@ func _load_game() -> void:
 	star_index = int(parsed.get("star_index", 0))
 	planet_index = int(parsed.get("planet_index", 0))
 	inventory = parsed.get("inventory", {})
+	equipment.restore(parsed.get("equipment", {}))
 	if inventory.has("Corn Seed"):
 		inventory["Crop Seeds"] = int(inventory.get("Crop Seeds", 0)) + int(inventory["Corn Seed"])
 		inventory.erase("Corn Seed")
@@ -3463,7 +3503,8 @@ func _load_game() -> void:
 			"spawn": Vector2(float(spawn_data[0]), float(spawn_data[1])),
 			"player_pos": Vector2(float(pos_data[0]), float(pos_data[1])),
 			"seed": int(saved.get("seed", 0)), "climate": int(saved.get("climate", 0)),
-			"creatures": saved.get("creatures", []), "quest_done": bool(saved.get("quest_done", false)),
+			"creatures": saved.get("creatures", []),
+			"night_spawn_serial": int(saved.get("night_spawn_serial", 0)), "night_spawn_wait": float(saved.get("night_spawn_wait", 6.0)), "quest_done": bool(saved.get("quest_done", false)),
 			"vines": saved.get("vines", []), "vines_version": int(saved.get("vines_version", 0)),
 			"flyers_version": int(saved.get("flyers_version", 0)),
 			"wildlife_version": int(saved.get("wildlife_version", 0)),
@@ -4075,16 +4116,19 @@ func _draw_player_sprite(screen_pos: Vector2) -> void:
 	if behind:
 		_draw_held_tool(screen_pos)
 	if not character_appearance.is_empty():
-		character_avatar.draw_body(self, screen_pos + Vector2(-8, -12), "%s_%s" % [action, direction], frame_index, Color("ff9977") if lava_flash > 0.0 else Color.WHITE)
+		character_avatar.draw_body(self, screen_pos + Vector2(-8, -12), "%s_%s" % [action, direction], frame_index, Color("ff9977") if lava_flash > 0.0 else Color.WHITE, not str(equipment.slots.get("head", "")).is_empty())
 	elif frame != null:
 		draw_texture(frame, screen_pos + Vector2(-8, -12), Color("ff9977") if lava_flash > 0.0 else Color.WHITE)
+	PlayerEquipment.draw_armor(self, screen_pos+Vector2(-8,-12), "%s_%s" % [action,direction], frame_index, str(character_avatar.appearance.get("model","male")), equipment.slots)
 	if not behind:
 		_draw_held_tool(screen_pos)
+	PlayerEquipment.draw_shield(self,screen_pos,mouse_aim_direction,facing,equipment.blocking,equipment.slots,arm_textures["solid_arm"])
 
 
 func _draw_player_arm(screen_pos: Vector2, hand: Vector2) -> void:
 	draw_set_transform_matrix(PlayerPose.arm_transform(PlayerPose.shoulder(screen_pos, facing), hand, facing))
 	draw_texture(arm_textures["solid_arm"], Vector2(-4, -1))
+	PlayerEquipment.draw_sleeve(self,equipment.slots)
 	draw_set_transform_matrix(Transform2D.IDENTITY)
 
 
@@ -4138,12 +4182,12 @@ func _draw_held_tool(screen_pos: Vector2) -> void:
 	if sprite == null:
 		_draw_player_arm(screen_pos, hand)
 		return
-	# The Aseprite tool frames share the same (16,32) grip and pour origin.
+	# Spear frames use a longer shaft; other Aseprite tools retain the (16,32) grip.
 	var progress := 1.0 - tool_action_timer / tool_action_duration if active else 0.0
-	if active and tool_action_kind != "water":
+	if active and tool_action_kind != "water" and not (Melee.has_weapon(equipped_tool) and Melee.WEAPONS[equipped_tool].motion == "thrust"):
 		_draw_swing_trail(screen_pos, progress)
 	draw_set_transform_matrix(pose)
-	draw_texture_rect(sprite, Rect2(Vector2(-16, -32), Vector2(32, 40)), false)
+	draw_texture_rect(sprite, Melee.draw_rect(equipped_tool), false)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	_draw_player_arm(screen_pos, hand)
 
@@ -4514,6 +4558,8 @@ func _draw_planet() -> void:
 
 
 func _draw_item_icon(item: String, rect: Rect2) -> void:
+	if EquipmentCatalog.ITEMS.has(item):
+		draw_texture_rect(EquipmentCatalog.icon(item),rect,false); return
 	if SpellcraftCatalog.has_item(item):
 		if not alchemy.textures.has(item):alchemy.textures[item]=SpellcraftCatalog.icon(item)
 		var native:Texture2D=alchemy.textures[item]
@@ -4556,7 +4602,8 @@ func _draw_item_icon(item: String, rect: Rect2) -> void:
 	if tool_textures.has(item):
 		var tool_sprite: Texture2D = tool_textures.get(item)
 		if tool_sprite != null:
-			var fitted := Vector2(rect.size.y * 0.8, rect.size.y)
+			var ratio := float(tool_sprite.get_width()) / float(tool_sprite.get_height())
+			var fitted := Vector2(rect.size.y * ratio, rect.size.y)
 			draw_texture_rect(tool_sprite, Rect2(rect.get_center() - fitted * 0.5, fitted), false)
 		return
 	var material: String = str({"Grass": "grass", "Dirt": "dirt", "Stone": "stone", "Sand": "sand",
@@ -4703,6 +4750,7 @@ func _draw_gameplay_hud(sun: float) -> void:
 			stat = "%d hits" % Tools.mining_hits(held, 7)
 		_text(stat, Vector2(203, 80), 10, Color("e4c68b"))
 	_draw_hud_shortcuts()
+	equipment.draw_guard()
 	magic.draw_hud()
 	_draw_weather_panel(sun)
 	expedition.draw_hud()
@@ -4869,6 +4917,9 @@ func _draw_inventory() -> void:
 	_text("%d/%d" % [inventory_page + 1, _inventory_page_count()], at + Vector2(339, 25), 14)
 	_rounded_box(Rect2(at + Vector2(433, 6), Vector2(27, 28)), Color("783030"), Color.WHITE, 6.0, 1.0)
 	_text("X", at + Vector2(441, 26), 16)
+	equipment.draw_tab()
+	if equipment.gear_open:
+		equipment.draw_panel(); return
 	var items := _inventory_items()
 	var mouse := get_viewport().get_mouse_position()
 	for cell in range(32):
@@ -4917,6 +4968,7 @@ func _draw_item_tooltip(mouse: Vector2, lines: Array, detail_color:=Color("e4c68
 
 
 func _draw_inventory_tooltip() -> void:
+	if equipment.gear_open: return
 	if not inventory_open or not inventory_drag_item.is_empty():return
 	var mouse:=get_viewport().get_mouse_position()
 	# Station/chest windows are drawn over the pack, so only their visible slots may claim the hover.

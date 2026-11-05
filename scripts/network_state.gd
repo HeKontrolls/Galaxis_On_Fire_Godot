@@ -10,6 +10,7 @@ const PERSONAL := ["player_pos", "player_velocity", "player_grounded", "facing",
 	"window_positions", "dragged_window", "drag_offset", "inventory_drag_item", "inventory_drag_start",
 	"inventory_dragging", "inventory_drag_slot", "eat_visual", "last_food", "last_heal", "notice", "notice_timer"]
 const COMPONENTS := {
+	"equipment": ["slots", "guard", "guard_wait", "broken_time", "blocking", "gear_open"],
 	"stations": ["kind", "key", "page", "source"], "interactions": ["chest_key"],
 	"alchemy": ["active_key", "editing", "selected_all"], "power_ui": ["node_key"],
 	"power": ["pending"],

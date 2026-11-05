@@ -1,5 +1,7 @@
 extends RefCounted
 
+const Equipment = preload("res://scripts/equipment_catalog.gd")
+const Melee = preload("res://scripts/melee_weapons.gd")
 const Ranged = preload("res://scripts/ranged_weapons.gd")
 const Magic=preload("res://scripts/magic_catalog.gd")
 const Art = preload("res://scripts/sprite_art.gd")
@@ -40,7 +42,7 @@ static func max_durability(item: String) -> int:
 
 
 static func can_harvest(item: String, tile_id: int) -> bool:
-	return not Ranged.has_weapon(item) and not Magic.has_item(item) and family(item) != "Sword" and (not REQUIRED_LEVEL.has(tile_id) or mining_level(item) >= int(REQUIRED_LEVEL[tile_id]))
+	return not Melee.has_weapon(item) and not Ranged.has_weapon(item) and not Magic.has_item(item) and family(item) != "Sword" and (not REQUIRED_LEVEL.has(tile_id) or mining_level(item) >= int(REQUIRED_LEVEL[tile_id]))
 
 
 static func requirement(tile_id: int) -> String:
@@ -49,6 +51,7 @@ static func requirement(tile_id: int) -> String:
 
 
 static func family(item: String) -> String:
+	if Melee.has_weapon(item): return "Sword"
 	for metal in ["Stone", "Copper", "Iron", "Gold", "Diamond", "Netherite"]:
 		var base := item.trim_prefix(metal + " ")
 		if base != item and base in FAMILIES and (metal in ["Copper", "Iron"] or base in ["Pickaxe", "Shovel"]):
@@ -124,6 +127,7 @@ static func mining_hits(item: String, tile_id: int) -> int:
 
 
 static func damage(item: String) -> int:
+	if Melee.has_weapon(item): return int(Melee.WEAPONS[item].damage)
 	if Magic.has_item(item):return int(Magic.SPELLS.get(item,{}).get("damage",0))
 	if Ranged.has_weapon(item): return int(Ranged.WEAPONS[item].damage)
 	var level := tier(item) - 1
@@ -136,6 +140,7 @@ static func damage(item: String) -> int:
 
 
 static func attack_interval(item: String) -> float:
+	if Melee.has_weapon(item): return float(Melee.WEAPONS[item].cooldown)
 	if Magic.has_item(item):return float(Magic.SPELLS.get(item,{}).get("cooldown",0.5))
 	if Ranged.has_weapon(item): return float(Ranged.WEAPONS[item].cooldown)
 	if family(item) == "Shovel":
@@ -148,12 +153,15 @@ static func attack_interval(item: String) -> float:
 
 
 static func action_duration(item: String, attacking: bool) -> float:
+	if Melee.has_weapon(item): return attack_interval(item) * 0.9
 	if family(item) in FAMILIES:
 		return minf(0.32, attack_interval(item)) if attacking else mining_interval(item)
 	return MINING_SWING if not attacking and item != "Watering Can" else 0.25
 
 
 static func summary(item: String) -> String:
+	if Equipment.ITEMS.has(item): return Equipment.summary(item)
+	if Melee.has_weapon(item): return Melee.summary(item)
 	if Magic.has_item(item):return Magic.summary(item)
 	if Ranged.has_item(item): return Ranged.summary(item)
 	if item in ["Hammer", "Mattock"]:
@@ -200,6 +208,7 @@ static func make_textures() -> Dictionary:
 				continue
 			var advanced := item in ["Gold Pickaxe", "Diamond Pickaxe", "Netherite Pickaxe"]
 			result[item] = Art.texture("res://assets/sprites/expansion/tools/" + filename + "_00.png" if advanced else Art.ROOT + "tools/" + filename + ".png")
+	for item: String in Melee.WEAPONS: result[item] = Melee.texture(item)
 	for item: String in Ranged.WEAPONS: result[item] = Ranged.icon(item)
 	for item:String in Magic.ITEMS:result[item]=Magic.icon(item)
 	return result

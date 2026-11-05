@@ -119,7 +119,7 @@ func update(game, c: Dictionary, delta: float) -> void:
 		c.direction = -int(c.direction); c.vx = -float(c.vx)
 	c.moving = moved.distance_to(at) > 0.1; c.x = moved.x; c.y = moved.y
 	if c.state in ["hop", "charge"] and moved.distance_to(game.player_pos) < 24 and game.damage_cooldown <= 0 and not game.dev_invulnerable and game.interactions._visible(moved + Vector2(12, 9), Rect2(game.player_pos, Vector2(16, 28))):
-		game.health -= game.magic.absorb(int(c.damage)); game.damage_cooldown = 1.2
+		game.health -= game.equipment.absorb(int(c.damage), Vector2(float(c.x)+12,float(c.y)+9)); game.damage_cooldown = 1.2
 		c.state = "recover" if family >= 6 else "land"; c.timer = 0.8; c.vx = 0.0
 		game._show_notice(NAMES[family] + " hit you")
 		if game.health <= 0: game.health = 100; game.magic.respawn(); game.player_pos = game.world.spawn; game._show_notice("Respawned")

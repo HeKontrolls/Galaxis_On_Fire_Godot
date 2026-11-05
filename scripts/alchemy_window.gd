@@ -24,7 +24,7 @@ func open(entry:Dictionary)->void:
 	if not g.world.has("alchemy"):g.world.alchemy={}
 	if not g.world.alchemy.has(active_key):g.world.alchemy[active_key]={"item":entry.item}
 	prepare(g.world.alchemy[active_key]);editing=false
-	g.inventory_open=true;g.crafting_open=false;g.dialogue_open=false
+	g.inventory_open=true;g.equipment.gear_open=false;g.crafting_open=false;g.dialogue_open=false
 	if not g.window_positions.has("alchemy"):g.window_positions.alchemy=Vector2(20,105)
 	g.window_positions.inventory=Vector2(790,190)
 func close(close_pack:=true)->void:

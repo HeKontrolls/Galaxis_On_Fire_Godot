@@ -26,6 +26,7 @@ func open(selected: Dictionary) -> void:
 	kind = str(selected["name"]).to_lower()
 	key = "%d,%d" % [selected["tile"].x, selected["tile"].y]
 	g.inventory_open = true
+	g.equipment.gear_open = false
 	g.crafting_open = false
 	g.dialogue_open = false
 	g._stop_held_actions()

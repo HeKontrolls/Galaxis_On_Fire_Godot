@@ -302,7 +302,7 @@ func _contact_damage(actor, delta: float) -> void:
 	if actor.damage_cooldown > 0: return
 	for creature in g.world.get("creatures", []):
 		if bool(creature.get("alive", false)) and not bool(creature.get("wildlife", false)) and Vector2(float(creature.x), float(creature.y)).distance_to(actor.player_pos) < 23:
-			actor.health -= actor.magic.absorb(int(creature.get("damage", 8)))
+			actor.health -= actor.equipment.absorb(int(creature.get("damage", 8)), Vector2(float(creature.x)+12,float(creature.y)+9))
 			actor.damage_cooldown = 1.2
 			if actor.health <= 0:
 				actor.health = 100; actor.player_pos = g.world.spawn; actor.magic.respawn()
@@ -340,6 +340,7 @@ func _pose(actor) -> Dictionary:
 		"facing": actor.facing, "name": actor.player_name, "appearance": actor.character_appearance,
 		"tool": actor.equipped_tool, "aim": actor.mouse_aim_direction, "action": actor.tool_action_kind,
 		"timer": actor.tool_action_timer, "duration": actor.tool_action_duration,
+		"equipment": actor.equipment.slots, "blocking": actor.equipment.blocking,
 		"arrows": actor.ranged.projectiles, "spells": actor.magic.projectiles, "arcs": actor.magic.arcs, "minions": actor.necromancy.minions}
 
 func forward_event(event: InputEvent) -> void:
@@ -640,16 +641,19 @@ func draw_players() -> void:
 		var action := "jump" if not pose.grounded else ("walk" if absf(pose.velocity.x) > 5 else "idle")
 		var animation := action + ("_east" if pose.facing > 0 else "_west")
 		var frame: int = g.sprite_art.frame_index("captain", animation, g.animation_clock)
-		avatar.draw_body(g, at + Vector2(-8, -12), animation, frame, Color.WHITE)
+		avatar.draw_body(g, at + Vector2(-8, -12), animation, frame, Color.WHITE, not str(pose.get("equipment",{}).get("head","")).is_empty())
+		g.PlayerEquipment.draw_armor(g,at+Vector2(-8,-12),animation,frame,str(avatar.appearance.get("model","male")),pose.get("equipment",{}))
 		var tool: String = pose.tool
 		if tool != "Hand" and g.tool_textures.has(tool):
 			var progress := clampf(1.0 - float(pose.timer) / maxf(0.01, pose.duration), 0, 1)
 			var transform: Transform2D = g.PlayerPose.tool(at, pose.aim, pose.facing, pose.timer > 0, progress, tool, pose.action == "water")
 			g.draw_set_transform_matrix(g.PlayerPose.arm_transform(g.PlayerPose.shoulder(at, pose.facing), transform.origin, pose.facing))
 			g.draw_texture(avatar.arms.solid_arm, Vector2(-4, -1))
+			g.PlayerEquipment.draw_sleeve(g,pose.get("equipment",{}))
 			g.draw_set_transform_matrix(transform)
-			g.draw_texture_rect(g.tool_textures[tool], Rect2(-16, -32, 32, 40), false)
+			g.draw_texture_rect(g.tool_textures[tool], g.Melee.draw_rect(tool), false)
 			g.draw_set_transform_matrix(Transform2D.IDENTITY)
+		g.PlayerEquipment.draw_shield(g,at,pose.aim,pose.facing,bool(pose.get("blocking",false)),pose.get("equipment",{}),avatar.arms.solid_arm)
 		g._button_text(Rect2(at + Vector2(-70, -34), Vector2(156, 18)), pose.name, 13, Color("e5dcac"), false, Vector2.ZERO)
 
 func _draw_projectiles(pose: Dictionary) -> void:

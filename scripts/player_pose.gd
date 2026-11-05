@@ -1,4 +1,5 @@
 extends RefCounted
+const Melee = preload("res://scripts/melee_weapons.gd")
 
 
 static func shoulder(at: Vector2, facing: int) -> Vector2:
@@ -17,6 +18,8 @@ static func arm_transform(start: Vector2, hand: Vector2, facing: int) -> Transfo
 
 
 static func tool(at: Vector2, aim: Vector2, facing: int, active: bool, progress: float, item: String, watering: bool) -> Transform2D:
+	if Melee.has_weapon(item) and Melee.WEAPONS[item].motion == "thrust":
+		return Melee.pose(at, aim.normalized(), facing, active, progress)
 	var theta := atan2(aim.y, absf(aim.x))
 	var arm_angle := theta
 	var length := 12.0

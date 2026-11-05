@@ -17,7 +17,7 @@ func open(name: String) -> void:
 	g.magic.codex_open=false
 	g.alchemy.close(false)
 	g.stations.close(false);g.interactions.close(false);g._cancel_inventory_drag();g._stop_held_actions()
-	node_key=name;g.inventory_open=true;g.crafting_open=false;g.dialogue_open=false
+	node_key=name;g.inventory_open=true;g.equipment.gear_open=false;g.crafting_open=false;g.dialogue_open=false
 	if not g.window_positions.has("power"):g.window_positions.power=Vector2(24,178)
 	g.window_positions.inventory=Vector2(790,190)
 func local_rect(rect: Rect2) -> Rect2:return Rect2(Vector2(g.window_positions.power)+rect.position,rect.size)

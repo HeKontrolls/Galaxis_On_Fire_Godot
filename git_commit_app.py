@@ -69,6 +69,46 @@ def git(repo, *args, input=None, env=None):
     return p.returncode, p.stdout.strip(), p.stderr.strip()
 
 
+def sync_with_remote(repo, say):
+    """Fetch origin and fast-forward local branch if GitHub is ahead.
+    Never forces anything. Returns True if it is safe to continue, False to stop."""
+    rc, branch, _ = git(repo, "rev-parse", "--abbrev-ref", "HEAD")
+    if rc != 0 or branch == "HEAD":
+        say("Sync skipped: not on a branch.")
+        return True
+    rc, _, _ = git(repo, "remote", "get-url", "origin")
+    if rc != 0:
+        return True  # no origin configured, nothing to sync
+    say("Checking GitHub for newer commits…")
+    rc, out, err = git(repo, "fetch", "origin")
+    if rc != 0:
+        say("Fetch failed:\n" + (err or out))
+        return False
+    remote_ref = f"refs/remotes/origin/{branch}"
+    rc, _, _ = git(repo, "rev-parse", "--verify", "-q", remote_ref)
+    if rc != 0:
+        return True  # branch doesn't exist on GitHub yet
+    _, behind, _ = git(repo, "rev-list", "--count", f"HEAD..{remote_ref}")
+    _, ahead, _ = git(repo, "rev-list", "--count", f"{remote_ref}..HEAD")
+    behind, ahead = int(behind or 0), int(ahead or 0)
+    if behind == 0:
+        return True
+    if ahead > 0:
+        say(f"Stopped: local and GitHub have diverged ({ahead} local, {behind} remote commit(s)).\n"
+            f"Run this in a terminal, fix any conflicts, then try again:\n"
+            f"    git pull --rebase origin {branch}")
+        return False
+    say(f"GitHub is {behind} commit(s) ahead. Pulling (fast-forward only)…")
+    rc, out, err = git(repo, "merge", "--ff-only", remote_ref)
+    say((out + "\n" + err).strip())
+    if rc != 0:
+        say("Stopped: could not fast-forward. The incoming commits probably touch files you have "
+            "edited locally. Commit or stash those files, then try again.")
+        return False
+    say("Up to date with GitHub.")
+    return True
+
+
 STATUS_WORDS = {"M": "modified", "A": "added", "D": "deleted", "R": "renamed",
                 "C": "copied", "?": "new", "U": "conflict", "T": "type changed"}
 
@@ -412,6 +452,8 @@ class App(tk.Tk):
 
     def _run(self, repo, msg, desc, paths, name, email, date, push):
         try:
+            if push and not sync_with_remote(repo, self.say):
+                return
             if is_versioned_repository(repo):
                 success = run_versioned_commit(repo, msg, desc, paths, name, email, date, push, self.say)
                 if success:

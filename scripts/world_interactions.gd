@@ -91,6 +91,7 @@ func interact() -> bool:
 		g.magic.codex_open=false
 		g.alchemy.close(false)
 		g.inventory_open = true
+		g.equipment.gear_open = false
 		g.crafting_open = false
 		var chest_rect := Rect2(Vector2(g.window_positions["chest"]), SIZE)
 		if chest_rect.intersects(Rect2(Vector2(g.window_positions["inventory"]), SIZE)):

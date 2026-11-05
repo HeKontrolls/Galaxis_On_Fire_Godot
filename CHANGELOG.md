@@ -1,6 +1,39 @@
 # Changelog
 
-Each numbered build has a matching annotated Git tag. Older unnumbered commits remain in Git history.
+Committed numbered builds have matching annotated Git tags. A prepared build receives its tag when committed through Git Commit App. Older unnumbered commits remain in Git history.
+
+## [v0.2.0-alpha+build.3] - 2026-11-04 - Arms, Armor and Night Encounters
+
+### Added
+
+- Equipment tab with helmet, chest, boots, shield, and two accessory slots. Equipping transfers one physical item; swaps and removal return it to the backpack.
+- Fiber, Copper, and Iron armor sets with 4/8/12 total defense and 0%/5%/10% movement penalties, plus Scout Charm and Bone Ward accessories.
+- Wood, Copper, and Iron shields with directional right-click blocking, guard consumption, guard breaks, recovery, and a HUD meter. Melee/empty-hand blocking preserves tool, bow, and building controls.
+- Animated Aseprite armor for both character models, shield/accessory icons, separate worn sleeves, and remote-player equipment rendering.
+- Equipment and guard persistence through saves, multiplayer reconnects, and planet travel. Existing saves start with empty equipment slots.
+
+- Six craftable melee weapons: Wood, Copper, and Iron Spears, Iron Dagger, Iron Warhammer, and Crystal Blade.
+- Mouse-directed thrusts, individual weapon recovery/damage/reach, heavy knockback, and limited multi-target sweeping attacks.
+- Layered Aseprite weapon sources, transparent runtime artwork, and matching inventory/held/remote-player presentation.
+- Additional surface monsters, slimes, and flyers at night, selected for each planet climate. Spawning builds at dusk, respects every co-op player's view, and is capped locally and globally.
+- Offscreen dawn cleanup and bounded reusable night encounter slots; night state persists in saves. Background walls and liquids prevent spawns inside their footprint.
+
+### Improved
+
+- Melee attacks prioritize nearby targets and sweep knockback against terrain.
+- Complete player wiki drafts with an Armor and Equipment guide, current combat and wildlife guides, navigation, and a synchronized copy-and-paste pack.
+- Project completion instructions require version/build metadata, patch notes, and wiki updates before handing work back for a commit.
+
+### Validation
+
+- Equipment checks: 170 passed; two-process multiplayer checks: 26 host and 37 client passed, including equipping through input RPC, shield hold/release, reconnects, and travel.
+- Aseprite validation: 23 equipment source files and 890,336 matching source/export pixels, with rendered armor/model and backpack reviews.
+
+- 222 weapon/night checks passed: crafting, damage, reach, cleave, blocked attacks, knockback, spawn climate/visibility/limits, client authority guards, saves, and snapshot encoding.
+- Existing ranged-weapon and tool-progression regression checks passed.
+- Rendered all six weapon poses in both directions and a generated planet with nighttime encounters. Aseprite verification confirmed 9,984 exported pixels match the six layered sources.
+
+- Arms, Armor and Night Encounters
 
 ## [v0.1.0-alpha+build.2] - 2026-11-04 - Multiplayer Expeditions and Ally Spacing
 

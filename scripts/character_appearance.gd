@@ -104,10 +104,11 @@ static func region(name: String, frame: int) -> Rect2:
 	return Rect2((index % 10) * 32, (index / 10) * 40, 32, 40)
 
 
-func draw_body(canvas: CanvasItem, at: Vector2, name: String, frame: int, tint: Color = Color.WHITE) -> void:
+func draw_body(canvas: CanvasItem, at: Vector2, name: String, frame: int, tint: Color = Color.WHITE, hide_hair := false) -> void:
 	var source := region(name, frame)
-	for texture: Texture2D in layers:
-		canvas.draw_texture_rect_region(texture, Rect2(at, Vector2(32, 40)), source, tint)
+	for index in range(layers.size()):
+		if hide_hair and index in [0,6]: continue
+		canvas.draw_texture_rect_region(layers[index], Rect2(at, Vector2(32, 40)), source, tint)
 
 
 func draw_preview(canvas: CanvasItem, at: Vector2, scale: float, action: String, clock: float, facing: int = 1) -> void:

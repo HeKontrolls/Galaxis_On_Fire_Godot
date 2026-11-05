@@ -94,7 +94,7 @@ func update(game, c: Dictionary, delta: float) -> void:
 	if absf(moved.x - at.x) > 0.01: c["direction"] = 1 if moved.x > at.x else -1
 	c["x"] = moved.x; c["y"] = moved.y
 	if str(c["flight_state"]) == "dive" and moved.distance_to(player) < 24 and game.damage_cooldown <= 0 and not game.dev_invulnerable and game.interactions._visible(moved + Vector2(12, 9), Rect2(game.player_pos, Vector2(16, 28))):
-		game.health -= game.magic.absorb(int(c["damage"])); game.damage_cooldown = 1.2
+		game.health -= game.equipment.absorb(int(c["damage"]), Vector2(float(c.x)+12,float(c.y)+9)); game.damage_cooldown = 1.2
 		c["flight_state"] = "recover"; c["flight_timer"] = 2.2
 		game._show_notice(str(c.get("species_name", NAMES[family])) + " struck you")
 		if game.health <= 0:
