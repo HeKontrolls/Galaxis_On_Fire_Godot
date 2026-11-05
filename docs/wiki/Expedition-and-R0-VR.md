@@ -21,7 +21,9 @@ The objective panel provides the exact requirements and progress for your curren
 
 ## The buried signal
 
-Prepare before following the signal underground. Bring an appropriate pickaxe, a weapon, food, and lighting. The drive core is guarded by a sentinel, so reaching its location is only part of the task.
+Prepare before following the signal underground. Bring an Iron Pickaxe, a weapon, armor, a shield, food, and lighting. The [Ruined Mining Guardian](Mining-Guardian) protects the core with a warned drill charge and ground slam. Attack during its recovery windows.
+
+After defeating it, press **F** at the core to secure the quest objective and receive a **Faultline Hammer** and **Survey Core**. Once the pod is repaired, bring the Survey Core, 6 Iron Ingots, and 3 Crystals to the home pod and press **F** to install the optional ship survey array. Planet selection then shows resource forecasts. Installing the array does not launch immediately; press F again or G to depart.
 
 ## Leaving the planet
 

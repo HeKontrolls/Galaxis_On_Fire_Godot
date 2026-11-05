@@ -24,6 +24,7 @@
 - [Crafting and Stations](Crafting-and-Stations)
 - [Building and Housing](Building-and-Housing)
 - [Farming and Food](Farming-and-Food)
+- [Mining Guardian](Mining-Guardian) - First miniboss, salvage, and the ship survey array.
 - [Combat and Weapons](Combat-and-Weapons)
 - [Armor and Equipment](Armor-and-Equipment)
 - [Power and Logic](Power-and-Logic)

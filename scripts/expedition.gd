@@ -10,7 +10,7 @@ const ADVICE := [
 	["Place a workbench and furnace. Craft a Stone Pickaxe and Sword.", "Press F at a station; put ingredients into its own slots."],
 	["Build a lit shelter and harvest your first corn crop.", "Use the hoe, plant seeds on tilled soil, then water it."],
 	["Smelt copper with fuel; take the ingots from the furnace.", "Craft a Copper Pickaxe and Copper Sword at your workbench."],
-	["An old drive core lies below us. A sentinel is guarding it.", "Bring an Iron Pickaxe, a sword, food and torches. Follow the signal."],
+	["An old drive core lies below us. A ruined mining guardian protects it.", "Bring iron tools, armor, a shield and food. Follow the signal."],
 	["Craft 2 Hull Plates and 1 Drive Coil at your workbench.", "Return to the crashed pod and press F to install the parts."],
 	["The pod is ready. Press G, or F beside it, to return to our ship.", "Choose another planet and land to begin your next expedition."],
 	["You reached the orbiting ship. The galaxy is open to us now.", "Explore other climates for rarer ores and stronger equipment."]]
@@ -77,21 +77,21 @@ func prepare() -> void:
 	spawn = g.world["spawn"]
 	var cx := clampi(int(spawn.x / 16) + 76, 30, WG.WIDTH - 30)
 	var floor_y := 0
-	for x in range(cx - 9, cx + 10):
+	for x in range(cx - 17, cx + 18):
 		floor_y = maxi(floor_y, int(g.world["surface"][x]) + 48)
 	floor_y = mini(floor_y, WG.HEIGHT - 16)
 	var grid: PackedByteArray = g.world["tiles"]
 	# This room is only authored on the untouched first world of a new expedition.
-	for y in range(floor_y - 8, floor_y + 2):
-		for x in range(cx - 9, cx + 10):
-			WG.set_tile(grid, x, y, 0 if y > floor_y - 8 and y < floor_y and x > cx - 9 and x < cx + 9 else 3)
+	for y in range(floor_y - 12, floor_y + 2):
+		for x in range(cx - 17, cx + 18):
+			WG.set_tile(grid, x, y, 0 if y > floor_y - 12 and y < floor_y and x > cx - 17 and x < cx + 17 else 3)
 			for fluid: String in ["water", "lava"]:
 				if g.world.get(fluid, PackedByteArray()).size() == grid.size():
 					g.world[fluid][y * WG.WIDTH + x] = 0
 	g.world["tiles"] = grid
 	data["site"] = [cx * 16 + 8, floor_y * 16]
-	g.world["creatures"].append({"x": float(cx * 16 - 40), "y": float(floor_y * 16 - 18), "home_x": float(cx * 16), "direction": -1, "hp": 90, "max_hp": 90, "damage": 14, "alive": true, "quest_guardian": true})
-	for x in [cx - 6, cx + 6]:
+	g.world["creatures"].append({"x": float(cx * 16 - 40), "y": float(floor_y * 16 - 18), "home_x": float(cx * 16), "direction": -1, "hp": 90, "max_hp": 90, "damage": 14, "alive": true, "quest_guardian": true, "arena_left": float((cx-16)*16), "arena_right": float((cx+17)*16)})
+	for x in [cx - 14, cx - 6, cx + 6, cx + 14]:
 		g.world["torches"]["%d,%d" % [x, floor_y - 3]] = true
 
 func record_item(item: String) -> void:
@@ -150,7 +150,7 @@ func goals() -> Array:
 		2: return [["Place a Workbench", data["placed"].get("Workbench", false)], ["Place a Furnace", data["placed"].get("Furnace", false)], ["Craft a Stone Pickaxe", seen("Stone Pickaxe")], ["Craft a Wood Sword", seen("Sword")]]
 		3: return [["12 building blocks + roof + torch", data["shelter"]], ["Harvest a mature corn crop", data["harvested"]]]
 		4: return [["Craft a Copper Pickaxe", seen("Copper Pickaxe")], ["Craft a Copper Sword", seen("Copper Sword")]]
-		5: return [["Craft an Iron Pickaxe", seen("Iron Pickaxe")], ["Defeat the sentinel; recover core [F]", data["core"]]]
+		5: return [["Craft an Iron Pickaxe", seen("Iron Pickaxe")], ["Defeat guardian; recover salvage [F]", data["core"]]]
 		6: return [["Drive core secured", data["core"]], ["Hull Plates %d/2" % mini(2, int(g.inventory.get("Hull Plate", 0))), int(g.inventory.get("Hull Plate", 0)) >= 2], ["Drive Coil %d/1" % mini(1, int(g.inventory.get("Drive Coil", 0))), int(g.inventory.get("Drive Coil", 0)) >= 1]]
 		7: return [["Return to orbit [G / pod F], then explore", false]]
 	return [["First voyage complete", true]]
@@ -227,10 +227,11 @@ func interact() -> bool:
 		return false
 	if near(point("site")) and not bool(data["core"]):
 		if guardian_alive():
-			g._show_notice("Defeat the sentinel before recovering the drive core")
+			g._show_notice("Defeat the mining guardian before recovering its salvage")
 		else:
 			data["core"] = true
-			g._show_notice("Drive core recovered and secured for repairs. Return to R0-VR")
+			claim_guardian_reward()
+			g._show_notice("Drive core secured! Faultline Hammer and Survey Core recovered. Return to R0-VR")
 		return true
 	if g.world.has("npc"):
 		var guide: Dictionary = g.world["npc"]
@@ -238,6 +239,11 @@ func interact() -> bool:
 			g._talk_to_explorer()
 			return true
 	if near_pod():
+		if data.get("core", false) and not data.get("guardian_reward", false):
+			claim_guardian_reward()
+			g._show_notice("Guardian salvage recovered: Faultline Hammer and Survey Core")
+			return true
+		if stage() >= 7 and install_survey(): return true
 		if stage() >= 7:
 			g._leave_planet()
 		elif stage() == 6 and ready():
@@ -255,6 +261,24 @@ func interact() -> bool:
 			g._talk_to_explorer()
 			return true
 	return false
+
+func claim_guardian_reward() -> void:
+	if data.get("guardian_reward", false): return
+	data["guardian_reward"] = true
+	g._add_item("Faultline Hammer", 1)
+	g._add_item("Survey Core", 1)
+	g._refresh_hotbar()
+
+func install_survey() -> bool:
+	if data.get("survey_array", false): return false
+	var parts := {"Survey Core":1, "Iron Ingot":6, "Crystal":3}
+	for item: String in parts:
+		if int(g.inventory.get(item,0)) < int(parts[item]): return false
+	for item: String in parts: g.inventory[item] -= int(parts[item])
+	data["survey_array"] = true
+	g._refresh_hotbar()
+	g._show_notice("Ship survey array installed! Planet selection now shows resource forecasts. Press F again to launch")
+	return true
 
 func guardian_ground(creature: Dictionary, x: float) -> int:
 	var row := floori((float(creature["y"]) + 18) / 16)
@@ -342,6 +366,10 @@ func draw_hud() -> void:
 		hint = direction_to(point("site"))
 	elif home() and stage() in [6, 7]:
 		hint = direction_to(point("ship"))
+	if stage() >= 7 and not data.get("survey_array", false):
+		g._text("Optional ship survey array at the home pod [F]", at + Vector2(12, 112), 12, Color("9ed9d5"))
+		g._text("1 Survey Core + 6 Iron Ingots + 3 Crystals", at + Vector2(12, 133), 12, Color("c6d6df"))
+		g._text("Unlock resource forecasts in planet selection", at + Vector2(12, 154), 12, Color("c6d6df"))
 	g._text(hint, at + Vector2(12, 182), 13, Color("e9c282"))
 
 func draw_dialogue(at: Vector2) -> void:

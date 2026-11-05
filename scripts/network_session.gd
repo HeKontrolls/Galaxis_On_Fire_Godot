@@ -301,6 +301,7 @@ func _contact_damage(actor, delta: float) -> void:
 	actor.damage_cooldown = maxf(0, actor.damage_cooldown - delta)
 	if actor.damage_cooldown > 0: return
 	for creature in g.world.get("creatures", []):
+		if creature.get("mining_guardian", false): continue # Guardian attacks damage all players in its host state machine.
 		if bool(creature.get("alive", false)) and not bool(creature.get("wildlife", false)) and Vector2(float(creature.x), float(creature.y)).distance_to(actor.player_pos) < 23:
 			actor.health -= actor.equipment.absorb(int(creature.get("damage", 8)), Vector2(float(creature.x)+12,float(creature.y)+9))
 			actor.damage_cooldown = 1.2

@@ -106,6 +106,7 @@ static func update(g, delta: float) -> void:
 			Monsters.decorate(g.world,c,serial,true)
 		c.merge({"x":at.x,"y":at.y,"home_x":at.x,"home_y":at.y,"direction":1 if actor.player_pos.x>at.x else -1,
 			"alive":true,"night_spawn":true,"night_dead_age":0.0},true)
+		preload("res://scripts/planet_danger.gd").apply(g.world,c)
 		if reusable>=0: creatures[reusable]=c
 		else: creatures.append(c)
 		g.world["creatures"]=creatures

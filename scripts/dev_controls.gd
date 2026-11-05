@@ -41,7 +41,7 @@ func _init(game) -> void:
 			if not item_catalog.has(str(item)):
 				item_catalog.append(str(item))
 		item_catalog.sort()
-	for item in ["Corn", "Roasted Corn", "Obsidian", "Diamond", "Ancient Debris", "Netherite Scrap", "Netherite Ingot", "Glacial Ice", "Gravel"] + Tools.BASE_TOOLS + Tools.variants() + g.GroundLife.ITEMS + g.Furnishings.ITEMS + g.CropCatalog.ITEMS + g.Ranged.ITEMS + g.Melee.WEAPONS.keys() + g.EquipmentCatalog.ITEMS.keys() + g.PowerCatalog.ITEMS + g.MagicCatalog.ITEMS + g.SpellcraftCatalog.ITEMS:
+	for item in ["Survey Core", "Corn", "Roasted Corn", "Obsidian", "Diamond", "Ancient Debris", "Netherite Scrap", "Netherite Ingot", "Glacial Ice", "Gravel"] + Tools.BASE_TOOLS + Tools.variants() + g.GroundLife.ITEMS + g.Furnishings.ITEMS + g.CropCatalog.ITEMS + g.Ranged.ITEMS + g.Melee.WEAPONS.keys() + g.EquipmentCatalog.ITEMS.keys() + g.PowerCatalog.ITEMS + g.MagicCatalog.ITEMS + g.SpellcraftCatalog.ITEMS:
 		if not item_catalog.has(item):
 			item_catalog.append(item)
 	item_catalog.sort()

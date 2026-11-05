@@ -18,7 +18,7 @@ The guides link to wiki page names, such as `Farming-and-Food`, rather than to s
 
 ## One-file copy-and-paste pack
 
-`docs/WIKI_COPY_PASTE.md` contains Home, the index, all 25 game/system guides, and optional sidebar content. Each page has its own fenced Markdown block. Copy the contents inside that block into the corresponding wiki page; do not copy the outer fence or the `Page:` separator heading.
+`docs/WIKI_COPY_PASTE.md` contains Home, the index, all 27 game/system guides, and optional sidebar content. Each page has its own fenced Markdown block. Copy the contents inside that block into the corresponding wiki page; do not copy the outer fence or the `Page:` separator heading.
 
 The pack is a convenience copy. If you revise a guide afterward, update its standalone file and the relevant wiki page; the pack is not generated automatically by the game or uploader.
 

@@ -18,7 +18,7 @@ Keep room to move, aim carefully, and consider ranged weapons when approaching a
 
 Slime types include Meadow, Brine, Dune, Rime, Cinder, and Prism varieties. Underground encounters also include cave scarabs, pale scuttlers, and cave screechers.
 
-The buried drive-core objective has a **salvage sentinel** guarding it. Prepare equipment and supplies before investigating the signal.
+The buried drive-core objective is protected by the **Ruined Mining Guardian**. Prepare armor, a shield, a weapon, and healing food; watch its charge and slam warnings.
 
 ## Night encounters
 
@@ -39,5 +39,11 @@ Small fauna and vegetation help make regional biomes feel inhabited. Some ground
 ## Necromancy
 
 Fallen enemies can become a resource for the necromancy skill branch. Suitable corpses can be raised into temporary allies after the required research. A corpse that has already been raised cannot be reused.
+
+## Danger and the guardian
+
+Hostile creatures scale with the climate's [planet danger](Planets-and-Biomes), including night arrivals and cave populations. Higher danger increases health and damage and awards more of each creature's normal material drop.
+
+The first expedition's [Mining Guardian](Mining-Guardian) is a separate encounter with telegraphed attacks, recovery windows, and one-time salvage rewards.
 
 [Home](Home) · [Wiki Index](Wiki-Index) · [Combat and Weapons](Combat-and-Weapons) · [Flora and Trees](Flora-and-Trees)

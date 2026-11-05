@@ -101,6 +101,17 @@ func host_checks() -> void:
 	game.world.creatures.clear()
 	assert_check(await wait_until(func(): return actor.inventory_open), "Guest opens its backpack through input RPC")
 	assert_check(not game.inventory_open, "Guest UI does not open host backpack")
+	var boss := {"x":actor.player_pos.x-24,"y":actor.player_pos.y-20,"alive":true,"hp":360,"max_hp":360,
+		"quest_guardian":true,"mining_guardian":true,"direction":1,"boss_state":"warn_slam","boss_timer":1.0}
+	game.world.creatures.append(boss)
+	game.expedition.data["survey_array"]=true
+	assert_check(await wait_until(func(): return FileAccess.file_exists(output+"-guardian-seen")), "Guest receives guardian warning and ship upgrade")
+	actor.damage_cooldown=0
+	var health_before:int=actor.health
+	game.Guardian.hurt(game,boss,game.Guardian.slam_area(boss),22)
+	assert_check(actor.health==health_before-21, "Guardian attack uses guest armor on host")
+	assert_check(await wait_until(func(): return FileAccess.file_exists(output+"-guardian-hit")), "Guest receives authoritative guardian damage")
+	game.world.creatures.clear()
 	game._save_game()
 	var saved: Variant = JSON.parse_string(FileAccess.get_file_as_string(game.save_path))
 	var profiles: Dictionary = game._restore_network_profiles(saved.get("multiplayer_profiles", ""))
@@ -216,6 +227,14 @@ func client_checks() -> void:
 	key(KEY_I)
 	assert_check(await wait_until(func(): return game.health < 100), "Guest receives host-authoritative health")
 	assert_check(await wait_until(func(): return game.inventory_open), "Backpack UI state replicates")
+	assert_check(await wait_until(func(): return game.world.creatures.any(func(c): return c.get("mining_guardian",false))), "Guardian record crosses ENet world update")
+	var boss:Dictionary=game.world.creatures[0]
+	assert_check(boss.get("boss_state","")=="warn_slam" and boss.get("hp",0)==360, "Guardian warning and health replicate")
+	assert_check(game.expedition.data.get("survey_array",false), "Ship survey upgrade replicates")
+	var guardian_health:int=game.health
+	var guardian_marker:=FileAccess.open(output+"-guardian-seen",FileAccess.WRITE);guardian_marker.store_string("ready");guardian_marker.close()
+	assert_check(await wait_until(func(): return game.health==guardian_health-21), "Guest sees guardian damage with armor applied")
+	guardian_marker=FileAccess.open(output+"-guardian-hit",FileAccess.WRITE);guardian_marker.store_string("ready");guardian_marker.close()
 	assert_check(await wait_until(func(): return FileAccess.file_exists(output + "-saved")), "Host saves connected guest")
 	game.network.stop()
 	await create_timer(0.6).timeout

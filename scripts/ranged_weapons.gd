@@ -144,6 +144,8 @@ static func hit_box(creature: Dictionary) -> Rect2:
 	var at:=Vector2(float(creature.x),float(creature.y))
 	if bool(creature.get("flying",false)) or creature.has("flight_state"):
 		return Rect2(at+Vector2(-10,-10),Vector2(44,30))
+	if creature.get("mining_guardian",false):
+		return Rect2(at,Vector2(48,48))
 	if bool(creature.get("quest_guardian",false)):
 		return Rect2(at+Vector2(-8,-20),Vector2(40,38))
 	return Rect2(at+Vector2(-4,-12),Vector2(32,30))
@@ -181,12 +183,12 @@ func step(arrow: Dictionary,dt: float) -> bool:
 func hit_creature(c: Dictionary,damage: int,velocity: Vector2) -> void:
 	c.hp=int(c.hp)-damage;c.hit_flash=0.20
 	var pushed:=Vector2(float(c.x)+signf(velocity.x)*9,float(c.y))
-	if g.FlyingMonsters.fits(g.world,pushed):c.x=pushed.x
+	if not c.get("mining_guardian",false) and g.FlyingMonsters.fits(g.world,pushed):c.x=pushed.x
 	if int(c.hp)<=0:
 		c.alive=false
 		g.spellcraft.dead_loot(c)
-		g._drop_item(g.WildlifeMobs.loot(c) if bool(c.get("wildlife",false)) else "Alien Fiber",1,Vector2i(floor(Vector2(float(c.x),float(c.y))/16)))
-		g._show_notice("Creature defeated")
+		g._drop_item(g.WildlifeMobs.loot(c) if bool(c.get("wildlife",false)) else "Alien Fiber",preload("res://scripts/planet_danger.gd").loot_count(c),Vector2i(floor(Vector2(float(c.x),float(c.y))/16)))
+		g._show_notice("Guardian defeated! Recover the salvage at its core [F]" if c.get("mining_guardian",false) else "Creature defeated")
 	else:g._show_notice("Arrow hit: %d damage" % damage)
 func pose(screen_pos: Vector2) -> Transform2D:
 	var aim:Vector2=g.mouse_aim_direction.normalized() if g.mouse_aim_valid else Vector2(g.facing,0)

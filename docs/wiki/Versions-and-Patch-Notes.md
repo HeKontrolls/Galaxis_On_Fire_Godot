@@ -4,28 +4,27 @@ Galaxis on Fire is in active alpha development. Build identities help match a ga
 
 ## Current prepared build
 
-**v0.2.0-alpha+build.3 ? Arms, Armor and Night Encounters**  
-**Build date:** November 4, 2026  
+**v0.3.0-alpha+build.4 - Mining Guardian and Planet Danger**
+
+**Build date:** November 5, 2026
+
 **Status:** Prepared locally for commit; this page does not imply the build has been uploaded or released.
 
-This feature build includes:
+- [Ruined Mining Guardian](Mining-Guardian): 360 HP, a warned drill charge and ground slam, recovery windows, larger new-game chambers, and a boss HUD.
+- Aseprite guardian animations, the unique Faultline Hammer, and the Survey Core.
+- An optional ship survey-array upgrade that reveals broad resource forecasts in planet selection.
+- Climate-based Danger 1-3 ratings, stronger hostile creatures, and increased normal material drops on harsher planets.
+- Persistent rewards, guardian state, and ship upgrades; safe legacy-save migration and host-authoritative multiplayer attacks.
 
-- Six additional melee weapons: Wood, Copper, and Iron Spears, Iron Dagger, Iron Warhammer, and Crystal Blade.
-- Additional planet-specific ground creatures, slimes, and flyers at night, with population limits and offscreen dawn cleanup.
-- Fiber, Copper, and Iron armor, an equipment tab, Wood/Copper/Iron shields, and two accessories.
-- Directional shield blocking, guard recovery, armor protection, and movement tradeoffs.
-- Equipment saves and multiplayer ownership, reconnects, travel, and visible armor/shields.
-- Editable Aseprite artwork and an updated player wiki copy-and-paste pack.
-
-Checks passed: 222 weapon/night checks, 170 equipment checks, and 63 two-process multiplayer checks, plus the existing ranged-weapon and tool-progression regressions. These multiplayer checks used local processes, not a cross-PC or eight-player load test.
+Checks passed: 95 guardian/danger checks, 229 weapon/night assertions, 170 equipment assertions, 70 two-process multiplayer checks, and 3 generated-chamber checks. Aseprite sources and exports were compared pixel for pixel. Multiplayer verification used two local processes, not a cross-PC or larger-group test. The preceding build, **v0.2.0-alpha+build.3 - Arms, Armor and Night Encounters**, added melee weapons, night encounters, armor, shields, and accessories.
 
 ## Reading the version
 
-The prepared version `v0.2.0-alpha+build.3` contains:
+The prepared version `v0.3.0-alpha+build.4` contains:
 
-- **0.2.0:** Release version: major, minor, and patch numbers.
+- **0.3.0:** Release version: major, minor, and patch numbers.
 - **alpha:** Development channel. Beta and release-candidate channels are also supported.
-- **build.3:** The increasing build number for that checkpoint.
+- **build.4:** The increasing build number for that checkpoint.
 
 The game version appears in its main menu and window title. It is separate from the Godot engine's version. Multiplayer checks the game build when joining.
 
@@ -33,7 +32,7 @@ The game version appears in its main menu and window title. It is separate from 
 
 [CHANGELOG.md](https://github.com/HeKontrolls/Galaxis_On_Fire_Godot/blob/main/CHANGELOG.md) contains the numbered build history and notes about additions, improvements, fixes, and verification.
 
-The preceding build, `v0.1.0-alpha+build.2`, added hosting/joining, shared-world synchronization, guest saves and reconnection, the combined HP/MP panel, and improved raised-ally spacing.
+The earlier build, `v0.1.0-alpha+build.2`, added hosting/joining, shared-world synchronization, guest saves and reconnection, the combined HP/MP panel, and improved raised-ally spacing.
 
 ## For contributors: changing build info
 

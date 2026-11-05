@@ -1,6 +1,6 @@
 # Galaxis on Fire
 
-**Current prepared build:** `v0.2.0-alpha+build.3` ? Arms, Armor and Night Encounters. See [Versions and Patch Notes](Versions-and-Patch-Notes) for changes and verification.
+**Current prepared build:** `v0.3.0-alpha+build.4` - Mining Guardian and Planet Danger. See [Versions and Patch Notes](Versions-and-Patch-Notes) for changes and verification.
 
 **Chart a star system. Land. Survive. Push deeper.**
 
@@ -9,6 +9,8 @@ Welcome to the **Galaxis on Fire** wiki!
 Galaxis on Fire is a 2D pixel-art sandbox adventure built around planetary exploration, survival, building, technology, and magic. Explore a procedurally generated galaxy, establish a foothold on unfamiliar worlds, and turn the resources around you into the equipment you need for your next expedition.
 
 Your journey begins with a crashed escape pod and a damaged ascent drive. Your main ship is still in orbit, and your robot companion, **R0-VR**, is there to help you get back to it. Gather supplies, build a workshop, grow food, improve your equipment, and investigate a buried signal to recover what you need for repairs. Once the pod is ready, return to your ship and continue exploring other planets.
+
+Face the [Ruined Mining Guardian](Mining-Guardian) during the buried-signal expedition, recover its unique hammer and Survey Core, and use planet danger ratings to plan tougher expeditions.
 
 ## A galaxy to explore
 

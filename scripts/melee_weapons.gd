@@ -2,6 +2,7 @@ extends RefCounted
 ## Combat-only equipment. Native Aseprite frames share the existing (16,32) grip.
 const Art = preload("res://scripts/sprite_art.gd")
 const WEAPONS := {
+	"Faultline Hammer": {"damage":64, "cooldown":0.85, "reach":76.0, "width":42.0, "push":28.0, "hits":3, "motion":"swing"},
 	"Wood Spear": {"damage":16, "cooldown":0.65, "reach":92.0, "width":16.0, "push":12.0, "hits":1, "motion":"thrust"},
 	"Copper Spear": {"damage":25, "cooldown":0.65, "reach":96.0, "width":16.0, "push":16.0, "hits":1, "motion":"thrust"},
 	"Iron Spear": {"damage":34, "cooldown":0.65, "reach":100.0, "width":17.0, "push":20.0, "hits":1, "motion":"thrust"},

@@ -52,6 +52,12 @@ Terrain, closed doors, and liquids affect projectile travel. Switching equipment
 
 Wands, staffs, tomes, and ward books use mana and cooldowns. Magic supports direct damage, status effects, healing, protection, illumination, and necromancy. See [Magic and Skill Tree](Magic-and-Skill-Tree).
 
+## Guardian reward weapon
+
+The **Faultline Hammer** is recovered at the drive core with **F** after defeating the [Mining Guardian](Mining-Guardian). It deals **64 damage**, attacks every **0.85 seconds**, reaches **4.75 blocks**, and can hit **three enemies** per swing. It cannot mine blocks and is not a workbench recipe.
+
+Planet danger also increases ordinary enemy health, damage, and material rewards. See [Planets and Biomes](Planets-and-Biomes) before landing on a tougher world.
+
 ## Armor and shields
 
 Fiber, copper, and iron armor reduce creature damage. Equip a shield and hold right-click with a melee weapon or empty hand to block toward the mouse. Guard is limited; lower the shield to recover it. See [Armor and Equipment](Armor-and-Equipment) for recipes, accessories, and equipment slots.

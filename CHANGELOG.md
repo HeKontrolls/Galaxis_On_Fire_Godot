@@ -2,6 +2,34 @@
 
 Committed numbered builds have matching annotated Git tags. A prepared build receives its tag when committed through Git Commit App. Older unnumbered commits remain in Git history.
 
+## [v0.3.0-alpha+build.4] - 2026-11-05 - Added Boss
+
+- Ruined Mining Guardian encounter at the first expedition's buried core: 360 HP, 1.1-second drill-charge warning, 1-second floor-slam warning, and 1.4-second recovery windows. Terrain blocks movement/attacks; shields and armor apply normally.
+- A larger lit chamber in new expeditions, an attack-reading boss HUD, and layered Aseprite guardian animations with transparent runtime exports.
+- Faultline Hammer salvage weapon (64 damage, 0.85-second interval, 4.75-block reach, three-target swing) and a Survey Core, claimed once with F after defeating the guardian.
+- Optional ship survey array: install 1 Survey Core, 6 Iron Ingots, and 3 Crystals at the repaired home pod with F to unlock planetary resource forecasts.
+- Climate-based Danger 1/2/3 ratings in planet selection. Ordinary hostile creatures receive 0/25/50% extra HP and 0/20/40% extra damage, with 1/2/3 normal material drops. Includes cave creatures and new night spawns.
+
+### Compatibility and multiplayer
+
+- Living legacy sentinels upgrade only if the larger body fits, preserving health percentage and player construction. Defeated sentinels stay defeated; previously secured cores unlock one-time salvage at the home pod.
+- Repeated world visits do not compound danger bonuses. Guardian state, reward claims, and the survey array persist through saves and shared world snapshots.
+- Guardian attacks run on the host, evaluate all nearby players, and use each player's armor and directional shield. The guardian is excluded from ordinary contact damage.
+- New Mining Guardian wiki guide; updated expedition, combat, wildlife, planets, travel, version pages, navigation, and the synchronized copy-and-paste pack.
+
+### Verification
+
+- 95 guardian/danger checks passed: attack warnings, dodges, shields, terrain collision, both-sided melee, rewards, save/load, legacy migration, material scaling, and shared-player damage.
+- 229 weapon/night and 170 equipment regression assertions passed.
+- Two-process ENet verification passed 29 host and 41 client checks, including guardian state, armor-adjusted damage, ship-upgrade replication, reconnects, and travel. Cross-PC latency and larger groups were not tested.
+- Rendered the generated chamber, warning poses, held reward weapon, and upgraded planet viewer. Three generated-chamber assertions passed.
+- Aseprite verification passed for 3 layered native sources, 10 frames, and 35,072 exact PNG pixels with binary transparency.
+- Runtime/manifest/export build metadata matches v0.3.0-alpha+build.4. All 30 wiki/sidebar blocks match their source pages, with 196 internal links verified.
+
+
+- Mining Guardian and Planet Danger
+- Added Boss
+
 ## [v0.2.0-alpha+build.3] - 2026-11-04 - Arms, Armor and Night Encounters
 
 ### Added

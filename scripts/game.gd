@@ -122,6 +122,8 @@ const PlayerEquipment = preload("res://scripts/player_equipment.gd")
 var equipment := PlayerEquipment.new()
 const Melee = preload("res://scripts/melee_weapons.gd")
 const NightPopulation = preload("res://scripts/night_population.gd")
+const Danger = preload("res://scripts/planet_danger.gd")
+const Guardian = preload("res://scripts/mining_guardian.gd")
 const RECIPES := [
 	{"name": "Planks x4", "out": "Planks", "count": 4, "needs": {"Wood": 1}},
 	{"name": "Sticks x4", "out": "Stick", "count": 4, "needs": {"Planks": 1}},
@@ -1134,6 +1136,8 @@ func _open_planet(index: int) -> void:
 		world["drops"] = []
 	expedition.prepare()
 	WildlifeMobs.prepare(world)
+	Guardian.prepare(world)
+	for creature: Dictionary in world.get("creatures", []): Danger.apply(world, creature)
 	_reset_world_environment()
 	if not pending_weather_blend.is_empty():
 		weather_blend.restore(pending_weather_blend, weather, int(world["climate"]))
@@ -1288,6 +1292,9 @@ func _update_creature(creature: Dictionary, delta: float) -> void:
 			creature.home_x = move_toward(float(creature.home_x), player_pos.x, delta*45.0)
 			creature.home_y = move_toward(float(creature.home_y), player_pos.y-80, delta*20.0)
 		else: creature.home_x = float(creature.x)
+	if creature.get("mining_guardian", false):
+		Guardian.update(self, creature, delta * magic.creature_scale(creature))
+		return
 	var creature_delta:float=delta*magic.creature_scale(creature)
 	if bool(creature.get("wildlife", false)):
 		wildlife_mobs.update(self, creature, creature_delta)
@@ -1346,19 +1353,20 @@ func _attack(target: Variant = null) -> void:
 	for creature: Dictionary in candidates:
 		if not bool(creature.get("alive",false)): continue
 		var at := Vector2(float(creature.x),float(creature.y))
-		var in_arc := Melee.hits(equipped_tool,origin,mouse_aim_direction,Ranged.hit_box(creature)) if Melee.has_weapon(equipped_tool) else (hit_center.distance_to(at)<46.0 and (at-origin).dot(mouse_aim_direction)>=0)
-		if not in_arc or not interactions._visible(origin,Rect2(at,Vector2(24,18))): continue
+		var hit_at := Ranged.hit_box(creature).get_center() if creature.get("mining_guardian", false) else at
+		var in_arc := Melee.hits(equipped_tool,origin,mouse_aim_direction,Ranged.hit_box(creature)) if Melee.has_weapon(equipped_tool) else (hit_center.distance_to(hit_at)<46.0 and (hit_at-origin).dot(mouse_aim_direction)>=0)
+		if not in_arc or not interactions._visible(origin,Ranged.hit_box(creature) if creature.get("mining_guardian", false) else Rect2(at,Vector2(24,18))): continue
 		creature.hp -= Tools.damage(equipped_tool)
 		creature.hit_flash = 0.20
 		var push := float(Melee.WEAPONS[equipped_tool].push) if Melee.has_weapon(equipped_tool) else 15.0
 		# Sweep knockback so heavy weapons cannot push a victim through a wall.
 		var pushed := flying_monsters.move_clear(world,at,Vector2(facing*push,0))
-		creature.x = pushed.x
+		if not creature.get("mining_guardian", false): creature.x = pushed.x
 		if creature.hp<=0:
 			creature.alive=false
 			spellcraft.dead_loot(creature)
-			_drop_item(WildlifeMobs.loot(creature) if creature.get("wildlife",false) else "Alien Fiber",1,Vector2i(floor(at/16)))
-			_show_notice("Creature defeated")
+			_drop_item(WildlifeMobs.loot(creature) if creature.get("wildlife",false) else "Alien Fiber",Danger.loot_count(creature),Vector2i(floor(at/16)))
+			_show_notice("Guardian defeated! Recover the salvage at its core [F]" if creature.get("mining_guardian", false) else "Creature defeated")
 		else: _show_notice("Hit %s: %d HP" % [PlanetMonsters.display_name(creature),int(creature.hp)])
 		_wear_pickaxe(equipped_tool,2)
 		remaining-=1
@@ -2027,7 +2035,7 @@ func _mouse_pressed(event: InputEventMouseButton) -> void:
 	elif scene_name == "system":
 		if event.button_index != MOUSE_BUTTON_LEFT:
 			return
-		if Rect2(1055, 615, 205, 58).has_point(point) and selected_planet_index >= 0:
+		if Rect2(1055, 645, 205, 48).has_point(point) and selected_planet_index >= 0:
 			_open_planet(selected_planet_index)
 		elif Rect2(20, 20, 170, 42).has_point(point):
 			scene_name = "galaxy"
@@ -3724,10 +3732,13 @@ func _draw_system_view() -> void:
 		for biome: Dictionary in WG.Biomes.PROFILES[climate]:
 			biome_names.append(str(biome["name"]))
 		_text("%s  |  %s" % [selected["name"], WG.NAMES[climate]], Vector2(20, 661), 16)
+		_button_text(Rect2(850, 602, 410, 36), Danger.caption(climate), 16, Danger.COLORS[Danger.level(climate)])
+		if expedition.data.get("survey_array", false):
+			_button_text(Rect2(320, 625, 700, 25), "Survey: " + Danger.survey(climate), 14, Color("9ed9d5"), false)
 		_text("Orbit %.2f AU  |  %s  |  %s  |  %d moons  |  %s" % [selected["au"], "Habitable" if selected["habitable"] else "Outside zone",
 			"Possible life" if selected["life"] else "No detected life", selected["moons"], "Rings" if selected["rings"] else "No rings"], Vector2(20, 682), 15, Color("b8cad7"))
 		_text("Biomes: %s  |  Weather: %s" % [", ".join(biome_names), "rain possible" if climate not in [3, 4, 5] else "dry"], Vector2(20, 703), 15, Color("b8cad7"))
-	_draw_menu_button(Rect2(1055, 615, 205, 58), "Enter Planet (E)", selected_planet_index >= 0)
+	_draw_menu_button(Rect2(1055, 645, 205, 48), "Enter Planet (E)", selected_planet_index >= 0)
 
 
 func _draw_menu_panel(rect: Rect2, title: String) -> void:
@@ -4475,12 +4486,14 @@ func _draw_planet() -> void:
 			wildlife_mobs.draw(self, creature, critter_pos, animation_clock)
 		elif bool(creature.get("flying", false)):
 			flying_monsters.draw(self, creature, critter_pos, animation_clock)
+		elif bool(creature.get("mining_guardian", false)):
+			Guardian.draw(self, creature, critter_pos)
 		elif bool(creature.get("quest_guardian", false)):
 			draw_texture(expedition.texture("sentinel"), critter_pos + Vector2(-4, -14), Color("ffb9a1") if float(creature.get("hit_flash", 0.0)) > 0 else Color.WHITE)
 		else:
 			planet_monsters.draw(self, creature, critter_pos, animation_clock)
 		var max_hp := int(creature.get("max_hp", 30))
-		if int(creature["hp"]) < max_hp:
+		if int(creature["hp"]) < max_hp and not creature.get("mining_guardian", false):
 			var bar_y := -10 if bool(creature.get("quest_guardian", false)) else -24
 			draw_rect(Rect2(critter_pos + Vector2(-4, bar_y), Vector2(32, 3)), Color("422834"), true)
 			draw_rect(Rect2(critter_pos + Vector2(-4, bar_y), Vector2(32.0 * maxf(0.0, float(creature["hp"])) / max_hp, 3)), Color("e77877"), true)
@@ -4558,6 +4571,8 @@ func _draw_planet() -> void:
 
 
 func _draw_item_icon(item: String, rect: Rect2) -> void:
+	if item == "Survey Core":
+		draw_texture_rect(expedition.texture("survey_core"), rect, false); return
 	if EquipmentCatalog.ITEMS.has(item):
 		draw_texture_rect(EquipmentCatalog.icon(item),rect,false); return
 	if SpellcraftCatalog.has_item(item):
@@ -4754,6 +4769,7 @@ func _draw_gameplay_hud(sun: float) -> void:
 	magic.draw_hud()
 	_draw_weather_panel(sun)
 	expedition.draw_hud()
+	Guardian.draw_hud(self)
 	_draw_farm_hint()
 	interactions.draw_hint()
 	furnishings.draw_hint(self)

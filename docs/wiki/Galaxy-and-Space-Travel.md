@@ -20,6 +20,12 @@ Planet information includes climate and orbital characteristics. Different world
 
 Temperate forest planets are placed within their star's habitable zone. Planet climates and their surface biomes affect the landscape, vegetation, wildlife, resources, and weather you encounter.
 
+## Danger ratings and the ship survey array
+
+Planet selection displays **Danger 1-3**, from Frontier through Hazardous to Extreme. [Planets and Biomes](Planets-and-Biomes) lists the climates, enemy bonuses, and material rewards for each rating.
+
+The [Mining Guardian](Mining-Guardian) awards a Survey Core. After repairing the escape pod, bring it, **6 Iron Ingots**, and **3 Crystals** to the home pod and press **F** to install the ship survey array. The selected planet then shows a resource and terrain forecast. It is a general forecast, not an exact map of ore deposits. Installation is optional and persists with the expedition.
+
 ## Returning to explored worlds
 
 Visited worlds are retained in the expedition's save, including terrain edits and structures. Returning to a planet continues that saved world rather than creating a fresh copy from its seed.

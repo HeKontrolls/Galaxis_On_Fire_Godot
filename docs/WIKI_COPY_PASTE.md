@@ -2,7 +2,7 @@
 
 Create a GitHub wiki page with each suggested title, then copy the Markdown inside its block. Do not copy the outer fence or the Page separator. Keep the Home page named Home. Internal links resolve when the corresponding pages exist.
 
-This pack contains Home, Wiki Index, 26 game/system guides, and optional sidebar content. These are local drafts; publishing the source repository does not publish its wiki.
+This pack contains Home, Wiki Index, 27 game/system guides, and optional sidebar content. These are local drafts; publishing the source repository does not publish its wiki.
 
 ## Pages
 
@@ -24,6 +24,7 @@ This pack contains Home, Wiki Index, 26 game/system guides, and optional sidebar
 - Crafting and Stations
 - Building and Housing
 - Farming and Food
+- Mining Guardian
 - Combat and Weapons
 - Armor and Equipment
 - Power and Logic
@@ -44,7 +45,7 @@ Suggested wiki title: **Home**
 ````markdown
 # Galaxis on Fire
 
-**Current prepared build:** `v0.2.0-alpha+build.3` ? Arms, Armor and Night Encounters. See [Versions and Patch Notes](Versions-and-Patch-Notes) for changes and verification.
+**Current prepared build:** `v0.3.0-alpha+build.4` - Mining Guardian and Planet Danger. See [Versions and Patch Notes](Versions-and-Patch-Notes) for changes and verification.
 
 **Chart a star system. Land. Survive. Push deeper.**
 
@@ -53,6 +54,8 @@ Welcome to the **Galaxis on Fire** wiki!
 Galaxis on Fire is a 2D pixel-art sandbox adventure built around planetary exploration, survival, building, technology, and magic. Explore a procedurally generated galaxy, establish a foothold on unfamiliar worlds, and turn the resources around you into the equipment you need for your next expedition.
 
 Your journey begins with a crashed escape pod and a damaged ascent drive. Your main ship is still in orbit, and your robot companion, **R0-VR**, is there to help you get back to it. Gather supplies, build a workshop, grow food, improve your equipment, and investigate a buried signal to recover what you need for repairs. Once the pod is ready, return to your ship and continue exploring other planets.
+
+Face the [Ruined Mining Guardian](Mining-Guardian) during the buried-signal expedition, recover its unique hammer and Survey Core, and use planet danger ratings to plan tougher expeditions.
 
 ## A galaxy to explore
 
@@ -136,6 +139,7 @@ Welcome to the Galaxis on Fire player guide. These pages describe the current Go
 - [Crafting and Stations](Crafting-and-Stations) — Recipes, workbench storage, and timed furnaces.
 - [Building and Housing](Building-and-Housing) — Structures, doors, ladders, furniture, and shelter.
 - [Farming and Food](Farming-and-Food) — Crops, moisture, growing light, cooking, and healing.
+- [Mining Guardian](Mining-Guardian) - First miniboss, salvage, and the ship survey array.
 - [Combat and Weapons](Combat-and-Weapons) — Melee equipment, bows, crossbows, and arrows.
 - [Armor and Equipment](Armor-and-Equipment) ? Armor sets, accessories, shields, and guard.
 - [Power and Logic](Power-and-Logic) — Generators, electrical networks, sensors, and logic circuits.
@@ -332,7 +336,9 @@ The objective panel provides the exact requirements and progress for your curren
 
 ## The buried signal
 
-Prepare before following the signal underground. Bring an appropriate pickaxe, a weapon, food, and lighting. The drive core is guarded by a sentinel, so reaching its location is only part of the task.
+Prepare before following the signal underground. Bring an Iron Pickaxe, a weapon, armor, a shield, food, and lighting. The [Ruined Mining Guardian](Mining-Guardian) protects the core with a warned drill charge and ground slam. Attack during its recovery windows.
+
+After defeating it, press **F** at the core to secure the quest objective and receive a **Faultline Hammer** and **Survey Core**. Once the pod is repaired, bring the Survey Core, 6 Iron Ingots, and 3 Crystals to the home pod and press **F** to install the optional ship survey array. Planet selection then shows resource forecasts. Installing the array does not launch immediately; press F again or G to depart.
 
 ## Leaving the planet
 
@@ -371,6 +377,12 @@ The pod is your ascent vehicle. The larger ship remains in orbit; repairing the 
 Planet information includes climate and orbital characteristics. Different worlds can have different moons and rings. The surface sky reflects the selected system's star, along with the planet's moons and rings where applicable.
 
 Temperate forest planets are placed within their star's habitable zone. Planet climates and their surface biomes affect the landscape, vegetation, wildlife, resources, and weather you encounter.
+
+## Danger ratings and the ship survey array
+
+Planet selection displays **Danger 1-3**, from Frontier through Hazardous to Extreme. [Planets and Biomes](Planets-and-Biomes) lists the climates, enemy bonuses, and material rewards for each rating.
+
+The [Mining Guardian](Mining-Guardian) awards a Survey Core. After repairing the escape pod, bring it, **6 Iron Ingots**, and **3 Crystals** to the home pod and press **F** to install the ship survey array. The selected planet then shows a resource and terrain forecast. It is a general forecast, not an exact map of ore deposits. Installation is optional and persists with the expedition.
 
 ## Returning to explored worlds
 
@@ -445,6 +457,20 @@ A planet's climate sets its overall character, while regional biomes change the 
 | Frozen ocean and ice floes | Pack ice, Fractured ice, Glacial shelf, Open leads |
 | Tundra and permafrost | Snowfields, Boreal woodland, Exposed rock, Glacial valleys |
 
+## Planet danger
+
+The solar-system viewer shows a stable danger rating for each climate. It affects hostile surface, cave, and newly arriving night creatures; the quest guardian has its own fixed stats.
+
+| Danger | Planets | Enemy HP | Enemy damage | Normal material drops per kill |
+| --- | --- | --- | --- | --- |
+| 1 - Frontier | Temperate forest; scattered islands | Base | Base | 1 |
+| 2 - Hazardous | Mixed oceans; hot desert; tundra | +25% | +20% | 2 |
+| 3 - Extreme | Volcanic inner; outer rocky barren; frozen ocean | +50% | +40% | 3 |
+
+Health and damage values round to whole numbers. Existing injured creatures keep their health percentage when upgrading an older save; revisiting a world does not stack these bonuses. The material type stays the same, and the multiplier does not increase special quest rewards or Soul-study Bone Fragments.
+
+Defeat the [Mining Guardian](Mining-Guardian), improve your armor, and use the optional ship survey array to choose your next destination. Travel to higher-danger worlds is not locked behind the survey upgrade.
+
 ## Climate affects exploration
 
 Terrain materials, relief, tree density, flora, wildlife, and liquids vary with climate and biome. Biome backgrounds provide additional depth and scenery as you travel.
@@ -505,7 +531,7 @@ Water can drain into connected caves, and digging into an aquifer can open a new
 
 ## The buried signal
 
-The first expedition eventually directs you to a guarded drive core. Follow the objective information and prepare for its sentinel before attempting the recovery. Return to R0-VR and the crashed pod as the objectives instruct.
+The first expedition directs you to the Ruined Mining Guardian and its guarded drive core. Follow the objective information, bring armor, food, and a shield, and use the warned attacks and recovery windows to fight it. Press F at the core after victory, then return to R0-VR and the crashed pod as the objectives instruct.
 
 [Home](Home) · [Wiki Index](Wiki-Index) · [Mining and Tool Progression](Mining-and-Tool-Progression) · [Expedition and R0-VR](Expedition-and-R0-VR)
 ````
@@ -637,7 +663,7 @@ Keep room to move, aim carefully, and consider ranged weapons when approaching a
 
 Slime types include Meadow, Brine, Dune, Rime, Cinder, and Prism varieties. Underground encounters also include cave scarabs, pale scuttlers, and cave screechers.
 
-The buried drive-core objective has a **salvage sentinel** guarding it. Prepare equipment and supplies before investigating the signal.
+The buried drive-core objective is protected by the **Ruined Mining Guardian**. Prepare armor, a shield, a weapon, and healing food; watch its charge and slam warnings.
 
 ## Night encounters
 
@@ -658,6 +684,12 @@ Small fauna and vegetation help make regional biomes feel inhabited. Some ground
 ## Necromancy
 
 Fallen enemies can become a resource for the necromancy skill branch. Suitable corpses can be raised into temporary allies after the required research. A corpse that has already been raised cannot be reused.
+
+## Danger and the guardian
+
+Hostile creatures scale with the climate's [planet danger](Planets-and-Biomes), including night arrivals and cave populations. Higher danger increases health and damage and awards more of each creature's normal material drop.
+
+The first expedition's [Mining Guardian](Mining-Guardian) is a separate encounter with telegraphed attacks, recovery windows, and one-time salvage rewards.
 
 [Home](Home) · [Wiki Index](Wiki-Index) · [Combat and Weapons](Combat-and-Weapons) · [Flora and Trees](Flora-and-Trees)
 ````
@@ -941,6 +973,57 @@ Wheat is a cooking ingredient for bread rather than a directly edible food.
 
 ---
 
+## Page: Mining Guardian
+
+Suggested wiki title: **Mining Guardian**
+
+````markdown
+# Mining Guardian
+
+The **Ruined Mining Guardian** protects the buried drive core in your first expedition. R0-VR's **The buried signal** objective points toward its underground chamber. New expeditions generate a wider, lit room with space to dodge.
+
+Bring an Iron Pickaxe to reach the chamber, a weapon, armor, a shield, healing food, and torches. The guardian has **360 HP**. Melee weapons, arrows, spells, and raised allies can damage it; its heavy chassis resists knockback.
+
+## Read its attacks
+
+The boss health bar explains the current attack. Amber marks on the floor warn where an attack is aimed. The guardian commits its facing direction when the warning starts.
+
+| Attack | Warning | How to respond |
+| --- | --- | --- |
+| Drill charge | 1.1 seconds, followed by a short forward rush | Jump clear or face the machine with a raised shield. Base damage: 18. |
+| Ground slam | 1 second, followed by a nearby floor strike | Jump above the floor strike or leave the marked area. Base damage: 22. |
+| Recovery | 1.4 seconds after an attack | Move in and attack, then prepare for the next warning. |
+
+Terrain blocks the guardian's movement and obstructs its attacks. Standing next to the resting machine does not cause automatic contact damage. Armor and directional shield blocking reduce its attacks using the normal equipment rules. Lower the shield between attacks to regain guard.
+
+The fight does not seal you inside the room. Retreating stops attacks once everyone is sufficiently far away. Damage to the guardian persists; it does not heal on retreat or reload.
+
+## Recover the salvage
+
+After defeating it, stand beside the drive core and press **F**. This secures the quest's core and awards:
+
+- **Faultline Hammer:** 64 damage, 0.85-second attack interval, 4.75-block reach, and up to three targets per swing. It is a combat weapon and cannot mine terrain.
+- **Survey Core:** a component for the ship's optional survey-array upgrade.
+
+Salvage can be claimed once per expedition. In multiplayer, the player who interacts receives the two items; the core objective and installed ship upgrade belong to the shared expedition. Killing the guardian with a different weapon or an ally does not change these rewards.
+
+## Upgrade the ship's survey array
+
+After repairing the escape pod, bring **1 Survey Core, 6 Iron Ingots, and 3 Crystals** to the home pod. Press **F** beside it to install the upgrade. Installation consumes the materials once; press **F** again, or **G**, to launch.
+
+The upgraded ship displays a broad resource and terrain forecast for the selected planet in the solar-system view. These forecasts describe likely resources and hazards, not exact ore counts or deposit locations. Planet danger ratings are visible even without the upgrade. The upgrade is optional and does not block travel to other climates.
+
+## Existing saves
+
+Living sentinels become the new guardian when its larger body fits the existing room. Their health percentage is preserved, and no player construction is removed to make space. A blocked legacy sentinel remains available to fight in its original form.
+
+Defeated sentinels stay defeated. If you already recovered the drive core in an older save, press **F** at the home pod to collect the new salvage once. Your repaired pod and other expedition progress remain intact.
+
+[Home](Home) | [Wiki Index](Wiki-Index) | [Expedition and R0-VR](Expedition-and-R0-VR) | [Armor and Equipment](Armor-and-Equipment) | [Planets and Biomes](Planets-and-Biomes)
+````
+
+---
+
 ## Page: Combat and Weapons
 
 Suggested wiki title: **Combat and Weapons**
@@ -999,6 +1082,12 @@ Terrain, closed doors, and liquids affect projectile travel. Switching equipment
 ## Magic
 
 Wands, staffs, tomes, and ward books use mana and cooldowns. Magic supports direct damage, status effects, healing, protection, illumination, and necromancy. See [Magic and Skill Tree](Magic-and-Skill-Tree).
+
+## Guardian reward weapon
+
+The **Faultline Hammer** is recovered at the drive core with **F** after defeating the [Mining Guardian](Mining-Guardian). It deals **64 damage**, attacks every **0.85 seconds**, reaches **4.75 blocks**, and can hit **three enemies** per swing. It cannot mine blocks and is not a workbench recipe.
+
+Planet danger also increases ordinary enemy health, damage, and material rewards. See [Planets and Biomes](Planets-and-Biomes) before landing on a tougher world.
 
 ## Armor and shields
 
@@ -1472,28 +1561,27 @@ Galaxis on Fire is in active alpha development. Build identities help match a ga
 
 ## Current prepared build
 
-**v0.2.0-alpha+build.3 ? Arms, Armor and Night Encounters**  
-**Build date:** November 4, 2026  
+**v0.3.0-alpha+build.4 - Mining Guardian and Planet Danger**
+
+**Build date:** November 5, 2026
+
 **Status:** Prepared locally for commit; this page does not imply the build has been uploaded or released.
 
-This feature build includes:
+- [Ruined Mining Guardian](Mining-Guardian): 360 HP, a warned drill charge and ground slam, recovery windows, larger new-game chambers, and a boss HUD.
+- Aseprite guardian animations, the unique Faultline Hammer, and the Survey Core.
+- An optional ship survey-array upgrade that reveals broad resource forecasts in planet selection.
+- Climate-based Danger 1-3 ratings, stronger hostile creatures, and increased normal material drops on harsher planets.
+- Persistent rewards, guardian state, and ship upgrades; safe legacy-save migration and host-authoritative multiplayer attacks.
 
-- Six additional melee weapons: Wood, Copper, and Iron Spears, Iron Dagger, Iron Warhammer, and Crystal Blade.
-- Additional planet-specific ground creatures, slimes, and flyers at night, with population limits and offscreen dawn cleanup.
-- Fiber, Copper, and Iron armor, an equipment tab, Wood/Copper/Iron shields, and two accessories.
-- Directional shield blocking, guard recovery, armor protection, and movement tradeoffs.
-- Equipment saves and multiplayer ownership, reconnects, travel, and visible armor/shields.
-- Editable Aseprite artwork and an updated player wiki copy-and-paste pack.
-
-Checks passed: 222 weapon/night checks, 170 equipment checks, and 63 two-process multiplayer checks, plus the existing ranged-weapon and tool-progression regressions. These multiplayer checks used local processes, not a cross-PC or eight-player load test.
+Checks passed: 95 guardian/danger checks, 229 weapon/night assertions, 170 equipment assertions, 70 two-process multiplayer checks, and 3 generated-chamber checks. Aseprite sources and exports were compared pixel for pixel. Multiplayer verification used two local processes, not a cross-PC or larger-group test. The preceding build, **v0.2.0-alpha+build.3 - Arms, Armor and Night Encounters**, added melee weapons, night encounters, armor, shields, and accessories.
 
 ## Reading the version
 
-The prepared version `v0.2.0-alpha+build.3` contains:
+The prepared version `v0.3.0-alpha+build.4` contains:
 
-- **0.2.0:** Release version: major, minor, and patch numbers.
+- **0.3.0:** Release version: major, minor, and patch numbers.
 - **alpha:** Development channel. Beta and release-candidate channels are also supported.
-- **build.3:** The increasing build number for that checkpoint.
+- **build.4:** The increasing build number for that checkpoint.
 
 The game version appears in its main menu and window title. It is separate from the Godot engine's version. Multiplayer checks the game build when joining.
 
@@ -1501,7 +1589,7 @@ The game version appears in its main menu and window title. It is separate from 
 
 [CHANGELOG.md](https://github.com/HeKontrolls/Galaxis_On_Fire_Godot/blob/main/CHANGELOG.md) contains the numbered build history and notes about additions, improvements, fixes, and verification.
 
-The preceding build, `v0.1.0-alpha+build.2`, added hosting/joining, shared-world synchronization, guest saves and reconnection, the combined HP/MP panel, and improved raised-ally spacing.
+The earlier build, `v0.1.0-alpha+build.2`, added hosting/joining, shared-world synchronization, guest saves and reconnection, the combined HP/MP panel, and improved raised-ally spacing.
 
 ## For contributors: changing build info
 
@@ -1532,7 +1620,7 @@ Preparing metadata does not upload it. A source tag also does not automatically 
 
 ## Optional sidebar: _Sidebar
 
-Use this block for the wiki sidebar, rather than a normal guide page.
+Create the special **_Sidebar** wiki page and paste this navigation.
 
 ````markdown
 [Home](Home) | [Wiki Index](Wiki-Index)
@@ -1561,6 +1649,7 @@ Use this block for the wiki sidebar, rather than a normal guide page.
 - [Crafting and Stations](Crafting-and-Stations)
 - [Building and Housing](Building-and-Housing)
 - [Farming and Food](Farming-and-Food)
+- [Mining Guardian](Mining-Guardian) - First miniboss, salvage, and the ship survey array.
 - [Combat and Weapons](Combat-and-Weapons)
 - [Armor and Equipment](Armor-and-Equipment)
 - [Power and Logic](Power-and-Logic)

@@ -36,6 +36,6 @@ Water can drain into connected caves, and digging into an aquifer can open a new
 
 ## The buried signal
 
-The first expedition eventually directs you to a guarded drive core. Follow the objective information and prepare for its sentinel before attempting the recovery. Return to R0-VR and the crashed pod as the objectives instruct.
+The first expedition directs you to the Ruined Mining Guardian and its guarded drive core. Follow the objective information, bring armor, food, and a shield, and use the warned attacks and recovery windows to fight it. Press F at the core after victory, then return to R0-VR and the crashed pod as the objectives instruct.
 
 [Home](Home) · [Wiki Index](Wiki-Index) · [Mining and Tool Progression](Mining-and-Tool-Progression) · [Expedition and R0-VR](Expedition-and-R0-VR)

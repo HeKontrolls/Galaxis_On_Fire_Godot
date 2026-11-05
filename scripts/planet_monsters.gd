@@ -43,7 +43,7 @@ static func display_name(creature: Dictionary) -> String:
 	if creature.get("wildlife", false): return preload("res://scripts/wildlife_mobs.gd").NAMES[int(creature.wildlife_family)]
 	if bool(creature.get("flying", false)):
 		return preload("res://scripts/flying_monsters.gd").NAMES[clampi(int(creature.get("monster_family", 0)), 0, 7)]
-	return "Salvage sentinel" if creature.get("quest_guardian", false) else NAMES[clampi(int(creature.get("monster_family", 0)), 0, 7)]
+	return "Ruined mining guardian" if creature.get("quest_guardian", false) else NAMES[clampi(int(creature.get("monster_family", 0)), 0, 7)]
 
 func texture_for(family: int) -> Texture2D:
 	family = clampi(family, 0, 7)

@@ -15,6 +15,20 @@ A planet's climate sets its overall character, while regional biomes change the 
 | Frozen ocean and ice floes | Pack ice, Fractured ice, Glacial shelf, Open leads |
 | Tundra and permafrost | Snowfields, Boreal woodland, Exposed rock, Glacial valleys |
 
+## Planet danger
+
+The solar-system viewer shows a stable danger rating for each climate. It affects hostile surface, cave, and newly arriving night creatures; the quest guardian has its own fixed stats.
+
+| Danger | Planets | Enemy HP | Enemy damage | Normal material drops per kill |
+| --- | --- | --- | --- | --- |
+| 1 - Frontier | Temperate forest; scattered islands | Base | Base | 1 |
+| 2 - Hazardous | Mixed oceans; hot desert; tundra | +25% | +20% | 2 |
+| 3 - Extreme | Volcanic inner; outer rocky barren; frozen ocean | +50% | +40% | 3 |
+
+Health and damage values round to whole numbers. Existing injured creatures keep their health percentage when upgrading an older save; revisiting a world does not stack these bonuses. The material type stays the same, and the multiplier does not increase special quest rewards or Soul-study Bone Fragments.
+
+Defeat the [Mining Guardian](Mining-Guardian), improve your armor, and use the optional ship survey array to choose your next destination. Travel to higher-danger worlds is not locked behind the survey upgrade.
+
 ## Climate affects exploration
 
 Terrain materials, relief, tree density, flora, wildlife, and liquids vary with climate and biome. Biome backgrounds provide additional depth and scenery as you travel.

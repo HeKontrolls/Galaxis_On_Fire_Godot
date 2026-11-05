@@ -26,6 +26,7 @@ Welcome to the Galaxis on Fire player guide. These pages describe the current Go
 - [Crafting and Stations](Crafting-and-Stations) — Recipes, workbench storage, and timed furnaces.
 - [Building and Housing](Building-and-Housing) — Structures, doors, ladders, furniture, and shelter.
 - [Farming and Food](Farming-and-Food) — Crops, moisture, growing light, cooking, and healing.
+- [Mining Guardian](Mining-Guardian) - First miniboss, salvage, and the ship survey array.
 - [Combat and Weapons](Combat-and-Weapons) — Melee equipment, bows, crossbows, and arrows.
 - [Armor and Equipment](Armor-and-Equipment) ? Armor sets, accessories, shields, and guard.
 - [Power and Logic](Power-and-Logic) — Generators, electrical networks, sensors, and logic circuits.
